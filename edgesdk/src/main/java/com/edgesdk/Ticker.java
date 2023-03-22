@@ -426,7 +426,7 @@ public class Ticker extends LinearLayout {
             try {
 
                 float earning_per_hr = edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()*edgeSdk.getMarketPriceManager().getPrice();
-                Log.i(LogConstants.Watch_2_Earn,"earning_per_hr :"+earning_per_hr);
+                //Log.i(LogConstants.Watch_2_Earn,"earning_per_hr :"+earning_per_hr);
                 float finalEarning_per_hr = earning_per_hr;
                 txt_per_day.post(new Runnable() {
                     @Override
@@ -799,12 +799,11 @@ public class Ticker extends LinearLayout {
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             StopValuesPrintingThreads();
-            StopValuesPrintingThreads();
             //StopControllerAndVideoStatusDetectorThread();
             //HomeActivity.edgeSdkExecutor.pauseWatchToEarn();
             //HomeActivity.edgeSdkExecutor.stopStaking();
             if(edgeSdk.isW2ESocketOpen())
-                edgeSdk.pauseW2E();;
+                edgeSdk.pauseW2E();
             edgeSdk.stopStaking();
             //StopSecondScreenCommandListenerThread();
         }
