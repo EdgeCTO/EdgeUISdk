@@ -180,6 +180,14 @@ public class Ticker extends LinearLayout {
         isBackpressed = backpressed;
     }
 
+    public boolean isTickerVisibilityThreadRunning() {
+        return isTickerVisibilityThreadRunning;
+    }
+
+    public void setTickerVisibilityThreadRunning(boolean tickerVisibilityThreadRunning) {
+        isTickerVisibilityThreadRunning = tickerVisibilityThreadRunning;
+    }
+
     class WatchToEarnTitleStatusPrinter extends  TimerTask{
 
         @Override
@@ -772,6 +780,7 @@ public class Ticker extends LinearLayout {
             //StartSecondScreenCommandListenerThread();
         }
     }
+
     public void onStop(){
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
