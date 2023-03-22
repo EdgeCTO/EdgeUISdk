@@ -136,28 +136,28 @@ public class Ticker extends LinearLayout {
         if(!isOptOutEnabled){
 
             staked_values_timer = new Timer();
-            staked_values_timer.schedule(new StakedValuesPrinter(), 5000);
+            //staked_values_timer.schedule(new StakedValuesPrinter(), 5000);
 
             est_apy_values_timer = new Timer();
-            est_apy_values_timer.schedule(new ESTApyValuesPrinter(), 5000);
+            //est_apy_values_timer.schedule(new ESTApyValuesPrinter(), 5000);
 
             earning_per_day_timer = new Timer();
-            earning_per_day_timer.schedule(new EarningPerDayValuesPrinter(), 1000);
+            //earning_per_day_timer.schedule(new EarningPerDayValuesPrinter(), 1000);
 
             eat_market_price_timer = new Timer();
-            eat_market_price_timer.schedule(new EatMarketPriceValuePrinter(), 5000);
+            //eat_market_price_timer.schedule(new EatMarketPriceValuePrinter(), 5000);
 
             ticker_values_timer = new Timer();
-            ticker_values_timer.schedule(new TickerValuePrinter(), 5000);
+            //ticker_values_timer.schedule(new TickerValuePrinter(), 5000);
 
             total_eats_timer = new Timer();
-            total_eats_timer.schedule(new TotalEatsValuePrinter(), 0);
+            //total_eats_timer.schedule(new TotalEatsValuePrinter(), 0);
 
             //is_video_playing_or_paused_detector_timer = new Timer();
             //is_video_playing_or_paused_detector_timer.schedule(new IsVideoPlayingOrPausedDetector(), 0);
 
             watch_to_earn_title_updater_timer = new Timer();
-            watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 3000);
+            //watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 3000);
 
             //second_secreen_command_listener = new Timer();
             //second_secreen_command_listener.schedule(new SecondScreenCommandListner(this),0);
@@ -790,6 +790,21 @@ public class Ticker extends LinearLayout {
             //HomeActivity.edgeSdkExecutor.stopStaking();
             if(edgeSdk.isW2ESocketOpen())
                 edgeSdk.pauseW2E();
+            edgeSdk.stopStaking();
+            //StopSecondScreenCommandListenerThread();
+        }
+    }
+
+    public void onBackPressed(){
+        boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
+        if(!isOptOutEnabled) {
+            StopValuesPrintingThreads();
+            StopValuesPrintingThreads();
+            //StopControllerAndVideoStatusDetectorThread();
+            //HomeActivity.edgeSdkExecutor.pauseWatchToEarn();
+            //HomeActivity.edgeSdkExecutor.stopStaking();
+            if(edgeSdk.isW2ESocketOpen())
+                edgeSdk.pauseW2E();;
             edgeSdk.stopStaking();
             //StopSecondScreenCommandListenerThread();
         }
