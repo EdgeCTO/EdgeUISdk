@@ -10,41 +10,21 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class Ticker extends LinearLayout {
-        private EditText firstNameEditText, lastNameEditText, emailEditText;
-        private Button signInButton;
 
         public Ticker(Context context) {
             super(context);
+            init();
         }
 
         @SuppressLint("MissingInflatedId")
         private void init() {
+            System.out.println("init-method-called");
             LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.ticker_layout, this);
-
-            firstNameEditText = view.findViewById(R.id.first_name);
-            lastNameEditText = view.findViewById(R.id.last_name);
-            emailEditText = view.findViewById(R.id.email);
-            signInButton = view.findViewById(R.id.sign_in_button);
-            signInButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getContext(),"FName :"+getFirstName()+" LName :"+getLastName()+" and Email :"+getEmail(),Toast.LENGTH_SHORT).show();
-                }
-            });
+            //firstNameEditText = view.findViewById(R.id.first_name);
         }
 
-        public String getFirstName() {
-            return firstNameEditText.getText().toString();
-        }
 
-        public String getLastName() {
-            return lastNameEditText.getText().toString();
-        }
-
-        public String getEmail() {
-            return emailEditText.getText().toString();
-        }
     }
 
 

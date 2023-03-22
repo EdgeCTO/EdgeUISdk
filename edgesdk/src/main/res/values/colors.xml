@@ -1,0 +1,69 @@
+<resources>
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="green">#269b24</color>
+    <color name="navigation_menu_focus_color">#0a61ce</color>
+    <color name="navigation_menu_focus_out_color">#ffffff</color>
+    <color name="orange">#ff9800</color>
+    <color name="yellow">#FFEB3B</color> <!-- Use with black text -->
+    <color name="app_background">#0a61ce</color>
+    <color name="main_background">#0a1624</color>
+
+    <color name="appcolor">#0082CA</color>
+    <color name="colorPrimary">#CA02E5</color>
+    <color name="colorPrimaryDark">#472d6c</color>
+    <color name="colorAccent">#29875a</color>
+    <color name="progressbar">#05743f</color>
+    <color name="white">#fff</color>
+
+    <color name="red">#E6F00F0F</color>
+
+    <color name="blue">#19003f</color>
+    <color name="baseDark">#222</color>
+    <color name="base">#373a3c</color>
+    <color name="basePrimaryDark">#171717</color>
+
+    <color name="light_black">#7A000000</color>
+    <color name="main_screen_bg">#050510</color>
+    <color name="ticker_primary_bg">#A9282828</color>
+    <color name="ticker_secondary_bg">#C34A4A4A</color>
+    <color name="ticker_primary_txt">#FFFFFF</color>
+    <color name="ticker_secondary_txt">#47DAEE</color>
+    <color name="ticker_tertiary_txt">#11D70D</color>
+    <color name="ticker_vertical_bar_color">#47DAEE</color>
+
+
+
+    <!--Login from psd-->
+    <color name="navbar">#333333</color>
+    <color name="keyboard">#191919</color>
+    <color name="background">#222222</color>
+
+
+    <color name="tp">#D31B1A1A</color>
+
+    <color name="colorprimary">#CA02E5</color>
+    <color name="coloraccent">#D6A70D</color>
+    <color name="transprant">#C6252323</color>
+    <color name="transprant1">#7C242222</color>
+    <color name="orange">#FF6F00</color>
+    <color name="lightpink">#FC67B7</color>
+    <color name="gray">#302F2F</color>
+    <color name="main_background">#0a1624</color>
+
+    <color name="disabled_text_color">#4064f9</color>
+    <color name="default_text_color">#4064f9</color>
+
+    <color name="disablebutton_pressed">#4e4e4e</color>
+    <color name="disablebutton_focused">#707070</color>
+    <color name="efault">#80B1ACAC</color>
+
+    <color name="button_pressed">#e43e3e</color>
+    <color name="button_focused">#d67601</color>
+    <color name="button_default">#d67601</color>
+
+    <color name="lb_browse_header_color">#FFFFFF</color>
+    <color name="lb_browse_header_description_color">#FFFFFF</color>
+    <color name="lb_browse_title_color">#FFFFFF</color>
+</resources>
