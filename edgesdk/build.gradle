@@ -5,12 +5,13 @@ plugins {
 
 android {
     namespace 'com.edgesdk'
-    compileSdk 32
+    compileSdk 29
 
     defaultConfig {
-        minSdk 23
-        targetSdk 32
-
+        minSdk 22
+        targetSdk 28
+        versionCode 18
+        versionName "1.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -36,7 +37,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.zeeshan-edgevideo'
                 artifactId = 'edgesdk'
-                version = '1.1'
+                version = '1.4'
             }
         }
     }
