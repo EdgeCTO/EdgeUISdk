@@ -754,11 +754,12 @@ public class Ticker extends LinearLayout {
     public void onPause(){
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
-            //HomeActivity.edgeSdkExecutor.startStaking();
-            edgeSdk.startStaking();
-            ResumeValuesPrintingThreads();
-            //ResumeControllerAndVideoStatusDetectorThread();
-            //StartSecondScreenCommandListenerThread();
+            StopValuesPrintingThreads();
+            //StopControllerAndVideoStatusDetectorThread();
+            if(edgeSdk.isW2ESocketOpen())
+                edgeSdk.pauseW2E();
+            edgeSdk.stopStaking();
+            //StopSecondScreenCommandListenerThread();
         }
     }
     public void onResume(){

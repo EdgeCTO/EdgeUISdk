@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         ticker.setBackpressed(false);
         ticker.setPlaying(true);
-        
+
         LinearLayout layout = findViewById(R.id.main_layout);
         layout.addView(ticker);
 
