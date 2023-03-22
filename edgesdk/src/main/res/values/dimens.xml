@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="twelv_sp">12sp</dimen>
+    <dimen name="twenty_dp">12dp</dimen>
+    <dimen name="lb_browse_item_horizontal_spacing">2dp</dimen>
+    <dimen name="lb_browse_item_vertical_spacing">3dp</dimen>
+    <dimen name="lb_material_shadow_focused_z">0dp</dimen>
+    <dimen name="w2e_notification_area_font_size_style_1">5dp</dimen>
+    <dimen name="w2e_notification_area_font_size_style_2">4.4dp</dimen>
+
+</resources>
