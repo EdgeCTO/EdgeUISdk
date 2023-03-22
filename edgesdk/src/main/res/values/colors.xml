@@ -15,7 +15,6 @@
     <color name="colorPrimaryDark">#472d6c</color>
     <color name="colorAccent">#29875a</color>
     <color name="progressbar">#05743f</color>
-    <color name="white">#fff</color>
 
     <color name="red">#E6F00F0F</color>
 
@@ -33,13 +32,10 @@
     <color name="ticker_tertiary_txt">#11D70D</color>
     <color name="ticker_vertical_bar_color">#47DAEE</color>
 
-
-
     <!--Login from psd-->
     <color name="navbar">#333333</color>
     <color name="keyboard">#191919</color>
     <color name="background">#222222</color>
-
 
     <color name="tp">#D31B1A1A</color>
 
@@ -47,10 +43,9 @@
     <color name="coloraccent">#D6A70D</color>
     <color name="transprant">#C6252323</color>
     <color name="transprant1">#7C242222</color>
-    <color name="orange">#FF6F00</color>
+
     <color name="lightpink">#FC67B7</color>
     <color name="gray">#302F2F</color>
-    <color name="main_background">#0a1624</color>
 
     <color name="disabled_text_color">#4064f9</color>
     <color name="default_text_color">#4064f9</color>
