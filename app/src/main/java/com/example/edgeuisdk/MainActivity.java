@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        EdgeSdk edgeSdk = new EdgeSdk(this);
+        EdgeSdk edgeSdk = new EdgeSdk(this);
 
 //        edgeSdk.getLocalStorageManager().storeBooleanValue(true, com.edgesdk.Utils.Constants.IS_TICKER_ALLOWED_TO_HIDE);
 //        edgeSdk.getLocalStorageManager().storeBooleanValue(false,com.edgesdk.Utils.Constants.IS_OPT_OUT_W2E_ENABLED);
@@ -26,29 +26,29 @@ public class MainActivity extends AppCompatActivity {
 //        edgeSdk.getLocalStorageManager().storeStringValue("0x1CE5db82533E4Fec3e1D983D89070F8185fC163F",com.edgesdk.Utils.Constants.WALLET_ADDRESS);
 
 
-//        edgeSdk.start();
-//        edgeSdk.startStaking();
-//        Ticker ticker = new Ticker(this,edgeSdk,null,null);
-//
-//        ticker.setBackpressed(false);
-//        ticker.setPlaying(true);
-//
-//        LinearLayout layout = findViewById(R.id.main_layout);
-//        layout.addView(ticker);
-//
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(10000);
-//                    edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
-//                    Thread.sleep(10000);
-//
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
+        edgeSdk.start();
+        edgeSdk.startStaking();
+        Ticker ticker = new Ticker(this,edgeSdk,null,null);
+
+        ticker.setBackpressed(false);
+        ticker.setPlaying(true);
+
+        LinearLayout layout = findViewById(R.id.main_layout);
+        layout.addView(ticker);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(10000);
+                    edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
+                    Thread.sleep(10000);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
     }
 }
