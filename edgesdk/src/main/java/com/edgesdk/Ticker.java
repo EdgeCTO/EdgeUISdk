@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +18,6 @@ import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.Utils.Messages;
 import com.edgesdk.models.TickerNotifications;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.ui.PlayerView;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -35,8 +31,6 @@ public class Ticker extends LinearLayout {
     EdgeSdk edgeSdk;
     private LinearLayout ticker_layout;
     Typeface custom_font;
-    private PlayerView playerView;
-    private SimpleExoPlayer simpleExoPlayer;
     TickerNotifications[] tickerNotifications;
     int currentNotificationMsgNumber;
     boolean isPrintingThreadsRunning,playing;
@@ -44,16 +38,15 @@ public class Ticker extends LinearLayout {
     boolean isTickerVisibilityThreadRunning;
     private Activity callingActivity;
     Timer staked_values_timer,est_apy_values_timer,earning_per_day_timer,eat_market_price_timer,ticker_values_timer,is_video_playing_or_paused_detector_timer,total_eats_timer,watch_to_earn_title_updater_timer,second_secreen_command_listener,ticker_visibility_controler_timer;
-    public Ticker(Context context,EdgeSdk edgeSdk,PlayerView playerView,SimpleExoPlayer simpleExoPlayer) {
+    public Ticker(Context context,EdgeSdk edgeSdk) {
             super(context);
             this.edgeSdk=edgeSdk;
             callingActivity = (Activity) context;
-            this.playerView=playerView;
-            this.simpleExoPlayer=simpleExoPlayer;
+            init();
     }
 
     @SuppressLint("MissingInflatedId")
-    public void initialize() {
+    private void init() {
             System.out.println("init-method-called");
             LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.ticker_layout, this);
@@ -100,11 +93,6 @@ public class Ticker extends LinearLayout {
         txt_watch_to_earn_heading.setTypeface(custom_font);
         txt_title_eat_market_inc_dec.setTypeface(custom_font);
 
-
-    }
-
-
-    public void execute(){
         //setting up notification.
         isVideoPlayedForFirstTime=false;
         isTickerVisibilityThreadRunning=true;
@@ -146,39 +134,39 @@ public class Ticker extends LinearLayout {
 
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled){
-            staked_values_timer = new Timer();
-            est_apy_values_timer = new Timer();
-            earning_per_day_timer = new Timer();
-            eat_market_price_timer = new Timer();
-            ticker_values_timer = new Timer();
-            total_eats_timer = new Timer();
-            watch_to_earn_title_updater_timer = new Timer();
 
-            is_video_playing_or_paused_detector_timer = new Timer();
+            staked_values_timer = new Timer();
+            //staked_values_timer.schedule(new StakedValuesPrinter(), 5000);
+
+            est_apy_values_timer = new Timer();
+            //est_apy_values_timer.schedule(new ESTApyValuesPrinter(), 5000);
+
+            earning_per_day_timer = new Timer();
+            //earning_per_day_timer.schedule(new EarningPerDayValuesPrinter(), 1000);
+
+            eat_market_price_timer = new Timer();
+            //eat_market_price_timer.schedule(new EatMarketPriceValuePrinter(), 5000);
+
+            ticker_values_timer = new Timer();
+            //ticker_values_timer.schedule(new TickerValuePrinter(), 5000);
+
+            total_eats_timer = new Timer();
+            //total_eats_timer.schedule(new TotalEatsValuePrinter(), 0);
+
+            //is_video_playing_or_paused_detector_timer = new Timer();
             //is_video_playing_or_paused_detector_timer.schedule(new IsVideoPlayingOrPausedDetector(), 0);
 
+            watch_to_earn_title_updater_timer = new Timer();
+            //watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 3000);
 
-            second_secreen_command_listener = new Timer();
+            //second_secreen_command_listener = new Timer();
             //second_secreen_command_listener.schedule(new SecondScreenCommandListner(this),0);
         }
     }
 
-    public SimpleExoPlayer getSimpleExoPlayer() {
-        return simpleExoPlayer;
+    public boolean isPlaying() {
+        return playing;
     }
-
-    public void setSimpleExoPlayer(SimpleExoPlayer simpleExoPlayer) {
-        this.simpleExoPlayer = simpleExoPlayer;
-    }
-
-    public PlayerView getPlayerView() {
-        return playerView;
-    }
-
-    public void setPlayerView(PlayerView playerView) {
-        this.playerView = playerView;
-    }
-
 
     public void setPlaying(boolean playing) {
         this.playing = playing;
@@ -198,17 +186,6 @@ public class Ticker extends LinearLayout {
 
     public void setTickerVisibilityThreadRunning(boolean tickerVisibilityThreadRunning) {
         isTickerVisibilityThreadRunning = tickerVisibilityThreadRunning;
-    }
-
-    public boolean isPlaying() {
-        try{
-            //this is detecting if video is being played or paused.
-            boolean isPl = this.simpleExoPlayer.getPlaybackState() == Player.STATE_READY && this.simpleExoPlayer.getPlayWhenReady();
-            setPlaying(isPl);
-            return isPl;
-        }catch (Exception e){
-            return false;
-        }
     }
 
     class WatchToEarnTitleStatusPrinter extends  TimerTask{
@@ -593,253 +570,6 @@ public class Ticker extends LinearLayout {
         }
     }
 
-    class IsVideoPlayingOrPausedDetector extends TimerTask {
-        @SuppressLint("LongLogTag")
-        public void run() {
-            Log.i("IsVideoPlayingOrPausedDetector",isPlaying()+"");
-            boolean isTickerAllowedToHide = edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_TICKER_ALLOWED_TO_HIDE);
-            if(isTickerAllowedToHide && !isTickerVisibilityThreadRunning()){
-                if(playerView.isControllerVisible()){
-                    Log.i("isControllerVisible","controller is visible");
-                    ticker_layout.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ticker_layout.setVisibility(View.VISIBLE);
-                        }
-                    });
-                }else{
-                    Log.i("isControllerVisible","controller is not visible");
-                    ticker_layout.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ticker_layout.setVisibility(View.GONE);
-                        }
-                    });
-                }
-            }
-
-            if(!isPlaying()){
-                //stopping staking and w2e when video is paused.
-                boolean isOptOutEnabled = edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
-
-                if(!isOptOutEnabled) {
-                    edgeSdk.stopStaking();
-                    if(edgeSdk.isW2ESocketOpen())
-                        if(edgeSdk.isW2ESocketOpen())
-                            edgeSdk.pauseW2E();
-                    PauseValuesPrintingThreads();
-                    txt_per_day.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            txt_per_day.setText("$0.000");
-                        }
-                    });
-                    txt_earned.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            txt_earned.setText("0.000");
-                        }
-                    });
-                }
-            }else{
-
-                if(!isVideoPlayedForFirstTime) {
-                    isVideoPlayedForFirstTime=true;
-                }
-                boolean isOptOutEnabled = edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
-
-                //restarting the w2e and staking when video is resumed.
-                if(!isOptOutEnabled) {
-                    if(edgeSdk.isW2ESocketOpen() && edgeSdk.getW2EarnManager().getBaseRate()==0)
-                    {
-                        //if w2e socket server is connected then setBase rate to 600
-                        //this runs only once when video is resumed and base rate is set to 600 from 0
-                        ResumeValuesPrintingThreads();
-                        if(!edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_BOOST_ENABLED)) {
-                            edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
-                        }
-                        else {
-                            edgeSdk.getW2EarnManager().updateBaseRateOnServer(600*4);
-                        }
-
-                    }
-
-                    if(!edgeSdk.isW2ESocketOpen()){
-                        if(isPrintingThreadsRunning) {
-                            PauseValuesPrintingThreads();
-                            if(!edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_BOOST_ENABLED))
-                            {
-                                edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
-                            }
-                            else {
-                                edgeSdk.getW2EarnManager().updateBaseRateOnServer(600*4);
-                            }
-                            Log.i(LogConstants.Watch_2_Earn, "w2e server not connected so paused printing threads");
-                        }
-                    }
-
-                    if(edgeSdk.isW2ESocketOpen()){
-                        if(!isPrintingThreadsRunning) {
-                            if(edgeSdk.getGamifiedTvSocketManager().getThreadHandler()==null) {
-                                if (!edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_BOOST_ENABLED)) {
-                                    edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
-                                } else {
-                                    edgeSdk.getW2EarnManager().updateBaseRateOnServer(600 * 4);
-                                }
-                            }else{
-                                if (!edgeSdk.getGamifiedTvSocketManager().getIS_BOOST_ENABLED()) {
-                                    edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
-                                } else {
-                                    edgeSdk.getW2EarnManager().updateBaseRateOnServer(600 * 4);
-                                }
-                            }
-
-                            ResumeValuesPrintingThreads();
-                            Log.i(LogConstants.Watch_2_Earn, "w2e server  connected so resumed printing threads");
-                        }
-                    }
-
-                    if (edgeSdk.getStakingValueFetchingManager().getThreadHandler()==null) {
-                        Log.i("stk_status", "started staking");
-                        isOptOutEnabled = edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
-
-                        if (!isOptOutEnabled) {
-                            //HomeActivity.edgeSdkExecutor.startStaking();
-                            edgeSdk.startStaking();
-                        }
-
-                    } else {
-                        if(edgeSdk.getStakingValueFetchingManager().getThreadHandler().isCancelled()|| edgeSdk.getStakingValueFetchingManager().getThreadHandler().isDone()){
-                            Log.i("stk_status", "started staking");
-                            isOptOutEnabled = edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
-
-                            if (!isOptOutEnabled) {
-
-                                edgeSdk.startStaking();
-                            }
-                        }
-                        //Log.i("wstk_status", "running staking");
-                    }
-                }
-
-            }
-            try {
-                is_video_playing_or_paused_detector_timer.schedule(new IsVideoPlayingOrPausedDetector(), 1000);
-            }catch (IllegalStateException e){
-                is_video_playing_or_paused_detector_timer = new Timer();
-                is_video_playing_or_paused_detector_timer.schedule(new IsVideoPlayingOrPausedDetector(), 1000);
-            }
-        }
-    }
-
-    private void pausePlayer() {
-        if (simpleExoPlayer != null) {
-            new Handler(simpleExoPlayer.getApplicationLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    if(simpleExoPlayer!=null) {
-                        //time = simpleExoPlayer.getCurrentPosition();
-                        simpleExoPlayer.setPlayWhenReady(false);
-                    }
-                }
-            });
-        }
-    }
-
-    private void resumePlayer() {
-        if (simpleExoPlayer != null) {
-            new Handler(simpleExoPlayer.getApplicationLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    if(simpleExoPlayer!=null){
-                        simpleExoPlayer.setPlayWhenReady(true);
-                    }
-                }
-            });
-        }
-    }
-
-    private void showOrHidePlayerControls(boolean makeControllersVisible)
-    {
-        if(simpleExoPlayer!=null){
-            new Handler(simpleExoPlayer.getApplicationLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    if(makeControllersVisible){
-                        playerView.showController();
-                    }else{
-                        playerView.hideController();
-                    }
-                }
-            });
-        }
-    }
-
-    class SecondScreenCommandListener extends TimerTask{
-        Ticker ticker;
-        public SecondScreenCommandListener(Ticker ticker) {
-            this.ticker=ticker;
-        }
-        @SuppressLint("LongLogTag")
-        @Override
-        public void run() {
-            try {
-
-                int current_pressed_remote_button= edgeSdk.getGamifiedTvSocketManager().getCURRENT_PRESSED_REMOTE_BUTTON();
-                //Log.i(LogConstants.Gamefied_Tv,"current number :"+current_pressed_remote_button);
-                if(current_pressed_remote_button!=-1){
-                    if(current_pressed_remote_button==Constants.StringPAUSE){
-                        //Log.i(LogConstants.QRCode,"current_pressed_remote_button :"+current_pressed_remote_button+" - Pause");
-                        this.ticker.pausePlayer();
-                    }else if(current_pressed_remote_button==Constants.StringPLAY){
-                        //Log.i(LogConstants.QRCode,"current_pressed_remote_button :"+current_pressed_remote_button+" - Play");
-                        this.ticker.resumePlayer();
-                    }else if(current_pressed_remote_button==Constants.BOOST){
-                        //Log.i(LogConstants.QRCode,"current_pressed_remote_button :"+current_pressed_remote_button+" - Boost");
-                        if(edgeSdk.getW2EarnManager().getBaseRate()==600){
-                            //update to 4 times.
-                            showOrHidePlayerControls(true);
-                            Log.i(LogConstants.Watch_2_Earn,"Boosting earning rate from 600 to 2400");
-                            edgeSdk.getW2EarnManager().updateBaseRateOnServer(edgeSdk.getW2EarnManager().getBaseRate()*4);
-                        }
-                    }
-                    else if(current_pressed_remote_button==Constants.StringDISCONNECTED){
-                        if (edgeSdk.getW2EarnManager().getBaseRate()==2400){
-                            showOrHidePlayerControls(true);
-                            edgeSdk.getW2EarnManager().updateBaseRateOnServer(edgeSdk.getW2EarnManager().getBaseRate()/4);
-                        }
-                    }
-                    else if(current_pressed_remote_button==Constants.StringDISCONNECTED){
-                        showOrHidePlayerControls(true);
-                    }
-
-                    if(edgeSdk.getGamifiedTvSocketManager().getIS_BOOST_ENABLED()){
-                        if(edgeSdk.getW2EarnManager().getBaseRate()==600){
-                            //update to 4 times.
-                            showOrHidePlayerControls(true);
-                            Log.i(LogConstants.Watch_2_Earn,"Boosting earning rate from 600 to 2400");
-                            edgeSdk.getW2EarnManager().updateBaseRateOnServer(edgeSdk.getW2EarnManager().getBaseRate()*4);
-                        }
-                    }else{
-                        if(edgeSdk.getW2EarnManager().getBaseRate()==2400){
-                            //update to 4 times.
-                            showOrHidePlayerControls(true);
-                            Log.i(LogConstants.Watch_2_Earn,"Boosting earning rate from 2400 to 600");
-                            edgeSdk.getW2EarnManager().updateBaseRateOnServer(edgeSdk.getW2EarnManager().getBaseRate()/4);
-                        }
-                    }
-                }else{
-                    //Log.e("error","second screen is not connected at least for once.");
-                }
-
-                second_secreen_command_listener.schedule(new SecondScreenCommandListener(this.ticker), 10);
-            }catch (IllegalStateException e){
-                second_secreen_command_listener = new Timer();
-                second_secreen_command_listener.schedule(new SecondScreenCommandListener(this.ticker), 10);
-            }
-        }
-    }
-
 
     public String roundTwoDecimals(double d)
     {
@@ -1004,6 +734,7 @@ public class Ticker extends LinearLayout {
             watch_to_earn_title_updater_timer.cancel();
     }
 
+
     public void ResumeValuesPrintingThreads(){
         isPrintingThreadsRunning=true;
         staked_values_timer = new Timer();
@@ -1026,50 +757,27 @@ public class Ticker extends LinearLayout {
 
         watch_to_earn_title_updater_timer = new Timer();
         watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(),1000);
-
-    }
-
-    public void StopControllerAndVideoStatusDetectorThread(){
-        is_video_playing_or_paused_detector_timer.cancel();
-    }
-
-    public void ResumeControllerAndVideoStatusDetectorThread(){
-        is_video_playing_or_paused_detector_timer = new Timer();
-        is_video_playing_or_paused_detector_timer.schedule(new IsVideoPlayingOrPausedDetector(),100);
-    }
-
-    public void StartSecondScreenCommandListenerThread(){
-        if(second_secreen_command_listener!=null){
-            second_secreen_command_listener.cancel();
-        }
-        second_secreen_command_listener = new Timer();
-        second_secreen_command_listener.schedule(new SecondScreenCommandListener(this),0);
-    }
-
-    public void StopSecondScreenCommandListenerThread(){
-        if(second_secreen_command_listener!=null){
-            second_secreen_command_listener.cancel();
-        }
     }
 
     public void onPause(){
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             StopValuesPrintingThreads();
-            StopControllerAndVideoStatusDetectorThread();
+            //StopControllerAndVideoStatusDetectorThread();
             if(edgeSdk.isW2ESocketOpen())
                 edgeSdk.pauseW2E();
             edgeSdk.stopStaking();
-            StopSecondScreenCommandListenerThread();
+            //StopSecondScreenCommandListenerThread();
         }
     }
     public void onResume(){
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
+            //HomeActivity.edgeSdkExecutor.startStaking();
             edgeSdk.startStaking();
             ResumeValuesPrintingThreads();
-            ResumeControllerAndVideoStatusDetectorThread();
-            StartSecondScreenCommandListenerThread();
+            //ResumeControllerAndVideoStatusDetectorThread();
+            //StartSecondScreenCommandListenerThread();
         }
     }
 
@@ -1077,11 +785,13 @@ public class Ticker extends LinearLayout {
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             StopValuesPrintingThreads();
-            StopControllerAndVideoStatusDetectorThread();
+            //StopControllerAndVideoStatusDetectorThread();
+            //HomeActivity.edgeSdkExecutor.pauseWatchToEarn();
+            //HomeActivity.edgeSdkExecutor.stopStaking();
             if(edgeSdk.isW2ESocketOpen())
                 edgeSdk.pauseW2E();
             edgeSdk.stopStaking();
-            StopSecondScreenCommandListenerThread();
+            //StopSecondScreenCommandListenerThread();
         }
     }
 
@@ -1089,11 +799,13 @@ public class Ticker extends LinearLayout {
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             StopValuesPrintingThreads();
-            StopControllerAndVideoStatusDetectorThread();
+            //StopControllerAndVideoStatusDetectorThread();
+            //HomeActivity.edgeSdkExecutor.pauseWatchToEarn();
+            //HomeActivity.edgeSdkExecutor.stopStaking();
             if(edgeSdk.isW2ESocketOpen())
                 edgeSdk.pauseW2E();
             edgeSdk.stopStaking();
-            StopSecondScreenCommandListenerThread();
+            //StopSecondScreenCommandListenerThread();
         }
     }
 }
