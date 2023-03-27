@@ -10,8 +10,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+
     }
 }
+
 rootProject.name = "EdgeUISdk"
 include ':app'
 include ':UI'
