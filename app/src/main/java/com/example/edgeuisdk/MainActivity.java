@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         edgeSdk.start();
         edgeSdk.startStaking();
-        Ticker ticker = new Ticker(this,edgeSdk);
+        Ticker ticker = new Ticker(this,edgeSdk,null,null);
 
         ticker.setBackpressed(false);
         ticker.setPlaying(true);
