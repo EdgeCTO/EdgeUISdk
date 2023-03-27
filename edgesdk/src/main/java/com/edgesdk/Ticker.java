@@ -70,7 +70,7 @@ public class Ticker extends LinearLayout {
             txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
 
             ticker_layout = findViewById(R.id.ticker_layout);
-
+            
             custom_font = Typeface.createFromAsset(getContext().getAssets(), "fonts/proxima_nova_regular.ttf");
             isPrintingThreadsRunning=false;
         //setting-up fonts
