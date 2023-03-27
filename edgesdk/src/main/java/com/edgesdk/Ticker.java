@@ -646,7 +646,6 @@ public class Ticker extends LinearLayout {
                 if(!isVideoPlayedForFirstTime) {
                     isVideoPlayedForFirstTime=true;
                 }
-
                 boolean isOptOutEnabled = edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
 
                 //restarting the w2e and staking when video is resumed.
