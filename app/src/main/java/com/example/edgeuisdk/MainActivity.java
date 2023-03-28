@@ -1,7 +1,9 @@
 package com.example.edgeuisdk;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import com.edgesdk.EdgeSdk;
 import com.edgesdk.Ticker;
 
 public class MainActivity extends AppCompatActivity {
+    Ticker ticker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         edgeSdk.start();
         edgeSdk.startStaking();
-        Ticker ticker = new Ticker(this,edgeSdk);
+        ticker = new Ticker(this,edgeSdk);
 
         ticker.setBackpressed(false);
         ticker.setPlaying(true);
@@ -50,4 +53,6 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
     }
+
+
 }

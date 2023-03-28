@@ -3,8 +3,10 @@ package com.edgesdk;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
@@ -70,7 +73,38 @@ public class Ticker extends LinearLayout {
             txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
 
             ticker_layout = findViewById(R.id.ticker_layout);
-            
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        callingActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int density = metrics.densityDpi;
+        int screenWidthPx = metrics.widthPixels;
+        Log.i("Density", "screenWidthPx"+screenWidthPx);
+        ticker_layout.getLayoutParams().width = screenWidthPx;
+//
+//        switch (density) {
+//            case DisplayMetrics.DENSITY_LOW:
+//                Log.i("Density", "Low density (120 dpi, ldpi)");
+//                break;
+//            case DisplayMetrics.DENSITY_MEDIUM:
+//                Log.i("Density", "Medium density (160 dpi, mdpi)");
+//                break;
+//            case DisplayMetrics.DENSITY_HIGH:
+//                Log.i("Density", "High density (240 dpi, hdpi)");
+//                break;
+//            case DisplayMetrics.DENSITY_XHIGH:
+//                Log.i("Density", "Extra high density (320 dpi, xhdpi)");
+//                break;
+//            case DisplayMetrics.DENSITY_XXHIGH:
+//                Log.i("Density", "Extra-extra high density (480 dpi, xxhdpi)"+" layout_width :"+ticker_layout.getLayoutParams().width);
+//                break;
+//            case DisplayMetrics.DENSITY_XXXHIGH:
+//                Log.i("Density", "Extra-extra-extra high density (640 dpi, xxxhdpi)");
+//                break;
+//            default:
+//                Log.i("Density", "Unknown density");
+//                break;
+//        }
+
             custom_font = Typeface.createFromAsset(getContext().getAssets(), "fonts/proxima_nova_regular.ttf");
             isPrintingThreadsRunning=false;
         //setting-up fonts
