@@ -112,7 +112,7 @@
                             android:layout_height="18dp"
                             android:background="@color/ticker_secondary_bg"
                             android:gravity="center"
-                            android:text="WATCH2EARN:sw384-w960"
+                            android:text="WATCH2EARN:1200dp"
                             android:textColor="@color/ticker_primary_txt"
                             android:textSize="10dp" />
                     </LinearLayout>
