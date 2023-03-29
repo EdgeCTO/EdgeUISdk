@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout layout = findViewById(R.id.main_layout);
         layout.addView(ticker);
-
+        ticker.onResume();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
                     Thread.sleep(10000);
                     edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
                     Thread.sleep(10000);
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

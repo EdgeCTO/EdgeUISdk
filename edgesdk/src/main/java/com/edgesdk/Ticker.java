@@ -60,7 +60,7 @@ public class Ticker extends LinearLayout {
             txt_staked = view.findViewById(R.id.txt_staked);
             txt_est_apy = view.findViewById(R.id.txt_est_apy);
             txt_earned = view.findViewById(R.id.txt_earned);
-            txt_per_day = view.findViewById(R.id.txt_per_day);
+            //txt_per_day = view.findViewById(R.id.txt_per_day);
             txt_today = view.findViewById(R.id.txt_today);
             txt_watch_to_earn_heading= view.findViewById(R.id.txt_watch_to_earn_heading);
             txt_title_total_eats = view.findViewById(R.id.txt_title_total_eats);
@@ -70,7 +70,7 @@ public class Ticker extends LinearLayout {
             txt_title_staked = view.findViewById(R.id.txt_title_staked);
             txt_title_est_apy = view.findViewById(R.id.txt_title_est_apy);
             txt_title_earned = view.findViewById(R.id.txt_title_earned);
-            txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
+            //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
 
             ticker_layout = findViewById(R.id.ticker_layout);
 
@@ -80,30 +80,6 @@ public class Ticker extends LinearLayout {
         int screenWidthPx = metrics.widthPixels;
         Log.i("Density", "screenWidthPx"+screenWidthPx);
         ticker_layout.getLayoutParams().width = screenWidthPx;
-//
-//        switch (density) {
-//            case DisplayMetrics.DENSITY_LOW:
-//                Log.i("Density", "Low density (120 dpi, ldpi)");
-//                break;
-//            case DisplayMetrics.DENSITY_MEDIUM:
-//                Log.i("Density", "Medium density (160 dpi, mdpi)");
-//                break;
-//            case DisplayMetrics.DENSITY_HIGH:
-//                Log.i("Density", "High density (240 dpi, hdpi)");
-//                break;
-//            case DisplayMetrics.DENSITY_XHIGH:
-//                Log.i("Density", "Extra high density (320 dpi, xhdpi)");
-//                break;
-//            case DisplayMetrics.DENSITY_XXHIGH:
-//                Log.i("Density", "Extra-extra high density (480 dpi, xxhdpi)"+" layout_width :"+ticker_layout.getLayoutParams().width);
-//                break;
-//            case DisplayMetrics.DENSITY_XXXHIGH:
-//                Log.i("Density", "Extra-extra-extra high density (640 dpi, xxxhdpi)");
-//                break;
-//            default:
-//                Log.i("Density", "Unknown density");
-//                break;
-//        }
 
             custom_font = Typeface.createFromAsset(getContext().getAssets(), "fonts/proxima_nova_regular.ttf");
             isPrintingThreadsRunning=false;
@@ -122,8 +98,8 @@ public class Ticker extends LinearLayout {
         txt_today.setTypeface(custom_font);
         txt_earned.setTypeface(custom_font);
         txt_title_earned.setTypeface(custom_font);
-        txt_per_day.setTypeface(custom_font);
-        txt_title_per_day.setTypeface(custom_font);
+        //txt_per_day.setTypeface(custom_font);
+        //txt_title_per_day.setTypeface(custom_font);
         txt_watch_to_earn_heading.setTypeface(custom_font);
         txt_title_eat_market_inc_dec.setTypeface(custom_font);
 
@@ -474,12 +450,12 @@ public class Ticker extends LinearLayout {
             }
             catch (Exception e){
                 Log.e("error","error while printing total earning per day "+e.getMessage());
-                txt_per_day.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        txt_per_day.setText("-.--");
-                    }
-                });
+//                txt_per_day.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //txt_per_day.setText("-.--");
+//                    }
+//                });
             }
 
             try {
@@ -778,7 +754,7 @@ public class Ticker extends LinearLayout {
         est_apy_values_timer.schedule(new ESTApyValuesPrinter(),1000);
 
         earning_per_day_timer = new Timer();
-        earning_per_day_timer.schedule(new EarningPerDayValuesPrinter(),1000);
+        //earning_per_day_timer.schedule(new EarningPerDayValuesPrinter(),1000);
 
         eat_market_price_timer = new Timer();
         eat_market_price_timer.schedule(new EatMarketPriceValuePrinter(),1000);

@@ -59,46 +59,45 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="30"
+                android:layout_weight="2"
                 android:gravity="top"
                 android:orientation="vertical">
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:src="@drawable/eat_logo" />
             </LinearLayout>
             <TextView
                 android:id="@+id/txt_watch_to_earn_heading"
                 android:layout_width="0dp"
-                android:layout_weight="40"
+                android:layout_weight="6"
                 android:layout_height="18dp"
-                android:layout_marginLeft="2dp"
+                android:layout_marginTop="5dp"
                 android:background="@color/ticker_secondary_bg"
                 android:gravity="center"
-                android:layout_marginTop="5dp"
-                android:text="WATCH2EARN:600x1024-land"
+                android:text="WATCH2EARN:normal"
                 android:textColor="@color/ticker_primary_txt"
                 android:textSize="7dp" />
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="30"
+                android:layout_weight="2"
                 android:gravity="right"
                 android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="19dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
                     android:src="@drawable/logo" />
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="69dp"
             android:layout_marginTop="0dp"
             android:background="@color/light_black"
             android:orientation="horizontal">
@@ -106,20 +105,19 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="25"
-                android:layout_marginLeft="15dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="25dp"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-
                         android:orientation="vertical">
 
                         <TextView
@@ -129,7 +127,7 @@
                             android:layout_marginTop="0dp"
                             android:text="POINTS"
                             android:textColor="@color/ticker_secondary_txt"
-                            android:textSize="9dp" />
+                            android:textSize="8dp" />
 
                         <TextView
                             android:id="@+id/txt_total_coins"
@@ -138,14 +136,13 @@
                             android:layout_marginTop="2dp"
                             android:text="1300.02"
                             android:textColor="@color/ticker_primary_txt"
-                            android:textSize="13dp" />
+                            android:textSize="12dp" />
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_marginBottom="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        android:layout_marginBottom="2dp"
                         >
 
                         <TextView
@@ -155,7 +152,7 @@
                             android:layout_marginTop="0px"
                             android:text="POINTS/HR"
                             android:textColor="@color/ticker_secondary_txt"
-                            android:textSize="9dp" />
+                            android:textSize="8dp" />
 
                         <TextView
                             android:id="@+id/txt_earned"
@@ -164,11 +161,12 @@
                             android:layout_marginTop="2dp"
                             android:text="1.012"
                             android:textColor="@color/ticker_primary_txt"
-                            android:textSize="13sp" />
+                            android:textSize="13dp" />
 
                     </LinearLayout>
 
                 </LinearLayout>
+
             </LinearLayout>
             <View
                 android:layout_width="1dp"
@@ -184,7 +182,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -194,16 +192,6 @@
                         android:gravity="center_vertical"
                         android:orientation="vertical">
 
-
-
-
-                        <!--                        <View-->
-                        <!--                            android:layout_width="1dp"-->
-                        <!--                            android:layout_height="match_parent"-->
-                        <!--                            android:layout_marginTop="10px"-->
-                        <!--                            android:layout_marginBottom="10px"-->
-                        <!--                            android:background="@color/ticker_vertical_bar_color" />-->
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -212,7 +200,7 @@
                             >
                             <LinearLayout
                                 android:layout_width="0dp"
-                                android:layout_weight="2"
+                                android:layout_weight="1"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
                                 >
@@ -222,7 +210,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="TOTAL EAT"
                                     android:textColor="@color/ticker_secondary_txt"
-                                    android:textSize="9dp" />
+                                    android:textSize="8dp" />
                                 <TextView
                                     android:id="@+id/txt_total_eats"
                                     android:layout_width="wrap_content"
@@ -236,7 +224,7 @@
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:layout_weight="2"
+                                android:layout_weight="1"
 
                                 android:orientation="vertical"
                                 android:paddingLeft="10px">
@@ -248,7 +236,7 @@
                                     android:layout_marginTop="0px"
                                     android:text="BALANCE"
                                     android:textColor="@color/ticker_secondary_txt"
-                                    android:textSize="9dp" />
+                                    android:textSize="8dp" />
 
                                 <TextView
                                     android:id="@+id/txt_balance"
@@ -256,52 +244,52 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
                                     android:text="1200.00"
-
                                     android:textColor="@color/ticker_primary_txt"
                                     android:textSize="13dp" />
 
                             </LinearLayout>
-                            <LinearLayout
-                                android:layout_width="0dp"
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp"
+                            >
+
+                            <TextView
+                                android:id="@+id/txt_title_eat_market_price"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:orientation="vertical"
-                                android:layout_marginLeft="15dp"
-                                >
+                                android:layout_marginTop="0px"
+                                android:text="OFFER PRICE"
+                                android:textColor="@color/ticker_secondary_txt"
+                                android:textSize="8dp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="0px"
+                                android:orientation="horizontal">
 
                                 <TextView
-                                    android:id="@+id/txt_title_eat_market_price"
-                                    android:layout_width="match_parent"
+                                    android:id="@+id/txt_eat_market_price"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="0px"
-                                    android:text="OFFER PRICE"
-                                    android:textColor="@color/ticker_secondary_txt"
-                                    android:textSize="9dp" />
+                                    android:text="$0.0124"
+                                    android:layout_marginTop="2dp"
+                                    android:textColor="@color/ticker_primary_txt"
+                                    android:textSize="13dp" />
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginTop="0px"
-                                    android:orientation="horizontal">
-
-                                    <TextView
-                                        android:id="@+id/txt_eat_market_price"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="$0.0124"
-                                        android:textColor="@color/ticker_primary_txt"
-                                        android:textSize="13sp" />
-
-                                    <TextView
-                                        android:id="@+id/txt_eat_market_inc_dec"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginLeft="25px"
-                                        android:text="12.01%"
-                                        android:textColor="@color/ticker_tertiary_txt"
-                                        android:textSize="11sp" />
-
-                                </LinearLayout>
+                                <TextView
+                                    android:id="@+id/txt_eat_market_inc_dec"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="25px"
+                                    android:text="12.01%"
+                                    android:layout_marginTop="2dp"
+                                    android:textColor="@color/ticker_tertiary_txt"
+                                    android:textSize="11dp" />
 
                             </LinearLayout>
 
@@ -309,41 +297,34 @@
 
 
                     </LinearLayout>
-                    <!--                        <View-->
-                    <!--                            android:layout_width="1dp"-->
-                    <!--                            android:layout_height="match_parent"-->
-                    <!--                            android:layout_marginTop="10px"-->
-                    <!--                            android:layout_marginBottom="10px"-->
-                    <!--                            android:background="@color/ticker_vertical_bar_color" />-->
 
                 </LinearLayout>
             </LinearLayout>
-
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10px"
                 android:layout_marginBottom="10px"
+                android:layout_marginRight="2dp"
                 android:background="@color/ticker_vertical_bar_color" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="25"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="15dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="35"
-
-                    android:orientation="horizontal">
+                    android:layout_weight="30"
+                    android:gravity="center"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="1dp"
+                    android:orientation="vertical">
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:paddingLeft="0px">
                         <TextView
@@ -353,13 +334,13 @@
                             android:layout_marginTop="0px"
                             android:text="STAKED"
                             android:textColor="@color/ticker_secondary_txt"
-                            android:textSize="9dp" />
+                            android:textSize="8sp" />
 
                         <TextView
                             android:id="@+id/txt_staked"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2px"
+                            android:layout_marginTop="2dp"
                             android:text="100.00%"
                             android:textColor="@color/ticker_primary_txt"
                             android:textSize="13sp" />
@@ -367,9 +348,9 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -379,7 +360,7 @@
                             android:layout_marginTop="0px"
                             android:text="EST.APY"
                             android:textColor="@color/ticker_secondary_txt"
-                            android:textSize="9dp" />
+                            android:textSize="8sp" />
 
                         <TextView
                             android:id="@+id/txt_est_apy"
@@ -387,14 +368,12 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="2250.00%"
-
                             android:textColor="@color/ticker_primary_txt"
-                            android:textSize="13dp" />
+                            android:textSize="13sp" />
 
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
