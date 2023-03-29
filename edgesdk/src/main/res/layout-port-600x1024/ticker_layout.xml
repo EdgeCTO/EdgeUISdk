@@ -77,7 +77,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@color/ticker_secondary_bg"
                 android:gravity="center"
-                android:text="WATCH2EARN"
+                android:text="WATCH2EARN:600x540"
                 android:textColor="@color/ticker_primary_txt"
                 android:textSize="7dp" />
             <LinearLayout
