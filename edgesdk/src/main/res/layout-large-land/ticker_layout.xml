@@ -106,11 +106,11 @@
                             android:textColor="@color/ticker_secondary_txt"
                             android:textSize="9dp" />
                         <TextView
-                            android:id="@+id/txt_total_coins"
+                            android:id="@+id/txt_total_points"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="0.00"
+                            android:text="0.000"
                             android:textColor="@color/ticker_primary_txt"
                             android:textSize="18dp" />
                     </LinearLayout>

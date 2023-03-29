@@ -29,7 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Ticker extends LinearLayout {
-    private TextView txt_total_eats,txt_eat_market_price,txt_eat_market_inc_dec,txt_balance,txt_staked,txt_est_apy,txt_earned,txt_per_day;
+    private TextView txt_total_eats,txt_total_points,txt_eat_market_price,txt_eat_market_inc_dec,txt_balance,txt_staked,txt_est_apy,txt_earned,txt_per_day;
     private TextView txt_today,txt_watch_to_earn_heading,txt_title_total_eats,txt_title_eat_market_price,txt_title_eat_market_inc_dec,txt_title_balance,txt_title_staked,txt_title_est_apy,txt_title_earned,txt_title_per_day;
     EdgeSdk edgeSdk;
     private LinearLayout ticker_layout;
@@ -70,6 +70,7 @@ public class Ticker extends LinearLayout {
             txt_title_staked = view.findViewById(R.id.txt_title_staked);
             txt_title_est_apy = view.findViewById(R.id.txt_title_est_apy);
             txt_title_earned = view.findViewById(R.id.txt_title_earned);
+            txt_total_points = view.findViewById(R.id.txt_total_points);
             //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
 
             ticker_layout = findViewById(R.id.ticker_layout);
@@ -98,6 +99,7 @@ public class Ticker extends LinearLayout {
         txt_today.setTypeface(custom_font);
         txt_earned.setTypeface(custom_font);
         txt_title_earned.setTypeface(custom_font);
+        txt_total_points.setTypeface(custom_font);
         //txt_per_day.setTypeface(custom_font);
         //txt_title_per_day.setTypeface(custom_font);
         txt_watch_to_earn_heading.setTypeface(custom_font);
@@ -514,7 +516,7 @@ public class Ticker extends LinearLayout {
                 public void run() {
                     try {
                         txt_total_eats.setText(roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getBalance()) + "");
-
+                        txt_total_points.setText(roundThreeDecimals(edgeSdk.getW2EarnManager().getResults().getCoins())+"");
                     }catch (Exception e){
                         Log.e("error","error while printing total eats"+e.getMessage());
                         txt_total_eats.post(new Runnable() {

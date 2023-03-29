@@ -132,11 +132,11 @@
                             android:textSize="9dp" />
 
                         <TextView
-                            android:id="@+id/txt_total_coins"
+                            android:id="@+id/txt_total_points"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="1300.02"
+                            android:text="0.000"
                             android:textColor="@color/ticker_primary_txt"
                             android:textSize="13dp" />
                     </LinearLayout>
