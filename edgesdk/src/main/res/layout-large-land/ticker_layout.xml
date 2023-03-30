@@ -98,18 +98,18 @@
                         android:orientation="vertical"
                         >
                         <TextView
-                            android:id="@+id/txt_title_total_coins"
+                            android:id="@+id/txt_title_total_points"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
+                            android:layout_marginTop="17dp"
                             android:text="TOTAL POINTS"
                             android:textColor="@color/ticker_secondary_txt"
                             android:textSize="9dp" />
                         <TextView
-                            android:id="@+id/txt_total_coins"
+                            android:id="@+id/txt_total_points"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginTop="4dp"
                             android:text="0.00"
                             android:textColor="@color/ticker_primary_txt"
                             android:textSize="18dp" />
@@ -294,7 +294,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="30"
+                    android:layout_weight="20"
                     android:gravity="center"
                     android:orientation="vertical">
                     <TextView
@@ -335,7 +335,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="15"
+                    android:layout_weight="25"
                     android:visibility="visible"
                     android:gravity="center_vertical"
                     android:orientation="vertical">

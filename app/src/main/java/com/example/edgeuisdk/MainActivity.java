@@ -45,6 +45,12 @@ public class MainActivity extends AppCompatActivity {
                     Thread.sleep(10000);
                     edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
                     Thread.sleep(10000);
+                    layout.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            layout.setVisibility(View.GONE);
+                        }
+                    });
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

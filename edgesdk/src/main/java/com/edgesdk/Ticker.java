@@ -29,8 +29,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Ticker extends LinearLayout {
-    private TextView txt_total_eats,txt_eat_market_price,txt_eat_market_inc_dec,txt_balance,txt_staked,txt_est_apy,txt_earned,txt_per_day;
-    private TextView txt_today,txt_watch_to_earn_heading,txt_title_total_eats,txt_title_eat_market_price,txt_title_eat_market_inc_dec,txt_title_balance,txt_title_staked,txt_title_est_apy,txt_title_earned,txt_title_per_day;
+    private TextView txt_total_eats,txt_eat_market_price,txt_eat_market_inc_dec,txt_balance,txt_staked,txt_est_apy,txt_earned,txt_per_day,txt_total_points;
+    private TextView txt_today,txt_watch_to_earn_heading,txt_title_total_eats,txt_title_eat_market_price,txt_title_eat_market_inc_dec,txt_title_balance,txt_title_staked,txt_title_est_apy,txt_title_earned,txt_title_per_day,txt_title_total_points;
     EdgeSdk edgeSdk;
     private LinearLayout ticker_layout;
     Typeface custom_font;
@@ -42,37 +42,44 @@ public class Ticker extends LinearLayout {
     private Activity callingActivity;
     Timer staked_values_timer,est_apy_values_timer,earning_per_day_timer,eat_market_price_timer,ticker_values_timer,is_video_playing_or_paused_detector_timer,total_eats_timer,watch_to_earn_title_updater_timer,second_secreen_command_listener,ticker_visibility_controler_timer;
     public Ticker(Context context,EdgeSdk edgeSdk) {
-            super(context);
-            this.edgeSdk=edgeSdk;
-            callingActivity = (Activity) context;
-            init();
+        super(context);
+        this.edgeSdk=edgeSdk;
+        callingActivity = (Activity) context;
+        init();
     }
 
     @SuppressLint("MissingInflatedId")
     private void init() {
-            System.out.println("init-method-called");
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            View view = inflater.inflate(R.layout.ticker_layout, this);
-            txt_total_eats = view.findViewById(R.id.txt_total_eats);
-            txt_eat_market_price = view.findViewById(R.id.txt_eat_market_price);
-            txt_eat_market_inc_dec = view.findViewById(R.id.txt_eat_market_inc_dec);
-            txt_balance = view.findViewById(R.id.txt_balance);
-            txt_staked = view.findViewById(R.id.txt_staked);
-            txt_est_apy = view.findViewById(R.id.txt_est_apy);
-            txt_earned = view.findViewById(R.id.txt_earned);
-            //txt_per_day = view.findViewById(R.id.txt_per_day);
-            txt_today = view.findViewById(R.id.txt_today);
-            txt_watch_to_earn_heading= view.findViewById(R.id.txt_watch_to_earn_heading);
-            txt_title_total_eats = view.findViewById(R.id.txt_title_total_eats);
-            txt_title_eat_market_price = view.findViewById(R.id.txt_title_eat_market_price);
-            txt_title_eat_market_inc_dec = view.findViewById(R.id.txt_eat_market_inc_dec);
-            txt_title_balance = view.findViewById(R.id.txt_title_balance);
-            txt_title_staked = view.findViewById(R.id.txt_title_staked);
-            txt_title_est_apy = view.findViewById(R.id.txt_title_est_apy);
-            txt_title_earned = view.findViewById(R.id.txt_title_earned);
-            //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
+        System.out.println("init-method-called");
 
-            ticker_layout = findViewById(R.id.ticker_layout);
+        isPrintingThreadsRunning=false;
+        isBackpressed=false;
+
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View view = inflater.inflate(R.layout.ticker_layout, this);
+        txt_total_eats = view.findViewById(R.id.txt_total_eats);
+        txt_eat_market_price = view.findViewById(R.id.txt_eat_market_price);
+        txt_eat_market_inc_dec = view.findViewById(R.id.txt_eat_market_inc_dec);
+        txt_balance = view.findViewById(R.id.txt_balance);
+        txt_staked = view.findViewById(R.id.txt_staked);
+        txt_est_apy = view.findViewById(R.id.txt_est_apy);
+        txt_earned = view.findViewById(R.id.txt_earned);
+        //txt_per_day = view.findViewById(R.id.txt_per_day);
+        txt_total_points = view.findViewById(R.id.txt_total_points);
+        txt_title_total_points = view.findViewById(R.id.txt_title_total_points);
+
+        txt_today = view.findViewById(R.id.txt_today);
+        txt_watch_to_earn_heading= view.findViewById(R.id.txt_watch_to_earn_heading);
+        txt_title_total_eats = view.findViewById(R.id.txt_title_total_eats);
+        txt_title_eat_market_price = view.findViewById(R.id.txt_title_eat_market_price);
+        txt_title_eat_market_inc_dec = view.findViewById(R.id.txt_eat_market_inc_dec);
+        txt_title_balance = view.findViewById(R.id.txt_title_balance);
+        txt_title_staked = view.findViewById(R.id.txt_title_staked);
+        txt_title_est_apy = view.findViewById(R.id.txt_title_est_apy);
+        txt_title_earned = view.findViewById(R.id.txt_title_earned);
+        //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
+
+        ticker_layout = findViewById(R.id.ticker_layout);
 
         DisplayMetrics metrics = new DisplayMetrics();
         callingActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -81,8 +88,8 @@ public class Ticker extends LinearLayout {
         Log.i("Density", "screenWidthPx"+screenWidthPx);
         ticker_layout.getLayoutParams().width = screenWidthPx;
 
-            custom_font = Typeface.createFromAsset(getContext().getAssets(), "fonts/proxima_nova_regular.ttf");
-            isPrintingThreadsRunning=false;
+        custom_font = Typeface.createFromAsset(getContext().getAssets(), "fonts/proxima_nova_regular.ttf");
+        isPrintingThreadsRunning=false;
         //setting-up fonts
         txt_total_eats.setTypeface(custom_font);
         txt_title_total_eats.setTypeface(custom_font);
@@ -102,7 +109,8 @@ public class Ticker extends LinearLayout {
         //txt_title_per_day.setTypeface(custom_font);
         txt_watch_to_earn_heading.setTypeface(custom_font);
         txt_title_eat_market_inc_dec.setTypeface(custom_font);
-
+        txt_total_points.setTypeface(custom_font);
+        txt_title_total_points.setTypeface(custom_font);
         //setting up notification.
         isVideoPlayedForFirstTime=false;
         isTickerVisibilityThreadRunning=true;
@@ -146,31 +154,19 @@ public class Ticker extends LinearLayout {
         if(!isOptOutEnabled){
 
             staked_values_timer = new Timer();
-            //staked_values_timer.schedule(new StakedValuesPrinter(), 5000);
 
             est_apy_values_timer = new Timer();
-            //est_apy_values_timer.schedule(new ESTApyValuesPrinter(), 5000);
 
             earning_per_day_timer = new Timer();
-            //earning_per_day_timer.schedule(new EarningPerDayValuesPrinter(), 1000);
 
             eat_market_price_timer = new Timer();
-            //eat_market_price_timer.schedule(new EatMarketPriceValuePrinter(), 5000);
 
             ticker_values_timer = new Timer();
-            //ticker_values_timer.schedule(new TickerValuePrinter(), 5000);
 
             total_eats_timer = new Timer();
-            //total_eats_timer.schedule(new TotalEatsValuePrinter(), 0);
-
-            //is_video_playing_or_paused_detector_timer = new Timer();
-            //is_video_playing_or_paused_detector_timer.schedule(new IsVideoPlayingOrPausedDetector(), 0);
 
             watch_to_earn_title_updater_timer = new Timer();
-            //watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 3000);
 
-            //second_secreen_command_listener = new Timer();
-            //second_secreen_command_listener.schedule(new SecondScreenCommandListner(this),0);
         }
     }
 
@@ -196,6 +192,22 @@ public class Ticker extends LinearLayout {
 
     public void setTickerVisibilityThreadRunning(boolean tickerVisibilityThreadRunning) {
         isTickerVisibilityThreadRunning = tickerVisibilityThreadRunning;
+    }
+
+    public boolean isVideoPlayedForFirstTime() {
+        return isVideoPlayedForFirstTime;
+    }
+
+    public void setVideoPlayedForFirstTime(boolean videoPlayedForFirstTime) {
+        isVideoPlayedForFirstTime = videoPlayedForFirstTime;
+    }
+
+    public boolean isPrintingThreadsRunning() {
+        return isPrintingThreadsRunning;
+    }
+
+    public void setPrintingThreadsRunning(boolean printingThreadsRunning) {
+        isPrintingThreadsRunning = printingThreadsRunning;
     }
 
     class WatchToEarnTitleStatusPrinter extends  TimerTask{
@@ -438,14 +450,14 @@ public class Ticker extends LinearLayout {
                 float earning_per_hr = edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()*edgeSdk.getMarketPriceManager().getPrice();
                 //Log.i(LogConstants.Watch_2_Earn,"earning_per_hr :"+earning_per_hr);
                 float finalEarning_per_hr = earning_per_hr;
-                txt_per_day.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(finalEarning_per_hr !=0.0)
-                            txt_per_day.setText("$"+roundThreeDecimals(finalEarning_per_hr));
-                        else txt_per_day.setText("$"+Constants.DEFAULT_VALUE_EAT_HR);
-                    }
-                });
+//                txt_per_day.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if(finalEarning_per_hr !=0.0)
+//                            txt_per_day.setText("$"+roundThreeDecimals(finalEarning_per_hr));
+//                        else txt_per_day.setText("$"+Constants.DEFAULT_VALUE_EAT_HR);
+//                    }
+//                });
 
             }
             catch (Exception e){
@@ -571,6 +583,16 @@ public class Ticker extends LinearLayout {
                 }
             });
 
+            txt_total_points.post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.i("txt_total_points",edgeSdk.getW2EarnManager().getResults().getPoints()+"");
+                    if(edgeSdk.getW2EarnManager().getResults().getPoints()!=0.0)
+                        txt_total_points.setText(roundThreeDecimals( edgeSdk.getW2EarnManager().getResults().getPoints()));
+                    else txt_total_points.setText("0.00");
+                }
+            });
+
             try {
                 ticker_values_timer.schedule(new TickerValuePrinter(), 1000);
             }catch (IllegalStateException e){
@@ -579,7 +601,6 @@ public class Ticker extends LinearLayout {
             }
         }
     }
-
 
     public String roundTwoDecimals(double d)
     {
@@ -819,5 +840,3 @@ public class Ticker extends LinearLayout {
         }
     }
 }
-
-

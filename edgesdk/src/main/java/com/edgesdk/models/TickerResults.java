@@ -119,17 +119,15 @@ public class TickerResults {
     //results to print
 
     public float getEstimateEatsPerHour(){
-
         float estPerHr =  (getRewardProportion()*getReward())*60;
-        //Log.i(LogConstants.Watch_2_Earn,"getRewardProportion : "+getRewardProportion());
-        //Log.i(LogConstants.Watch_2_Earn,"getReward : "+getReward());
-        //Log.i(LogConstants.Watch_2_Earn,"estPerHr : "+estPerHr);
-
         return estPerHr;
     }
 
     public float getBalance(){
-        return getOffChainBalance()+ (float) edgeSdk.getStakingValueFetchingManager().getStkResults().getBalance();
+        return (float) edgeSdk.getStakingValueFetchingManager().getStkResults().getBalance();
+    }
+    public float getPoints(){
+        return getOffChainBalance();
     }
 
     public float getEstimatedEarnedEatsInUSD(){
