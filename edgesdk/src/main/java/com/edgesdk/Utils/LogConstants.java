@@ -14,5 +14,7 @@ public class LogConstants {
     public static String MarketPrice="marketPrice";
     public static String Socket_Monitor = "socketMonitor";
     public static String Static_Data = "staticData";
+    public static String Authentication = "authentication";
+    public static String Post_Request = "postRequest";
 
 }

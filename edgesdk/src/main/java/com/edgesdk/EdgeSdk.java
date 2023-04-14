@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
+import com.edgesdk.managers.AuthenticationManager;
 import com.edgesdk.managers.GamifiedTvSocketManager;
 import com.edgesdk.managers.LocalStorageManager;
 import com.edgesdk.managers.MarketPriceManager;
@@ -36,10 +37,13 @@ public class EdgeSdk {
     private static GamifiedTvSocketManager gamifiedTvSocketManager;
     private static MarketPriceManager marketPriceManager;
     private static LocalStorageManager localStorageManager;
+    private static AuthenticationManager authenticationManager;
     private static SocketMonitor socketMonitor;
     private static StaticDataManager staticDataManager;
-
-    public EdgeSdk(Context context) {
+    private String sdkAuthKey;
+    private boolean isVerified;
+    public EdgeSdk(Context context,String sdkAuthKey) {
+        this.sdkAuthKey=sdkAuthKey;
         this.context=context;
         this.data = new Data();
         this.threadManager = new ThreadManager();
@@ -53,20 +57,35 @@ public class EdgeSdk {
         this.marketPriceManager = new MarketPriceManager(this);
         this.gamifiedTvSocketManager = new GamifiedTvSocketManager(this);
         this.socketMonitor = new SocketMonitor(this);
+        this.authenticationManager = new AuthenticationManager(this,sdkAuthKey);
         this.staticDataManager = new StaticDataManager(this);
         this.isAlreadyStarted=false;
 
     }
 
     public void start(){
-        isAlreadyStarted=true;
-        startGamifiedTv();
-        startFetchingTemporaryWalletAddressThread();
-        startFetchingMarketPrice();
-        startW2E();
-        startSocketMonitor();
-        startStaticDataManager();
-        setDefaultValues();
+        Thread authThread = new Thread(authenticationManager);
+        authThread.start();
+        try {
+            authThread.join();
+            isVerified = Boolean.parseBoolean(getLocalStorageManager().getStringValue(sdkAuthKey));
+            if(isVerified){
+                isAlreadyStarted=true;
+                startGamifiedTv();
+                startFetchingTemporaryWalletAddressThread();
+                startFetchingMarketPrice();
+                startW2E();
+                startSocketMonitor();
+                startStaticDataManager();
+                setDefaultValues();
+            }else{
+               Log.i(LogConstants.Authentication,"Invalid authentication key");
+            }
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void setDefaultValues(){

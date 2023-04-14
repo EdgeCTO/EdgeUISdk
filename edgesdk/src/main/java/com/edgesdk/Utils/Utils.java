@@ -110,6 +110,9 @@ public class Utils {
 
     public static JsonNode makePostRequest(String serverUrl, JSONObject data) {
         try {
+            Log.i(LogConstants.Post_Request,data.toString());
+            Log.i(LogConstants.Post_Request,serverUrl);
+
             URL obj = new URL(serverUrl);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             // Set request method and headers
@@ -132,7 +135,7 @@ public class Utils {
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
-
+            Log.i(LogConstants.Post_Request,response.toString());
             in.close();
 
             // Log response
@@ -140,6 +143,7 @@ public class Utils {
 
             return parser(response.toString());
         } catch (Exception e) {
+            Log.i(LogConstants.Post_Request,e.toString());
             return null;
         }
 
@@ -261,6 +265,7 @@ public class Utils {
         }
     }
 
+    @SuppressLint("LongLogTag")
     public static String getRealWalletAddressByActivationCode(String activationCode){
         Log.i("4_digit_code",activationCode);
         JsonNode response = makeGetRequest(Urls.GET_REAL_WALLET_ADDRESS_BY_4_DIGIT_CODE+activationCode);
@@ -273,6 +278,7 @@ public class Utils {
     }
 
 
+    @SuppressLint("LongLogTag")
     public static String getOnChainBalance(String walletAddress){
         try {
             Log.i("walletAddress_getOnChainBalance", walletAddress);
