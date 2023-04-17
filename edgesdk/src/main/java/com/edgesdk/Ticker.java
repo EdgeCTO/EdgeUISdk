@@ -306,6 +306,19 @@ public class Ticker extends LinearLayout {
             }
         });
     }
+
+    public void hideGamificationLayoutVisible(){
+        // Start the animation on the LinearLayout
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                // UI-related code to be executed on the main UI thread
+                gamificationStatusLayout.setVisibility(View.GONE);
+            }
+        });
+    }
+    
     class WatchToEarnTitleStatusPrinter extends  TimerTask{
 
         @Override
