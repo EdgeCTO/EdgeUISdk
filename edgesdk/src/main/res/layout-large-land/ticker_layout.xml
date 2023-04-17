@@ -423,6 +423,7 @@
             <ImageView
                 android:layout_width="400dp"
                 android:layout_height="200dp"
+                android:src="@drawable/qrcodesample"
                 android:id="@+id/gamificationQRCode"
                 >
             </ImageView>

@@ -90,13 +90,10 @@ public class Ticker extends LinearLayout {
         //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
         gamificationStatusLayout = findViewById(R.id.gamificationStatusLayout);
         gamificationStatusLayout.setVisibility(View.INVISIBLE);
-
         ticker_layout = findViewById(R.id.ticker_layout);
-
         gamificationQRCode = findViewById(R.id.gamificationQRCode);
-
         // Set the image source for the ImageView
-        gamificationQRCode.setImageResource(R.drawable.eat_logo);
+        gamificationQRCode.setImageResource(R.drawable.qrcodesample);
         // Optionally, you can customize other properties of the ImageView
         gamificationQRCode.setScaleType(ImageView.ScaleType.FIT_CENTER);
         //qrCodeView.setVisibility(View.GONE);
