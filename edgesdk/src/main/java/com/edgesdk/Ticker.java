@@ -246,7 +246,7 @@ public class Ticker extends LinearLayout {
             }
         }, time);
     }
-    public void hideQRCodeForGamification(int time){
+    public void hideQRCodeForGamification(){
         qrCodeViewhandler.post(new Runnable() {
             @Override
             public void run() {
@@ -318,7 +318,7 @@ public class Ticker extends LinearLayout {
             }
         });
     }
-    
+
     class WatchToEarnTitleStatusPrinter extends  TimerTask{
 
         @Override
