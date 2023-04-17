@@ -379,4 +379,31 @@
 
         </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="18dp"
+        android:gravity="center"
+        android:background="@color/transparent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/gamificationStatusLayout"
+            android:layout_width="390dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/arc_shape"
+
+            android:gravity="center"
+            android:layout_marginRight="75dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:textSize="10dp"
+                android:background="@color/transparent"
+                android:text="GAME STARTED..!! Press = (Menu)  scan QR code and join it "></TextView>
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>
