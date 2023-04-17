@@ -233,7 +233,7 @@ public class Ticker extends LinearLayout {
     public void setPrintingThreadsRunning(boolean printingThreadsRunning) {
         isPrintingThreadsRunning = printingThreadsRunning;
     }
-    private void displayQRCodeForGamification(int time){
+    public void displayQRCodeForGamification(int time){
         qrCodeViewhandler.post(new Runnable() {
             @Override
             public void run() {
@@ -249,7 +249,7 @@ public class Ticker extends LinearLayout {
             }
         }, time);
     }
-    private void hideQRCodeForGamification(int time){
+    public void hideQRCodeForGamification(int time){
         qrCodeViewhandler.post(new Runnable() {
             @Override
             public void run() {
@@ -259,7 +259,7 @@ public class Ticker extends LinearLayout {
 
     }
 
-    private void displayQRCodeForGamification(){
+    public void displayQRCodeForGamification(){
         qrCodeViewhandler.post(new Runnable() {
             @Override
             public void run() {
