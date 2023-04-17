@@ -4,7 +4,5 @@
         android:topRightRadius="0dp"
         android:bottomRightRadius="150dp" />
     <solid android:color="@color/light_black"/>
-    <stroke android:color="@color/ticker_secondary_bg" android:width="0dp"
-        android:bottomWidth="2dp" />
-    <padding android:top="0dp" android:bottom="2dp" android:left="0dp" android:right="0dp" />
-</shape>
+
+ </shape>
