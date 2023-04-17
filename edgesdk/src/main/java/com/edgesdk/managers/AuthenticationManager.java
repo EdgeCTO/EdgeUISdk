@@ -25,7 +25,7 @@ public class AuthenticationManager implements Runnable{
         try {
             postData.put("sdkAuthKey", this.sdkAuthKey);
             JsonNode serverResponse = Utils.makePostRequest(Urls.VERIFY_SDK_AUTH_KEY,postData);
-            Log.i(LogConstants.Authentication,serverResponse.toString());
+            Log.i(LogConstants.Authentication,serverResponse+"");
 //            boolean isVerified = Boolean.parseBoolean(serverResponse.get("success")+"");
 //            String message = serverResponse.get("message").toString();
 //            Log.i(LogConstants.Authentication,message);

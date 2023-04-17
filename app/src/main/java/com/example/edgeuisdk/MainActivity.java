@@ -39,12 +39,14 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout layout = findViewById(R.id.main_layout);
         layout.addView(ticker);
         ticker.onResume();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     Thread.sleep(10000);
                     edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
+                    ticker.makeGamificationLayoutVisible();
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

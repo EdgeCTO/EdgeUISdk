@@ -6,10 +6,14 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -40,6 +44,7 @@ public class Ticker extends LinearLayout {
     private boolean isBackpressed,isVideoPlayedForFirstTime;
     boolean isTickerVisibilityThreadRunning;
     private Activity callingActivity;
+    private LinearLayout gamificationStatusLayout;
     Timer staked_values_timer,est_apy_values_timer,earning_per_day_timer,eat_market_price_timer,ticker_values_timer,is_video_playing_or_paused_detector_timer,total_eats_timer,watch_to_earn_title_updater_timer,second_secreen_command_listener,ticker_visibility_controler_timer;
     public Ticker(Context context,EdgeSdk edgeSdk) {
             super(context);
@@ -72,8 +77,10 @@ public class Ticker extends LinearLayout {
             txt_title_earned = view.findViewById(R.id.txt_title_earned);
             txt_total_points = view.findViewById(R.id.txt_total_points);
             //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
-
             ticker_layout = findViewById(R.id.ticker_layout);
+
+            gamificationStatusLayout = findViewById(R.id.gamificationStatusLayout);
+            gamificationStatusLayout.setVisibility(View.INVISIBLE);
 
         DisplayMetrics metrics = new DisplayMetrics();
         callingActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -198,6 +205,42 @@ public class Ticker extends LinearLayout {
 
     public void setTickerVisibilityThreadRunning(boolean tickerVisibilityThreadRunning) {
         isTickerVisibilityThreadRunning = tickerVisibilityThreadRunning;
+    }
+
+    public void makeGamificationLayoutVisible(){
+        // Calculate the height of the LinearLayout
+        int targetHeight = gamificationStatusLayout.getHeight();
+        // Create a TranslateAnimation that translates the LinearLayout from top to bottom
+        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, -targetHeight, 0);
+        translateAnimation.setDuration(3000); // Set the duration of the animation in milliseconds
+        // Set an AnimationListener to listen for animation events
+        translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                // Animation start event
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // Animation end event
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // Animation repeat event
+            }
+        });
+
+        // Start the animation on the LinearLayout
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                // UI-related code to be executed on the main UI thread
+                gamificationStatusLayout.setVisibility(View.VISIBLE);
+                gamificationStatusLayout.startAnimation(translateAnimation);
+            }
+        });
     }
 
     class WatchToEarnTitleStatusPrinter extends  TimerTask{
