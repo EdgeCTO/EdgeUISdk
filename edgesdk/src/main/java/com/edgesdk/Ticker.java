@@ -206,6 +206,15 @@ public class Ticker extends LinearLayout {
     public void setTickerVisibilityThreadRunning(boolean tickerVisibilityThreadRunning) {
         isTickerVisibilityThreadRunning = tickerVisibilityThreadRunning;
     }
+    public boolean isVideoPlayedForFirstTime() {
+        return isVideoPlayedForFirstTime;
+    }
+
+    public void setVideoPlayedForFirstTime(boolean videoPlayedForFirstTime) {
+        isVideoPlayedForFirstTime = videoPlayedForFirstTime;
+    }
+
+
 
     public void makeGamificationLayoutVisible(){
         // Calculate the height of the LinearLayout
