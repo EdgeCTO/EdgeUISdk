@@ -406,4 +406,26 @@
         </LinearLayout>
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:background="@color/transparent"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/gamificationQRCodeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginRight="75dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="400dp"
+                android:layout_height="200dp"
+                android:id="@+id/gamificationQRCode"
+                >
+            </ImageView>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

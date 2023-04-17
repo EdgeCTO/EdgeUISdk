@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,9 @@ public class Ticker extends LinearLayout {
     boolean isTickerVisibilityThreadRunning;
     private Activity callingActivity;
     private LinearLayout gamificationStatusLayout;
+    private ImageView gamificationQRCode;
+    private Handler qrCodeViewhandler;
+
     Timer staked_values_timer,est_apy_values_timer,earning_per_day_timer,eat_market_price_timer,ticker_values_timer,is_video_playing_or_paused_detector_timer,total_eats_timer,watch_to_earn_title_updater_timer,second_secreen_command_listener,ticker_visibility_controler_timer;
 
     public Ticker(Context context,EdgeSdk edgeSdk) {
@@ -88,6 +92,18 @@ public class Ticker extends LinearLayout {
         gamificationStatusLayout.setVisibility(View.INVISIBLE);
 
         ticker_layout = findViewById(R.id.ticker_layout);
+
+        gamificationQRCode = findViewById(R.id.gamificationQRCode);
+
+        // Set the image source for the ImageView
+        gamificationQRCode.setImageResource(R.drawable.eat_logo);
+        // Optionally, you can customize other properties of the ImageView
+        gamificationQRCode.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        //qrCodeView.setVisibility(View.GONE);
+        // Create a Handler to post a delayed runnable
+        qrCodeViewhandler = new Handler();
+
+        displayQRCodeForGamification(10000);
 
         DisplayMetrics metrics = new DisplayMetrics();
         callingActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -217,7 +233,47 @@ public class Ticker extends LinearLayout {
     public void setPrintingThreadsRunning(boolean printingThreadsRunning) {
         isPrintingThreadsRunning = printingThreadsRunning;
     }
+    private void displayQRCodeForGamification(int time){
+        qrCodeViewhandler.post(new Runnable() {
+            @Override
+            public void run() {
+                gamificationQRCode.setVisibility(VISIBLE);
+            }
+        });
 
+        qrCodeViewhandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Set the visibility of the ImageView to GONE after 5 seconds (5000 milliseconds)
+                gamificationQRCode.setVisibility(View.GONE);
+            }
+        }, time);
+    }
+    private void hideQRCodeForGamification(int time){
+        qrCodeViewhandler.post(new Runnable() {
+            @Override
+            public void run() {
+                gamificationQRCode.setVisibility(GONE);
+            }
+        });
+
+    }
+
+    private void displayQRCodeForGamification(){
+        qrCodeViewhandler.post(new Runnable() {
+            @Override
+            public void run() {
+                gamificationQRCode.setVisibility(VISIBLE);
+            }
+        });
+        qrCodeViewhandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Set the visibility of the ImageView to GONE after 5 seconds (5000 milliseconds)
+                gamificationQRCode.setVisibility(View.VISIBLE);
+            }
+        },0);
+    }
     public void makeGamificationLayoutVisible(){
         // Calculate the height of the LinearLayout
         int targetHeight = gamificationStatusLayout.getHeight();
