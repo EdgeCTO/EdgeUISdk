@@ -402,7 +402,7 @@
                 android:textColor="@color/white"
                 android:textSize="10dp"
                 android:background="@color/transparent"
-                android:text="GAME STARTED..!! Press = (Menu)  scan QR code and join it "></TextView>
+                android:text="Live Game Progress - Press Menu to Join Now !"></TextView>
         </LinearLayout>
 
     </LinearLayout>
@@ -423,7 +423,7 @@
             <ImageView
                 android:layout_width="400dp"
                 android:layout_height="200dp"
-                android:src="@drawable/qrcodesample"
+                android:src="@drawable/loading_eat"
                 android:id="@+id/gamificationQRCode"
                 >
             </ImageView>
