@@ -40,6 +40,7 @@ public class GamifiedTvSocketManager implements Runnable{
         this.setIS_BOOST_ENABLED(false);
         this.setIS_SECOND_SCREEN_CONNECTED(false);
         this.setCURRENT_PRESSED_REMOTE_BUTTON(-1);
+        this.setIS_GAMIFICATION_ENABLED(false);
     }
 
     public void initWebSocket(){
