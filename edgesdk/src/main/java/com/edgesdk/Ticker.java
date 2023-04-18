@@ -1,9 +1,11 @@
 package com.edgesdk;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -91,16 +93,14 @@ public class Ticker extends LinearLayout {
         gamificationStatusLayout = findViewById(R.id.gamificationStatusLayout);
         gamificationStatusLayout.setVisibility(View.INVISIBLE);
         ticker_layout = findViewById(R.id.ticker_layout);
+
         gamificationQRCode = findViewById(R.id.gamificationQRCode);
         // Set the image source for the ImageView
-        gamificationQRCode.setImageResource(R.drawable.qrcodesample);
         // Optionally, you can customize other properties of the ImageView
         gamificationQRCode.setScaleType(ImageView.ScaleType.FIT_CENTER);
         //qrCodeView.setVisibility(View.GONE);
         // Create a Handler to post a delayed runnable
         qrCodeViewhandler = new Handler();
-
-        displayQRCodeForGamification(10000);
 
         DisplayMetrics metrics = new DisplayMetrics();
         callingActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -230,10 +230,21 @@ public class Ticker extends LinearLayout {
     public void setPrintingThreadsRunning(boolean printingThreadsRunning) {
         isPrintingThreadsRunning = printingThreadsRunning;
     }
+
     public void displayQRCodeForGamification(int time){
+        Bitmap qrCode = this.edgeSdk.getQRCodeManager().getGamifiedTvQRCode();
         qrCodeViewhandler.post(new Runnable() {
             @Override
             public void run() {
+                gamificationQRCode.setImageBitmap(qrCode);
+
+                // Create an ObjectAnimator that gradually increases the ImageView's alpha from 0 to 1 over 2 seconds
+                ObjectAnimator fadeIn = ObjectAnimator.ofFloat(gamificationQRCode, "alpha", 0f, 1f);
+                fadeIn.setDuration(5000); // 2 seconds
+
+                // Start the fade-in animation
+                fadeIn.start();
+
                 gamificationQRCode.setVisibility(VISIBLE);
             }
         });
@@ -241,11 +252,13 @@ public class Ticker extends LinearLayout {
         qrCodeViewhandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Set the visibility of the ImageView to GONE after 5 seconds (5000 milliseconds)
+                // Set the visibility of the ImageView to GONE after the specified time
                 gamificationQRCode.setVisibility(View.GONE);
             }
         }, time);
     }
+
+
     public void hideQRCodeForGamification(){
         qrCodeViewhandler.post(new Runnable() {
             @Override
@@ -253,24 +266,27 @@ public class Ticker extends LinearLayout {
                 gamificationQRCode.setVisibility(GONE);
             }
         });
-
     }
 
     public void displayQRCodeForGamification(){
+        Bitmap qrCode = this.edgeSdk.getQRCodeManager().getGamifiedTvQRCode();
         qrCodeViewhandler.post(new Runnable() {
             @Override
             public void run() {
+                gamificationQRCode.setImageBitmap(qrCode);
+
+                // Create an ObjectAnimator that gradually increases the ImageView's alpha from 0 to 1 over 2 seconds
+                ObjectAnimator fadeIn = ObjectAnimator.ofFloat(gamificationQRCode, "alpha", 0f, 1f);
+                fadeIn.setDuration(5000); // 2 seconds
+
+                // Start the fade-in animation
+                fadeIn.start();
+
                 gamificationQRCode.setVisibility(VISIBLE);
             }
         });
-        qrCodeViewhandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Set the visibility of the ImageView to GONE after 5 seconds (5000 milliseconds)
-                gamificationQRCode.setVisibility(View.VISIBLE);
-            }
-        },0);
     }
+
     public void makeGamificationLayoutVisible(){
         // Calculate the height of the LinearLayout
         int targetHeight = gamificationStatusLayout.getHeight();

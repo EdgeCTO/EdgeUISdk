@@ -8,6 +8,7 @@ import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.Utils.Urls;
 import com.edgesdk.Utils.Utils;
 import com.edgesdk.models.CreateMessage;
+import com.edgesdk.models.GameStatusCheckMessage;
 import com.edgesdk.models.SetScreenMessage;
 import com.neovisionaries.ws.client.ThreadType;
 import com.neovisionaries.ws.client.WebSocket;
@@ -29,6 +30,8 @@ public class GamifiedTvSocketManager implements Runnable{
     private static Boolean isSelfDisconnected;
     private static Boolean IS_SECOND_SCREEN_CONNECTED;
     private static Boolean IS_BOOST_ENABLED;
+    private static Boolean IS_GAMIFICATION_ENABLED;
+
     private static int CURRENT_PRESSED_REMOTE_BUTTON;
 
     public GamifiedTvSocketManager(EdgeSdk edgeSdk) {
@@ -137,8 +140,19 @@ public class GamifiedTvSocketManager implements Runnable{
                             //Storing screen id in local storage
                             edgeSdk.getLocalStorageManager().storeStringValue(responseValue,Constants.SCREEN_ID);
                             Log.i(LogConstants.Gamefied_Tv,"Storing screen ID  : "+responseValue);
+                        }else if(responseType.contains("channel")){
+                            Boolean responseValue = Boolean.parseBoolean(Utils.parser(socketResponse).get("enabled").toString());
+                            Log.i(LogConstants.Gamefied_Tv,"Response of game status checking : "+responseValue);
+                            if(responseValue){
+                                //game is going on
+                                setIS_GAMIFICATION_ENABLED(true);
+                            }else{
+                                //game is not going on
+                                setIS_GAMIFICATION_ENABLED(false);
+                            }
                         }
-                    }else {
+                    }
+                    else {
                         try{
                             //response is number
                             int remoteResponseNumber = Integer.parseInt(socketResponse);
@@ -342,6 +356,24 @@ public class GamifiedTvSocketManager implements Runnable{
 
     public void setIS_BOOST_ENABLED(Boolean IS_BOOST_ENABLED) {
         this.IS_BOOST_ENABLED = IS_BOOST_ENABLED;
+    }
+
+    public  Boolean getIS_GAMIFICATION_ENABLED() {
+        return IS_GAMIFICATION_ENABLED;
+    }
+
+    public  void setIS_GAMIFICATION_ENABLED(Boolean isGamificationEnabled) {
+        IS_GAMIFICATION_ENABLED = isGamificationEnabled;
+    }
+
+    public void checkIsGameGoingOn(String channelName){
+        //TODO:Send  {"type": "channel", "name": "Newsmax"}
+        try {
+            ws.sendText(new GameStatusCheckMessage(channelName).toJson());
+            Log.i(LogConstants.Gamefied_Tv,"Successfully sent : "+new GameStatusCheckMessage(channelName).toJson());
+        }catch (Exception e){
+            Log.i(LogConstants.Gamefied_Tv,"Error while sending message to check if game is going on or not : "+e.getMessage());
+        }
     }
 
     public int getCURRENT_PRESSED_REMOTE_BUTTON() {

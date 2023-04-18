@@ -10,6 +10,7 @@ import com.edgesdk.managers.AuthenticationManager;
 import com.edgesdk.managers.GamifiedTvSocketManager;
 import com.edgesdk.managers.LocalStorageManager;
 import com.edgesdk.managers.MarketPriceManager;
+import com.edgesdk.managers.QRCodeManager;
 import com.edgesdk.managers.SocketMonitor;
 import com.edgesdk.managers.StakingValueCalculatorManager;
 import com.edgesdk.managers.StakingValueFetchingManager;
@@ -39,6 +40,8 @@ public class EdgeSdk {
     private static LocalStorageManager localStorageManager;
     private static AuthenticationManager authenticationManager;
     private static SocketMonitor socketMonitor;
+    private static QRCodeManager qrCodeManager;
+
     private static StaticDataManager staticDataManager;
     private String sdkAuthKey;
     private boolean isVerified;
@@ -59,6 +62,7 @@ public class EdgeSdk {
         this.socketMonitor = new SocketMonitor(this);
         this.authenticationManager = new AuthenticationManager(this,sdkAuthKey);
         this.staticDataManager = new StaticDataManager(this);
+        this.qrCodeManager = new QRCodeManager(this);
         this.isAlreadyStarted=false;
 
     }
@@ -358,4 +362,8 @@ public class EdgeSdk {
     public  GamifiedTvSocketManager getGamifiedTvSocketManager() {
         return gamifiedTvSocketManager;
     }
+    public  QRCodeManager getQRCodeManager() {
+        return qrCodeManager;
+    }
+
 }
