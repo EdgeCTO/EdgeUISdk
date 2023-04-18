@@ -364,7 +364,7 @@ public class GamifiedTvSocketManager implements Runnable{
     }
 
     public  void setIS_GAMIFICATION_ENABLED(Boolean isGamificationEnabled) {
-        IS_GAMIFICATION_ENABLED = isGamificationEnabled;
+        this.IS_GAMIFICATION_ENABLED = isGamificationEnabled;
     }
 
     public void checkIsGameGoingOn(String channelName){
