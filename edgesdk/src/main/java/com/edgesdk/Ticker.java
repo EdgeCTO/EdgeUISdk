@@ -242,7 +242,7 @@ public class Ticker extends LinearLayout {
                 gamificationQRCode.setImageBitmap(qrCode);
                 // Create an ObjectAnimator that gradually increases the ImageView's alpha from 0 to 1 over 2 seconds
                 ObjectAnimator fadeIn = ObjectAnimator.ofFloat(gamificationQRCode, "alpha", 0f, 1f);
-                fadeIn.setDuration(5000); // 2 seconds
+                fadeIn.setDuration(3000); // 2 seconds
 
                 // Start the fade-in animation
                 fadeIn.start();
@@ -277,13 +277,6 @@ public class Ticker extends LinearLayout {
             public void run() {
                 gamificationQRCode.setVisibility(VISIBLE);
                 gamificationQRCode.setImageBitmap(qrCode);
-                // Create an ObjectAnimator that gradually increases the ImageView's alpha from 0 to 1 over 2 seconds
-                ObjectAnimator fadeIn = ObjectAnimator.ofFloat(gamificationQRCode, "alpha", 0f, 1f);
-                fadeIn.setDuration(5000); // 2 seconds
-
-                // Start the fade-in animation
-                fadeIn.start();
-
             }
         });
     }
