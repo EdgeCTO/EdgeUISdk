@@ -276,7 +276,6 @@ public class Ticker extends LinearLayout {
             @Override
             public void run() {
                 gamificationQRCode.setVisibility(VISIBLE);
-                gamificationQRCode.setImageBitmap(qrCode);
             }
         });
     }
