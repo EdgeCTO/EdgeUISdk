@@ -92,12 +92,14 @@ public class Ticker extends LinearLayout {
         //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
         gamificationStatusLayout = findViewById(R.id.gamificationStatusLayout);
         gamificationStatusLayout.setVisibility(View.INVISIBLE);
+
         ticker_layout = findViewById(R.id.ticker_layout);
 
         gamificationQRCode = findViewById(R.id.gamificationQRCode);
         // Set the image source for the ImageView
         // Optionally, you can customize other properties of the ImageView
         gamificationQRCode.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        gamificationQRCode.setVisibility(GONE);
         //qrCodeView.setVisibility(View.GONE);
         // Create a Handler to post a delayed runnable
         qrCodeViewhandler = new Handler();
@@ -287,12 +289,12 @@ public class Ticker extends LinearLayout {
         });
     }
 
-    public void makeGamificationLayoutVisible(){
+    public void makeGamificationLayoutVisible(int duration){
         // Calculate the height of the LinearLayout
         int targetHeight = gamificationStatusLayout.getHeight();
         // Create a TranslateAnimation that translates the LinearLayout from top to bottom
         TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, -targetHeight, 0);
-        translateAnimation.setDuration(3000); // Set the duration of the animation in milliseconds
+        translateAnimation.setDuration(duration); // Set the duration of the animation in milliseconds
         // Set an AnimationListener to listen for animation events
         translateAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override

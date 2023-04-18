@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Thread.sleep(10000);
                     edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
-                    ticker.makeGamificationLayoutVisible();
+                    ticker.makeGamificationLayoutVisible(3000);
                     ticker.displayQRCodeForGamification(8000);
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
