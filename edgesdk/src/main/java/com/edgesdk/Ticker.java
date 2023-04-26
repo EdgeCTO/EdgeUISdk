@@ -14,6 +14,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -50,7 +51,7 @@ public class Ticker extends LinearLayout {
     private LinearLayout gamificationStatusLayout;
     private ImageView gamificationQRCode;
     private Handler qrCodeViewhandler;
-
+    private LinearLayout polls_holder;
     Timer staked_values_timer,est_apy_values_timer,earning_per_day_timer,eat_market_price_timer,ticker_values_timer,is_video_playing_or_paused_detector_timer,total_eats_timer,watch_to_earn_title_updater_timer,second_secreen_command_listener,ticker_visibility_controler_timer;
 
     public Ticker(Context context,EdgeSdk edgeSdk) {
@@ -79,6 +80,7 @@ public class Ticker extends LinearLayout {
         //txt_per_day = view.findViewById(R.id.txt_per_day);
         txt_total_points = view.findViewById(R.id.txt_total_points);
         txt_title_total_points = view.findViewById(R.id.txt_title_total_points);
+        polls_holder = view.findViewById(R.id.polls_holder);
 
         txt_today = view.findViewById(R.id.txt_today);
         txt_watch_to_earn_heading= view.findViewById(R.id.txt_watch_to_earn_heading);
@@ -259,7 +261,30 @@ public class Ticker extends LinearLayout {
             }
         }, time);
     }
-
+    @SuppressLint("MissingInflatedId")
+    public void addPollInList(int poll_number) {
+        View poll = callingActivity.getLayoutInflater().inflate(R.layout.poll, null);
+        TextView title = poll.findViewById(R.id.poll_title);
+        Animation slideInFromLeft = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, -1.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        slideInFromLeft.setDuration(1000);
+        polls_holder.post(new Runnable() {
+            @Override
+            public void run() {
+                title.setText("What is Mike Tyson's most prized possession?");
+                polls_holder.addView(poll,0);
+                poll.startAnimation(slideInFromLeft);
+                View space = new View(callingActivity);
+                LinearLayout.LayoutParams spaceLayoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, // width
+                        10// height,
+                );
+                space.setLayoutParams(spaceLayoutParams);
+                polls_holder.addView(space,0);
+            }
+        }) ;
+    }
 
     public void hideQRCodeForGamification(){
         qrCodeViewhandler.post(new Runnable() {

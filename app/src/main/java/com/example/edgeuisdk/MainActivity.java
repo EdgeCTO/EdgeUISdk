@@ -3,9 +3,12 @@ package com.example.edgeuisdk;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -14,9 +17,12 @@ import android.widget.Toast;
 
 import com.edgesdk.EdgeSdk;
 import com.edgesdk.Ticker;
+import com.edgesdk.Utils.LogConstants;
 
 public class MainActivity extends AppCompatActivity {
     Ticker ticker;
+    int poll_number=0;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         ticker.setPlaying(true);
 
         LinearLayout layout = findViewById(R.id.main_layout);
+
         layout.addView(ticker);
         ticker.onResume();
 
@@ -44,11 +51,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                     edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
                     ticker.makeGamificationLayoutVisible(3000);
                     ticker.displayQRCodeForGamification(8000);
-                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }       
@@ -57,5 +63,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        ticker.addPollInList(poll_number);
+        poll_number++;
+        return super.onKeyDown(keyCode, event);
+    }
 }
