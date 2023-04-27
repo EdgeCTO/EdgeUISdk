@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -53,7 +54,7 @@ public class Ticker extends LinearLayout {
     private Handler qrCodeViewhandler;
     private LinearLayout polls_holder;
     Timer staked_values_timer,est_apy_values_timer,earning_per_day_timer,eat_market_price_timer,ticker_values_timer,is_video_playing_or_paused_detector_timer,total_eats_timer,watch_to_earn_title_updater_timer,second_secreen_command_listener,ticker_visibility_controler_timer;
-
+    private ImageView sdk_logo;
     public Ticker(Context context,EdgeSdk edgeSdk) {
         super(context);
         this.edgeSdk=edgeSdk;
@@ -91,6 +92,7 @@ public class Ticker extends LinearLayout {
         txt_title_staked = view.findViewById(R.id.txt_title_staked);
         txt_title_est_apy = view.findViewById(R.id.txt_title_est_apy);
         txt_title_earned = view.findViewById(R.id.txt_title_earned);
+        sdk_logo = view.findViewById(R.id.sdk_logo);
         //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
         gamificationStatusLayout = findViewById(R.id.gamificationStatusLayout);
         gamificationStatusLayout.setVisibility(View.INVISIBLE);
@@ -193,6 +195,25 @@ public class Ticker extends LinearLayout {
             watch_to_earn_title_updater_timer = new Timer();
 
         }
+
+        //getting logo .
+        final Handler handler = new Handler();
+        Runnable runnableCode = new Runnable() {
+            @Override
+            public void run() {
+                String logoPath = edgeSdk.getLocalStorageManager().getStringValue(Constants.LOGO_IMAGE_PATH);
+                if(logoPath != null){
+                    Bitmap bitmap = BitmapFactory.decodeFile(logoPath);
+                    sdk_logo.setImageBitmap(bitmap);
+                    Log.i(LogConstants.Authentication,"updated logo");
+                }else{
+                    Log.i(LogConstants.Authentication,"logo image path is null");
+                    handler.postDelayed(this, 1000); // run this code again after 1 second
+                }
+            }
+        };
+        handler.post(runnableCode);
+
     }
 
     public boolean isPlaying() {

@@ -13,6 +13,9 @@ public class Constants {
     public static String SCREEN_ID="screenId";
     public static String CURRENT_PRESSED_REMOTE_BUTTON="currentPressedRemoteButton";
     public static String CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS="currentInUseChannelWalletAddress";
+    public static String LOGO_URL="LOGO_URL";
+    public static String LOGO_IMAGE_PATH="LOGO_IMAGE_PATH";
+
     public static String IS_APP_OPEN="is_app_open";
     public static int StringCONNECTED= 0;
     public static int StringDISCONNECTED= 1;

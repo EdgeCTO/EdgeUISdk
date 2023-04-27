@@ -14,5 +14,7 @@ public class Urls {
     public static String GET_EAT_MARKET_VALUE="https://eat.edgevideo.com/get_price";
     public static String GET_EAT_BALANCE="https://eat.edgevideo.com/eat_balance/";
     public static String VERIFY_SDK_AUTH_KEY="https://studio-api.edgevideo.com/verifySDKAuthKey";
+    public static String LOAD_SDK_LOGO="https://studio-api.edgevideo.com/loadSdkLogo";
+
     //public static String VERIFY_SDK_AUTH_KEY="http://172.27.80.1:3000/verifySDKAuthKey";
 }

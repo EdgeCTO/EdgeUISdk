@@ -366,4 +366,7 @@ public class EdgeSdk {
         return qrCodeManager;
     }
 
+    public  Context getContext() {
+        return context;
+    }
 }

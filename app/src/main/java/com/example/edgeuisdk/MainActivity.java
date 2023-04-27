@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EdgeSdk edgeSdk = new EdgeSdk(this,"574b4537766ea033a492f69dbb928c0b");
+        EdgeSdk edgeSdk = new EdgeSdk(this,"3bf76d424eeb0a1dcbdef11da9d148d8");
 
         edgeSdk.getLocalStorageManager().storeBooleanValue(true, com.edgesdk.Utils.Constants.IS_TICKER_ALLOWED_TO_HIDE);
         edgeSdk.getLocalStorageManager().storeBooleanValue(false,com.edgesdk.Utils.Constants.IS_OPT_OUT_W2E_ENABLED);
