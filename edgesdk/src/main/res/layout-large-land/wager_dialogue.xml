@@ -81,7 +81,7 @@
             <Button
                 android:layout_marginTop="12dp"
                 android:layout_width="100dp"
-                android:height="10dp"
+                android:height="20dp"
                 android:gravity="center"
                 android:padding="1dp"
                 android:textSize="10dp"
