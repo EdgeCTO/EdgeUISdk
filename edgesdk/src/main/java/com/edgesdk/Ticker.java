@@ -303,7 +303,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer a is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -316,7 +316,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer b is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -329,7 +329,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer c is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -342,7 +342,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer d is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a);
                         wagerPointsDialogue.show();
                     }
                 });

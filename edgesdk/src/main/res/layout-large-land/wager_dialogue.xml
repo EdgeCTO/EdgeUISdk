@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:textSize="15dp"
             android:gravity="center"
-            android:padding="3dp"
+            android:padding="5dp"
             android:background="#FD060751"
             android:textColor="@color/white"
             android:text="Wager your coins"></TextView>
@@ -22,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="10dp"
+            android:paddingBottom="10dp"
             android:gravity="center"
             android:orientation="vertical">
             <TextView
@@ -30,7 +31,7 @@
                 android:id="@+id/current_question"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="20sp"
                 android:textColor="@color/white"
                 android:maxLines="5"
                 android:ellipsize="none"
@@ -43,10 +44,11 @@
                 android:id="@+id/current_answer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="16sp"
                 android:textColor="@color/white"
                 android:maxLines="5"
                 android:ellipsize="none"
+                android:layout_marginLeft="2dp"
                 android:autoSizeStepGranularity="2sp"
                 android:autoSizeTextType="uniform"
                 android:autoSizeMinTextSize="8sp"
@@ -77,10 +79,12 @@
                 android:text="10"
                 android:textColor="#FFFFFF" />
             <Button
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="12dp"
                 android:layout_width="100dp"
+                android:height="10dp"
                 android:gravity="center"
-                android:padding="2dp"
+                android:padding="1dp"
+                android:textSize="10dp"
                 android:layout_height="wrap_content"
                 android:text="Wager"
                 android:background="@drawable/wager_button_background"
