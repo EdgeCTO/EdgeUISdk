@@ -390,7 +390,8 @@
                 android:id="@+id/polls_holder"
                 android:layout_width="0dp"
                 android:layout_weight="15"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
+
                 android:orientation="vertical"
                 >
             </LinearLayout>

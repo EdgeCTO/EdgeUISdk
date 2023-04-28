@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.Utils.Messages;
+import com.edgesdk.dialogues.WagerPointsDialogue;
 import com.edgesdk.models.TickerNotifications;
 
 import java.text.DecimalFormat;
@@ -283,18 +285,117 @@ public class Ticker extends LinearLayout {
         }, time);
     }
     @SuppressLint("MissingInflatedId")
-    public void addPollInList(int poll_number) {
+    public void addPollInList(String poll_question, String poll_answer_a, String poll_answer_b, String poll_answer_c, String poll_answer_d) {
         View poll = callingActivity.getLayoutInflater().inflate(R.layout.poll, null);
-        TextView title = poll.findViewById(R.id.poll_title);
+        TextView question = poll.findViewById(R.id.poll_question);
+        TextView answer_a = poll.findViewById(R.id.poll_answer_a);
+        TextView answer_b = poll.findViewById(R.id.poll_answer_b);
+        TextView answer_c = poll.findViewById(R.id.poll_answer_c);
+        TextView answer_d = poll.findViewById(R.id.poll_answer_d);
         Animation slideInFromLeft = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, -1.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
         slideInFromLeft.setDuration(1000);
+
+        answer_a.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(callingActivity, "Answer a is selected", Toast.LENGTH_SHORT).show();
+                callingActivity.runOnUiThread(new Runnable() {
+                    public void run() {
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity);
+                        wagerPointsDialogue.show();
+                    }
+                });
+            }
+        });
+
+        answer_b.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(callingActivity, "Answer b is selected", Toast.LENGTH_SHORT).show();
+                callingActivity.runOnUiThread(new Runnable() {
+                    public void run() {
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity);
+                        wagerPointsDialogue.show();
+                    }
+                });
+            }
+        });
+
+        answer_c.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(callingActivity, "Answer c is selected", Toast.LENGTH_SHORT).show();
+                callingActivity.runOnUiThread(new Runnable() {
+                    public void run() {
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity);
+                        wagerPointsDialogue.show();
+                    }
+                });
+            }
+        });
+
+        answer_d.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(callingActivity, "Answer d is selected", Toast.LENGTH_SHORT).show();
+                callingActivity.runOnUiThread(new Runnable() {
+                    public void run() {
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity);
+                        wagerPointsDialogue.show();
+                    }
+                });
+            }
+        });
         polls_holder.post(new Runnable() {
             @Override
             public void run() {
-                title.setText("What is Mike Tyson's most prized possession?");
-                polls_holder.addView(poll,0);
+                question.setText(poll_question);
+                answer_a.setText(poll_answer_a);
+                answer_b.setText(poll_answer_b);
+                answer_c.setText(poll_answer_c);
+                answer_d.setText(poll_answer_d);
+
+                // Get the width of the TextView container
+                int containerWidth = question.getWidth();
+
+                // Get the total text length of the question and answers
+                int totalTextLength = poll_question.length() + poll_answer_a.length() + poll_answer_b.length() + poll_answer_c.length() + poll_answer_d.length();
+
+                // Calculate the average text length per character
+                float averageTextLengthPerChar = (float) totalTextLength / (float) (poll_question.length() + poll_answer_a.length() + poll_answer_b.length() + poll_answer_c.length() + poll_answer_d.length());
+
+                // Calculate the font size based on the container width and average text length per character
+                float fontSize = containerWidth / (averageTextLengthPerChar * 1.5f);
+
+                // Set the maximum and minimum font sizes
+                float maxFontSize = 18f;
+                float minFontSize = 12f;
+
+                // If the calculated font size is greater than the maximum font size, set it to the maximum font size
+                if (fontSize > maxFontSize) {
+                    fontSize = maxFontSize;
+                }
+
+                // If the calculated font size is less than the minimum font size, set it to the minimum font size
+                if (fontSize < minFontSize) {
+                    fontSize = minFontSize;
+                }
+
+                // Set the font size of the TextViews
+                question.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+                answer_a.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+                answer_b.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+                answer_c.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+                answer_d.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+
+                polls_holder.addView(poll, 0);
+
+                answer_a.setFocusable(true);
+                answer_a.setFocusableInTouchMode(true);///add this line
+                answer_a.requestFocus();
+
                 poll.startAnimation(slideInFromLeft);
                 View space = new View(callingActivity);
                 LinearLayout.LayoutParams spaceLayoutParams = new LinearLayout.LayoutParams(
@@ -302,9 +403,9 @@ public class Ticker extends LinearLayout {
                         10// height,
                 );
                 space.setLayoutParams(spaceLayoutParams);
-                polls_holder.addView(space,0);
+                polls_holder.addView(space, 0);
             }
-        }) ;
+        });
     }
 
     public void hideQRCodeForGamification(){

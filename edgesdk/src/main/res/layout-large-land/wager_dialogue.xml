@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="450dp"
+    android:background="@drawable/wager_dialogue_border"
+    android:layout_height="250dp">
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:gravity="center"
+            android:padding="3dp"
+            android:background="#FD060751"
+            android:textColor="@color/white"
+            android:text="Wager your coins"></TextView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:layout_marginTop="0dp"
+                android:padding="2dp"
+                android:id="@+id/current_question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:maxLines="5"
+                android:ellipsize="none"
+                android:autoSizeStepGranularity="2sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="12sp"
+                android:text="Poll question goes here"></TextView>
+            <TextView
+                android:id="@+id/current_answer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:maxLines="5"
+                android:ellipsize="none"
+                android:autoSizeStepGranularity="2sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="12sp"
+                android:text="Current Question"></TextView>
+
+            <TextView
+                android:id="@+id/textView"
+                android:textColor="@color/white"
+                android:gravity="left"
+                android:paddingLeft="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tokens to wager" />
+
+            <EditText
+                android:layout_marginTop="10dp"
+                android:id="@+id/wagered_coins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:minWidth="20dp"
+                android:textSize="30dp"
+                android:gravity="center"
+                android:background="@drawable/wager_tokens_field"
+                android:inputType="textPersonName"
+                android:text="10"
+                android:textColor="#FFFFFF" />
+            <Button
+                android:layout_marginTop="10dp"
+                android:layout_width="100dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:layout_height="wrap_content"
+                android:text="Wager"
+                android:background="@drawable/wager_button_background"
+                android:textColor="@color/white"
+                ></Button>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

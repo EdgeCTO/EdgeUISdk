@@ -8,6 +8,19 @@
     android:layout_height="wrap_content"
     >
     <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"
+        android:layout_gravity="right"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/eat_logo"></ImageView>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,14 +28,22 @@
         android:paddingRight="20dp"
         android:paddingBottom="15dp"
         android:orientation="vertical">
-        <TextView
-            android:id="@+id/poll_title"
+       <TextView
+            android:focusable="true"
+            android:id="@+id/poll_question"
             android:layout_width="match_parent"
-            android:layout_height="15dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:textColor="@color/white"
-            android:text="Poll"></TextView>
+            android:maxLines="5"
+            android:ellipsize="none"
+
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="12sp"
+            android:text="Poll question goes here"></TextView>
         <LinearLayout
             android:layout_marginTop="5dp"
             android:padding="5dp"
@@ -31,11 +52,22 @@
             android:background="@drawable/poll_answer_border"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="8dp"
+                android:focusable="true"
+                android:id="@+id/poll_answer_a"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:gravity="center"
+                android:maxLines="3"
+                android:padding="2dp"
+                android:ellipsize="none"
+                android:background="@drawable/focused_unfocused_border"
+                android:autoSizeStepGranularity="2sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="14sp"
+                android:nextFocusDown="@id/poll_answer_b"
+                android:nextFocusUp="@id/poll_answer_a"
                 android:text="His boxing idols and the old-time champions who fought in the 30s and 40s"></TextView>
         </LinearLayout>
 
@@ -47,12 +79,23 @@
             android:background="@drawable/poll_answer_border"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="8dp"
+                android:focusable="true"
+                android:id="@+id/poll_answer_b"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:gravity="center"
-                android:text=" His bodyguards for the neighborhood he's in"></TextView>
+                android:maxLines="3"
+                android:background="@drawable/focused_unfocused_border"
+                android:ellipsize="none"
+                android:padding="2dp"
+                android:autoSizeStepGranularity="2sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="14sp"
+                android:nextFocusDown="@id/poll_answer_c"
+                android:nextFocusUp="@id/poll_answer_a"
+                android:text="His bodyguards for the neighborhood he's in"></TextView>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,13 +105,25 @@
             android:background="@drawable/poll_answer_border"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="8dp"
+                android:focusable="true"
+                android:id="@+id/poll_answer_c"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:gravity="center"
-                android:text="His boxing skills and training habits"></TextView>
-        </LinearLayout>
+                android:maxLines="3"
+                android:ellipsize="none"
+                android:padding="2dp"
+                android:background="@drawable/focused_unfocused_border"
+                android:autoSizeStepGranularity="2sp"
+                android:text="His boxing skills and training habits"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="14sp"
+                android:nextFocusDown="@id/poll_answer_d"
+                android:nextFocusUp="@id/poll_answer_b"
+
+                />     </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
@@ -77,12 +132,22 @@
             android:background="@drawable/poll_answer_border"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="8dp"
+                android:focusable="true"
+                android:id="@+id/poll_answer_d"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
+                android:autoSizeStepGranularity="2sp"
+                android:maxLines="3"
                 android:gravity="center"
-                android:text="His perception of life that changed after becoming a Muslim"></TextView>
+                android:background="@drawable/focused_unfocused_border"
+                android:padding="2dp"
+                android:text="His boxing skills and training habits"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="14sp"
+                android:nextFocusUp="@id/poll_answer_c"
+                android:nextFocusDown="@id/poll_answer_d" />
         </LinearLayout>
         <TextView
             android:layout_width="match_parent"
