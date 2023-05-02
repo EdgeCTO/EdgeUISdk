@@ -61,6 +61,7 @@ public class AuthenticationManager implements Runnable{
                                     Log.i(LogConstants.Authentication,"filePath:"+filePath);
                                     edgeSdk.getLocalStorageManager().storeStringValue(filePath,Constants.LOGO_IMAGE_PATH);
                                     Log.i(LogConstants.Authentication,edgeSdk.getLocalStorageManager().getStringValue(Constants.LOGO_IMAGE_PATH));
+                                    edgeSdk.getLocalStorageManager().storeStringValue("true",sdkAuthKey);
                                 }
                             });
                         }
