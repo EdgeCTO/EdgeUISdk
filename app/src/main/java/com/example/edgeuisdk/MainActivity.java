@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 String[] answers = ANSWERS[currentQuestionIndex];
                 shuffle(answers);
                 ticker.addPollInList(question,answers[0],answers[1],answers[2],answers[3]);
+
             }
         }, 0, 10000);
 

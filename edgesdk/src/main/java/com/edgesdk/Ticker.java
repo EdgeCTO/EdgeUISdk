@@ -55,6 +55,8 @@ public class Ticker extends LinearLayout {
     private ImageView gamificationQRCode;
     private Handler qrCodeViewhandler;
     private LinearLayout polls_holder;
+    private LinearLayout polls_to_resolve_holder;
+
     Timer staked_values_timer,est_apy_values_timer,earning_per_day_timer,eat_market_price_timer,ticker_values_timer,is_video_playing_or_paused_detector_timer,total_eats_timer,watch_to_earn_title_updater_timer,second_secreen_command_listener,ticker_visibility_controler_timer;
     private ImageView sdk_logo;
     public Ticker(Context context,EdgeSdk edgeSdk) {
@@ -84,6 +86,7 @@ public class Ticker extends LinearLayout {
         txt_total_points = view.findViewById(R.id.txt_total_points);
         txt_title_total_points = view.findViewById(R.id.txt_title_total_points);
         polls_holder = view.findViewById(R.id.polls_holder);
+        polls_to_resolve_holder = view.findViewById(R.id.polls_waiting_to_resolve_holder);
 
         txt_today = view.findViewById(R.id.txt_today);
         txt_watch_to_earn_heading= view.findViewById(R.id.txt_watch_to_earn_heading);
@@ -303,7 +306,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer a is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -316,7 +319,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer b is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -329,7 +332,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer c is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -342,7 +345,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer d is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -407,6 +410,68 @@ public class Ticker extends LinearLayout {
             }
         });
     }
+
+    public void addPollToResolveInList(String poll_question, String selectedAnswer,String coins) {
+        View poll = callingActivity.getLayoutInflater().inflate(R.layout.poll_to_resolve, null);
+        TextView question = poll.findViewById(R.id.poll_to_resolve_question);
+        TextView answer = poll.findViewById(R.id.poll_to_resolve_selected_answer);
+        TextView wagered_coins = poll.findViewById(R.id.poll_to_resolve_wagered_coins);
+
+        Animation slideInFromRight = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        slideInFromRight.setDuration(1000);
+
+        polls_to_resolve_holder.post(new Runnable() {
+            @Override
+            public void run() {
+                question.setText(poll_question);
+                answer.setText((selectedAnswer));
+                wagered_coins.setText(coins+" coins wagered");
+                // Get the width of the TextView container
+                int containerWidth = question.getWidth();
+
+                // Get the total text length of the question and answers
+                int totalTextLength = poll_question.length() ;
+
+                // Calculate the average text length per character
+                float averageTextLengthPerChar = (float) totalTextLength / (float) (poll_question.length() );
+
+                // Calculate the font size based on the container width and average text length per character
+                float fontSize = containerWidth / (averageTextLengthPerChar * 1.5f);
+
+                // Set the maximum and minimum font sizes
+                float maxFontSize = 18f;
+                float minFontSize = 12f;
+
+                // If the calculated font size is greater than the maximum font size, set it to the maximum font size
+                if (fontSize > maxFontSize) {
+                    fontSize = maxFontSize;
+                }
+
+                // If the calculated font size is less than the minimum font size, set it to the minimum font size
+                if (fontSize < minFontSize) {
+                    fontSize = minFontSize;
+                }
+
+                // Set the font size of the TextViews
+                question.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+
+                polls_to_resolve_holder.addView(poll, 0);
+                poll.startAnimation(slideInFromRight);
+
+                View space = new View(callingActivity);
+                LinearLayout.LayoutParams spaceLayoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, // width
+                        10// height,
+                );
+                space.setLayoutParams(spaceLayoutParams);
+                polls_to_resolve_holder.addView(space, 0);
+            }
+        });
+    }
+
+
 
     public void hideQRCodeForGamification(){
         qrCodeViewhandler.post(new Runnable() {

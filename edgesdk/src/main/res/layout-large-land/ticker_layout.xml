@@ -388,18 +388,17 @@
             <LinearLayout
                 android:layout_marginTop="1dp"
                 android:id="@+id/polls_holder"
-
                 android:layout_width="0dp"
                 android:layout_weight="15"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 >
             </LinearLayout>
-        <LinearLayout
+            <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_weight="75">
+            android:layout_weight="70">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="18dp"
@@ -413,7 +412,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/arc_shape"
                     android:gravity="center"
-                    android:layout_marginRight="235dp"
+                    android:layout_marginRight="75dp"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="wrap_content"
@@ -438,7 +437,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginRight="235dp"
+                    android:layout_marginRight="75dp"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="400dp"
@@ -448,9 +447,16 @@
                     </ImageView>
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-
+            </LinearLayout>
+            <LinearLayout
+            android:layout_marginTop="1dp"
+            android:id="@+id/polls_waiting_to_resolve_holder"
+            android:layout_width="0dp"
+            android:layout_weight="15"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            </LinearLayout>
     </LinearLayout>
-
 
 </LinearLayout>
