@@ -15,7 +15,7 @@
             android:textSize="15dp"
             android:gravity="center"
             android:padding="5dp"
-            android:background="#FD060751"
+            android:background="@color/baseDark"
             android:textColor="@color/white"
             android:text="Wager your coins"></TextView>
         <LinearLayout
@@ -77,8 +77,12 @@
                 android:background="@drawable/wager_tokens_field"
                 android:inputType="textPersonName"
                 android:text="10"
+                android:nextFocusDown="@id/btn_wager"
                 android:textColor="#FFFFFF" />
-            <Button
+            <TextView
+                android:nextFocusDown="@id/btn_wager"
+                android:nextFocusUp="@id/wagered_coins"
+                android:id="@+id/btn_wager"
                 android:layout_marginTop="12dp"
                 android:layout_width="100dp"
                 android:height="20dp"
@@ -87,9 +91,10 @@
                 android:textSize="10dp"
                 android:layout_height="wrap_content"
                 android:text="Wager"
-                android:background="@drawable/wager_button_background"
+                android:focusable="true"
+                android:background="@drawable/focused_unfocused_border_2"
                 android:textColor="@color/white"
-                ></Button>
+                ></TextView>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

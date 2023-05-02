@@ -39,7 +39,7 @@ public class AuthenticationManager implements Runnable{
             Log.i(LogConstants.Authentication,serverResponse+"");
             boolean isVerified = Boolean.parseBoolean(serverResponse.get("success")+"");
             String message = serverResponse.get("message").toString();
-            Log.i(LogConstants.Authentication,message);
+            Log.i(LogConstants.Authentication,"message"+message);
             if(isVerified){
                 postData = new JSONObject();
                 postData.put("sdkAPIKey", this.sdkAuthKey);
@@ -58,6 +58,7 @@ public class AuthenticationManager implements Runnable{
                                 public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
                                     String fileName = resource.getName();
                                     String filePath = resource.getAbsolutePath();
+                                    Log.i(LogConstants.Authentication,"filePath:"+filePath);
                                     edgeSdk.getLocalStorageManager().storeStringValue(filePath,Constants.LOGO_IMAGE_PATH);
                                     Log.i(LogConstants.Authentication,edgeSdk.getLocalStorageManager().getStringValue(Constants.LOGO_IMAGE_PATH));
                                 }
