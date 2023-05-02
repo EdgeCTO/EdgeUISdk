@@ -388,7 +388,7 @@
             <LinearLayout
                 android:layout_marginTop="1dp"
                 android:id="@+id/polls_holder"
-                android:background="@color/green"
+                android:background="@color/transprant1"
                 android:layout_width="0dp"
                 android:layout_weight="15"
                 android:layout_height="match_parent"
@@ -404,7 +404,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="18dp"
                 android:gravity="center"
-                android:background="@color/red"
+                android:background="@color/transprant1"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -431,7 +431,7 @@
                 android:layout_height="200dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:background="@color/yellow"
+                android:background="@color/transprant1"
                 android:orientation="horizontal">
                 <LinearLayout
                     android:id="@+id/gamificationQRCodeLayout"
