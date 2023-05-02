@@ -41,6 +41,7 @@ public class AuthenticationManager implements Runnable{
             String message = serverResponse.get("message").toString();
             Log.i(LogConstants.Authentication,"message"+message);
             if(isVerified){
+                edgeSdk.getLocalStorageManager().storeStringValue("true",sdkAuthKey);
                 postData = new JSONObject();
                 postData.put("sdkAPIKey", this.sdkAuthKey);
                 serverResponse = Utils.makePostRequest(Urls.LOAD_SDK_LOGO,postData);
@@ -61,7 +62,6 @@ public class AuthenticationManager implements Runnable{
                                     Log.i(LogConstants.Authentication,"filePath:"+filePath);
                                     edgeSdk.getLocalStorageManager().storeStringValue(filePath,Constants.LOGO_IMAGE_PATH);
                                     Log.i(LogConstants.Authentication,edgeSdk.getLocalStorageManager().getStringValue(Constants.LOGO_IMAGE_PATH));
-                                    edgeSdk.getLocalStorageManager().storeStringValue("true",sdkAuthKey);
                                 }
                             });
                         }
