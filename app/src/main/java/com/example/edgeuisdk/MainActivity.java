@@ -2,9 +2,12 @@ package com.example.edgeuisdk;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
@@ -19,9 +22,22 @@ import com.edgesdk.EdgeSdk;
 import com.edgesdk.Ticker;
 import com.edgesdk.Utils.LogConstants;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import nl.dionsegijn.konfetti.core.Angle;
+import nl.dionsegijn.konfetti.core.Party;
+import nl.dionsegijn.konfetti.core.PartyFactory;
+import nl.dionsegijn.konfetti.core.Position;
+import nl.dionsegijn.konfetti.core.Spread;
+import nl.dionsegijn.konfetti.core.emitter.Emitter;
+import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
+import nl.dionsegijn.konfetti.core.models.Shape;
+import nl.dionsegijn.konfetti.core.models.Size;
+import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class MainActivity extends AppCompatActivity {
     Ticker ticker;
@@ -44,12 +60,43 @@ public class MainActivity extends AppCompatActivity {
 
     private static final Random RANDOM = new Random();
     private static int currentQuestionIndex = -1;
+    private KonfettiView konfettiView = null;
+    private Shape.DrawableShape drawableShape = null;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+//        final Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_heart);
+//        drawableShape = new Shape.DrawableShape(drawable, true);
+//
+//        konfettiView = findViewById(R.id.konfettiView);
+//        EmitterConfig emitterConfig = new Emitter(5L, TimeUnit.SECONDS).perSecond(50);
+//        Party party = new PartyFactory(emitterConfig)
+//                .angle(270)
+//                .spread(90)
+//                .setSpeedBetween(1f, 5f)
+//                .timeToLive(2000L)
+//                .shapes(new Shape.Rectangle(0.2f), drawableShape)
+//                .sizes(new Size(12, 5f, 0.2f))
+//                .position(0.0, 0.0, 1.0, 0.0)
+//                .build();
+//        konfettiView.setOnClickListener(view ->
+//                konfettiView.start(party)
+//        );
+//
+//        findViewById(R.id.btnExplode).setOnClickListener(v -> {
+//            explode();
+//        });
+//        findViewById(R.id.btnParade).setOnClickListener(v -> {
+//            parade();
+//        });
+//        findViewById(R.id.btnRain).setOnClickListener(v -> {
+//            rain();
+//        });
 
         EdgeSdk edgeSdk = new EdgeSdk(this,"3bf76d424eeb0a1dcbdef11da9d148d8");
 
@@ -80,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                     ticker.displayQRCodeForGamification(8000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }       
+                }
             }
         }).start();
 
@@ -93,10 +140,60 @@ public class MainActivity extends AppCompatActivity {
                 String[] answers = ANSWERS[currentQuestionIndex];
                 shuffle(answers);
                 ticker.addPollInList(question,answers[0],answers[1],answers[2],answers[3]);
+                ticker.addPollToResolveInList(question,answers[0],"2");
 
             }
         }, 0, 10000);
 
+    }
+
+    public void explode() {
+        EmitterConfig emitterConfig = new Emitter(100L, TimeUnit.MILLISECONDS).max(100);
+        konfettiView.start(
+                new PartyFactory(emitterConfig)
+                        .spread(360)
+                        .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, drawableShape))
+                        .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                        .setSpeedBetween(0f, 30f)
+                        .position(new Position.Relative(0.5, 0.3))
+                        .build()
+        );
+    }
+
+    public void parade() {
+        EmitterConfig emitterConfig = new Emitter(5, TimeUnit.SECONDS).perSecond(30);
+        konfettiView.start(
+                new PartyFactory(emitterConfig)
+                        .angle(Angle.RIGHT - 45)
+                        .spread(Spread.SMALL)
+                        .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, drawableShape))
+                        .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                        .setSpeedBetween(10f, 30f)
+                        .position(new Position.Relative(0.0, 0.5))
+                        .build(),
+                new PartyFactory(emitterConfig)
+                        .angle(Angle.LEFT + 45)
+                        .spread(Spread.SMALL)
+                        .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, drawableShape))
+                        .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                        .setSpeedBetween(10f, 30f)
+                        .position(new Position.Relative(1.0, 0.5))
+                        .build()
+        );
+    }
+
+    public void rain() {
+        EmitterConfig emitterConfig = new Emitter(5, TimeUnit.SECONDS).perSecond(100);
+        konfettiView.start(
+                new PartyFactory(emitterConfig)
+                        .angle(Angle.BOTTOM)
+                        .spread(Spread.ROUND)
+                        .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, drawableShape))
+                        .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                        .setSpeedBetween(0f, 15f)
+                        .position(new Position.Relative(0.0, 0.0).between(new Position.Relative(1.0, 0.0)))
+                        .build()
+        );
     }
 
     private static void shuffle(String[] array) {

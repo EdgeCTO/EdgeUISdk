@@ -9,6 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
@@ -17,6 +20,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -27,17 +31,34 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.core.content.ContextCompat;
+
 import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.Utils.Messages;
 import com.edgesdk.dialogues.WagerPointsDialogue;
 import com.edgesdk.models.TickerNotifications;
+import com.github.jinatonic.confetti.ConfettiManager;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import nl.dionsegijn.konfetti.core.Angle;
+import nl.dionsegijn.konfetti.core.Party;
+import nl.dionsegijn.konfetti.core.PartyFactory;
+import nl.dionsegijn.konfetti.core.Position;
+import nl.dionsegijn.konfetti.core.Spread;
+import nl.dionsegijn.konfetti.core.emitter.Emitter;
+import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
+import nl.dionsegijn.konfetti.core.models.Shape;
+import nl.dionsegijn.konfetti.core.models.Size;
+
+import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class Ticker extends LinearLayout {
     private TextView txt_total_eats,txt_eat_market_price,txt_eat_market_inc_dec,txt_balance,txt_staked,txt_est_apy,txt_earned,txt_per_day,txt_total_points;
@@ -56,9 +77,14 @@ public class Ticker extends LinearLayout {
     private Handler qrCodeViewhandler;
     private LinearLayout polls_holder;
     private LinearLayout polls_to_resolve_holder;
-
     Timer staked_values_timer,est_apy_values_timer,earning_per_day_timer,eat_market_price_timer,ticker_values_timer,is_video_playing_or_paused_detector_timer,total_eats_timer,watch_to_earn_title_updater_timer,second_secreen_command_listener,ticker_visibility_controler_timer;
     private ImageView sdk_logo;
+    private KonfettiView konfettiView = null;
+    private Shape.DrawableShape drawableShape = null;
+    private MediaPlayer mediaPlayer;
+    private LinearLayout win_message_layout;
+    private TextView number_of_won_coins;
+    Party party;
     public Ticker(Context context,EdgeSdk edgeSdk) {
         super(context);
         this.edgeSdk=edgeSdk;
@@ -86,6 +112,7 @@ public class Ticker extends LinearLayout {
         txt_total_points = view.findViewById(R.id.txt_total_points);
         txt_title_total_points = view.findViewById(R.id.txt_title_total_points);
         polls_holder = view.findViewById(R.id.polls_holder);
+
         polls_to_resolve_holder = view.findViewById(R.id.polls_waiting_to_resolve_holder);
 
         txt_today = view.findViewById(R.id.txt_today);
@@ -98,6 +125,8 @@ public class Ticker extends LinearLayout {
         txt_title_est_apy = view.findViewById(R.id.txt_title_est_apy);
         txt_title_earned = view.findViewById(R.id.txt_title_earned);
         sdk_logo = view.findViewById(R.id.sdk_logo);
+        win_message_layout = view.findViewById(R.id.win_message_layout);
+        number_of_won_coins = view.findViewById(R.id.number_of_won_coins);
         //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
         gamificationStatusLayout = findViewById(R.id.gamificationStatusLayout);
         gamificationStatusLayout.setVisibility(View.INVISIBLE);
@@ -219,6 +248,21 @@ public class Ticker extends LinearLayout {
         };
         handler.post(runnableCode);
 
+
+        final Drawable drawable = ContextCompat.getDrawable(callingActivity.getApplicationContext(), R.drawable.ic_heart);
+        drawableShape = new Shape.DrawableShape(drawable, true);
+
+        konfettiView = findViewById(R.id.konfettiView);
+        EmitterConfig emitterConfig = new Emitter(5L, TimeUnit.SECONDS).perSecond(50);
+        party = new PartyFactory(emitterConfig)
+                .angle(270)
+                .spread(90)
+                .setSpeedBetween(1f, 5f)
+                .timeToLive(2000L)
+                .shapes(new Shape.Rectangle(0.2f), drawableShape)
+                .sizes(new Size(12, 5f, 0.2f))
+                .position(0.0, 0.0, 1.0, 0.0)
+                .build();
     }
 
     public boolean isPlaying() {
@@ -407,8 +451,79 @@ public class Ticker extends LinearLayout {
                 );
                 space.setLayoutParams(spaceLayoutParams);
                 polls_holder.addView(space, 0);
+                mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.new_game_started_sound);
+                mediaPlayer.start();
             }
         });
+    }
+
+    public void showAnimation(){
+        rain();
+    }
+
+    public void explode() {
+        EmitterConfig emitterConfig = new Emitter(100L, TimeUnit.MILLISECONDS).max(100);
+        konfettiView.post(new Runnable() {
+            @Override
+            public void run() {
+                konfettiView.start(
+                        new PartyFactory(emitterConfig)
+                                .spread(360)
+                                .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, drawableShape))
+                                .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                                .setSpeedBetween(0f, 30f)
+                                .position(new Position.Relative(0.5, 0.3))
+                                .build()
+                );
+            }
+        }) ;
+    }
+
+    public void parade() {
+        EmitterConfig emitterConfig = new Emitter(5, TimeUnit.SECONDS).perSecond(30);
+        konfettiView.post(new Runnable() {
+            @Override
+            public void run() {
+
+                konfettiView.start(
+                        new PartyFactory(emitterConfig)
+                                .angle(Angle.RIGHT - 45)
+                                .spread(Spread.SMALL)
+                                .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, drawableShape))
+                                .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                                .setSpeedBetween(10f, 30f)
+                                .position(new Position.Relative(0.0, 0.5))
+                                .build(),
+                        new PartyFactory(emitterConfig)
+                                .angle(Angle.LEFT + 45)
+                                .spread(Spread.SMALL)
+                                .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, drawableShape))
+                                .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                                .setSpeedBetween(10f, 30f)
+                                .position(new Position.Relative(1.0, 0.5))
+                                .build()
+                );
+            }
+        }) ;
+    }
+
+    public void rain() {
+        EmitterConfig emitterConfig = new Emitter(5, TimeUnit.SECONDS).perSecond(100);
+       konfettiView.post(new Runnable() {
+           @Override
+           public void run() {
+               konfettiView.start(
+                       new PartyFactory(emitterConfig)
+                               .angle(Angle.BOTTOM)
+                               .spread(Spread.ROUND)
+                               .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, drawableShape))
+                               .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                               .setSpeedBetween(0f, 15f)
+                               .position(new Position.Relative(0.0, 0.0).between(new Position.Relative(1.0, 0.0)))
+                               .build()
+               );
+           }
+       });
     }
 
     public void addPollToResolveInList(String poll_question, String selectedAnswer,String coins) {
@@ -467,10 +582,54 @@ public class Ticker extends LinearLayout {
                 );
                 space.setLayoutParams(spaceLayoutParams);
                 polls_to_resolve_holder.addView(space, 0);
+
+                new CountDownTimer(5000, 1000) {
+                    public void onTick(long millisUntilFinished) {
+                        // Do nothing on each tick
+                    }
+
+                    public void onFinish() {
+                        // Call your method here
+                        mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
+                        mediaPlayer.start();
+                        displayPollMessage("WIN ( "+coins+" )");
+                        //explode();
+                    }
+                }.start();
             }
         });
     }
 
+
+    public void displayPollMessage(String message) {
+
+        Animation fadeIn = new AlphaAnimation(0.0f, 1.0f);
+        fadeIn.setDuration(1000);
+
+        Animation fadeOut = new AlphaAnimation(1.0f, 0.0f);
+        fadeOut.setDuration(1000);
+        fadeOut.setStartOffset(3000);
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                // Start your animation here
+                number_of_won_coins.setText(message);
+                win_message_layout.setVisibility(View.VISIBLE);
+                win_message_layout.startAnimation(fadeIn);
+            }
+        });
+
+        Handler handler2 = new Handler(Looper.getMainLooper());
+        handler2.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                win_message_layout.startAnimation(fadeOut);
+                win_message_layout.setVisibility(View.GONE);
+            }
+        }, 3000);
+    }
 
 
     public void hideQRCodeForGamification(){

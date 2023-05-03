@@ -37,4 +37,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation project(":edgesdk")
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
+    implementation 'com.github.jinatonic.confetti:confetti:1.0.0'
+    implementation 'nl.dionsegijn:konfetti-xml:2.0.2'
+    implementation 'nl.dionsegijn:konfetti-core:2.0.2'
+
 }
