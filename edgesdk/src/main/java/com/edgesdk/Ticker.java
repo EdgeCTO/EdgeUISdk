@@ -593,7 +593,7 @@ public class Ticker extends LinearLayout {
                         mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
                         mediaPlayer.start();
                         displayPollMessage("WIN ( "+coins+" )");
-                        //explode();
+                        explode();
                     }
                 }.start();
             }
