@@ -13,6 +13,7 @@ public class ThreadManager {
     private final ExecutorService stakingValueFetchingThreadsPool;
     private final ExecutorService stakingValueCalculatorThreadsPool;
     private final ExecutorService gamifiedTvSocketThreadsPool;
+    private final ExecutorService liveGamificationSocketThreadsPool;
     private final ExecutorService socketMonitorThreadsPool;
     private final ExecutorService staticDataThreadsPool;
 
@@ -26,6 +27,7 @@ public class ThreadManager {
         this.gamifiedTvSocketThreadsPool = Executors.newFixedThreadPool(1);
         this.socketMonitorThreadsPool = Executors.newFixedThreadPool(1);
         this.staticDataThreadsPool = Executors.newFixedThreadPool(1);
+        this.liveGamificationSocketThreadsPool = Executors.newFixedThreadPool(1);
     }
 
     public ExecutorService getWalletManagingPool() {
@@ -50,6 +52,18 @@ public class ThreadManager {
 
     public ExecutorService getGamifiedTvSocketThreadsPool() {
         return gamifiedTvSocketThreadsPool;
+    }
+
+    public ExecutorService getLiveGamificationSocketThreadsPool() {
+        return liveGamificationSocketThreadsPool;
+    }
+
+    public ExecutorService getSocketMonitorThreadsPool() {
+        return socketMonitorThreadsPool;
+    }
+
+    public ExecutorService getStaticDataThreadsPool() {
+        return staticDataThreadsPool;
     }
 
     public void launchTemporaryWalletFetchingThread(TemporaryWalletManager temporaryWalletManager){
@@ -246,6 +260,26 @@ public class ThreadManager {
         }else{
             Log.i(LogConstants.Socket_Monitor,"socketMonitorThreadsPool.submit(staticDataManager)");
             staticDataManager.setThreadHandler(staticDataThreadsPool.submit(staticDataManager));
+        }
+    }
+
+    public void launchLiveGamificationManagerThread(LiveGamificationSocketManager liveGamificationSocketManager){
+        if(liveGamificationSocketManager.getThreadHandler()!=null) {
+            if (liveGamificationSocketManager.getThreadHandler().isDone()) {
+                // the task has completed
+                Log.i(LogConstants.Live_Gamification,"liveGamificationSocketManager task has been completed");
+                liveGamificationSocketManager.setThreadHandler(liveGamificationSocketThreadsPool.submit(liveGamificationSocketManager));
+            } else if (liveGamificationSocketManager.getThreadHandler().isCancelled()) {
+                // the task has been cancelled
+                Log.i(LogConstants.Live_Gamification,"liveGamificationSocketManager task has been cancelled");
+                liveGamificationSocketManager.setThreadHandler(liveGamificationSocketThreadsPool.submit(liveGamificationSocketManager));
+            } else {
+                // the task is still running
+                Log.i(LogConstants.Live_Gamification,"liveGamificationSocketManager task is still running");
+            }
+        }else{
+            Log.i(LogConstants.Live_Gamification,"socketMonitorThreadsPool.submit(liveGamificationSocketManager)");
+            liveGamificationSocketManager.setThreadHandler(liveGamificationSocketThreadsPool.submit(liveGamificationSocketManager));
         }
     }
 }

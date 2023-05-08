@@ -16,5 +16,5 @@ public class LogConstants {
     public static String Static_Data = "staticData";
     public static String Authentication = "authentication";
     public static String Post_Request = "postRequest";
-
+    public static String Live_Gamification = "liveGamification";
 }

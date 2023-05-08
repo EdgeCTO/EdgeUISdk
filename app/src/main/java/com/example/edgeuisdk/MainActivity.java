@@ -131,19 +131,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                currentQuestionIndex = (currentQuestionIndex + 1) % QUESTIONS.length;
-                String question = QUESTIONS[currentQuestionIndex];
-                String[] answers = ANSWERS[currentQuestionIndex];
-                shuffle(answers);
-                ticker.addPollInList(question,answers[0],answers[1],answers[2],answers[3]);
-                ticker.addPollToResolveInList(question,answers[0],"2");
-
-            }
-        }, 0, 10000);
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                currentQuestionIndex = (currentQuestionIndex + 1) % QUESTIONS.length;
+//                String question = QUESTIONS[currentQuestionIndex];
+//                String[] answers = ANSWERS[currentQuestionIndex];
+//                shuffle(answers);
+//                ticker.addPollInList(question,answers[0],answers[1],answers[2],answers[3]);
+//                ticker.addPollToResolveInList(question,answers[0],"2");
+//
+//            }
+//        }, 0, 10000);
 
     }
 

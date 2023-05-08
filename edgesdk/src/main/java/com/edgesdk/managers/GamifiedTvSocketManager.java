@@ -367,16 +367,6 @@ public class GamifiedTvSocketManager implements Runnable{
         this.IS_GAMIFICATION_ENABLED = isGamificationEnabled;
     }
 
-    public void checkIsGameGoingOn(String channelName){
-        //TODO:Send  {"type": "channel", "name": "Newsmax"}
-        try {
-            ws.sendText(new GameStatusCheckMessage(channelName).toJson());
-            Log.i(LogConstants.Gamefied_Tv,"Successfully sent : "+new GameStatusCheckMessage(channelName).toJson());
-        }catch (Exception e){
-            Log.i(LogConstants.Gamefied_Tv,"Error while sending message to check if game is going on or not : "+e.getMessage());
-        }
-    }
-
     public int getCURRENT_PRESSED_REMOTE_BUTTON() {
         return CURRENT_PRESSED_REMOTE_BUTTON;
     }

@@ -37,13 +37,18 @@ import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.Utils.Messages;
 import com.edgesdk.dialogues.WagerPointsDialogue;
+import com.edgesdk.models.Poll_Answer;
+import com.edgesdk.models.Poll_Question;
+import com.edgesdk.models.Poll_to_be_resolved;
 import com.edgesdk.models.TickerNotifications;
 import com.github.jinatonic.confetti.ConfettiManager;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -77,7 +82,7 @@ public class Ticker extends LinearLayout {
     private Handler qrCodeViewhandler;
     private LinearLayout polls_holder;
     private LinearLayout polls_to_resolve_holder;
-    Timer staked_values_timer,est_apy_values_timer,earning_per_day_timer,eat_market_price_timer,ticker_values_timer,is_video_playing_or_paused_detector_timer,total_eats_timer,watch_to_earn_title_updater_timer,second_secreen_command_listener,ticker_visibility_controler_timer;
+    Timer staked_values_timer,est_apy_values_timer,earning_per_day_timer,eat_market_price_timer,ticker_values_timer,is_video_playing_or_paused_detector_timer,total_eats_timer,watch_to_earn_title_updater_timer,second_secreen_command_listener,ticker_visibility_controler_timer,poll_list_moderator_timer,poll_list_to_be_resolved_moderator_timer;
     private ImageView sdk_logo;
     private KonfettiView konfettiView = null;
     private Shape.DrawableShape drawableShape = null;
@@ -85,6 +90,8 @@ public class Ticker extends LinearLayout {
     private LinearLayout win_message_layout;
     private TextView number_of_won_coins;
     Party party;
+    String last_poll_displayed_id;
+    private Map<String, Poll_to_be_resolved> listOfWageredPolls;
     public Ticker(Context context,EdgeSdk edgeSdk) {
         super(context);
         this.edgeSdk=edgeSdk;
@@ -178,6 +185,8 @@ public class Ticker extends LinearLayout {
         currentNotificationMsgNumber=0;
         tickerNotifications = new TickerNotifications[6];
 
+        listOfWageredPolls = new HashMap<>();
+
         String not_staking_no_balance = edgeSdk.getLocalStorageManager().getStringValue(Messages.NOT_STAKING_NO_BALANCE);
         not_staking_no_balance=not_staking_no_balance!=null?not_staking_no_balance:Messages.DEFAULT_NOT_STAKING_NO_BALANCE;
 
@@ -228,6 +237,9 @@ public class Ticker extends LinearLayout {
 
             watch_to_earn_title_updater_timer = new Timer();
 
+            poll_list_moderator_timer = new Timer();
+
+            poll_list_to_be_resolved_moderator_timer = new Timer();
         }
 
         //getting logo .
@@ -332,13 +344,13 @@ public class Ticker extends LinearLayout {
         }, time);
     }
     @SuppressLint("MissingInflatedId")
-    public void addPollInList(String poll_question, String poll_answer_a, String poll_answer_b, String poll_answer_c, String poll_answer_d) {
-        View poll = callingActivity.getLayoutInflater().inflate(R.layout.poll, null);
-        TextView question = poll.findViewById(R.id.poll_question);
-        TextView answer_a = poll.findViewById(R.id.poll_answer_a);
-        TextView answer_b = poll.findViewById(R.id.poll_answer_b);
-        TextView answer_c = poll.findViewById(R.id.poll_answer_c);
-        TextView answer_d = poll.findViewById(R.id.poll_answer_d);
+    public void addPollInList(String poll_question, String poll_answer_a, String poll_answer_b, String poll_answer_c, String poll_answer_d,Poll_Question poll) {
+        View poll_view = callingActivity.getLayoutInflater().inflate(R.layout.poll, null);
+        TextView question = poll_view.findViewById(R.id.poll_question);
+        TextView answer_a = poll_view.findViewById(R.id.poll_answer_a);
+        TextView answer_b = poll_view.findViewById(R.id.poll_answer_b);
+        TextView answer_c = poll_view.findViewById(R.id.poll_answer_c);
+        TextView answer_d = poll_view.findViewById(R.id.poll_answer_d);
         Animation slideInFromLeft = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, -1.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
@@ -350,7 +362,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer a is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this,poll);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -363,7 +375,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer b is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this,poll);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -376,7 +388,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer c is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this,poll);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -389,7 +401,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer d is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this,poll);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -437,13 +449,13 @@ public class Ticker extends LinearLayout {
                 answer_c.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
                 answer_d.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
 
-                polls_holder.addView(poll, 0);
+                polls_holder.addView(poll_view, 0);
 
                 answer_a.setFocusable(true);
                 answer_a.setFocusableInTouchMode(true);///add this line
                 answer_a.requestFocus();
 
-                poll.startAnimation(slideInFromLeft);
+                poll_view.startAnimation(slideInFromLeft);
                 View space = new View(callingActivity);
                 LinearLayout.LayoutParams spaceLayoutParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, // width
@@ -526,11 +538,11 @@ public class Ticker extends LinearLayout {
        });
     }
 
-    public void addPollToResolveInList(String poll_question, String selectedAnswer,String coins) {
-        View poll = callingActivity.getLayoutInflater().inflate(R.layout.poll_to_resolve, null);
-        TextView question = poll.findViewById(R.id.poll_to_resolve_question);
-        TextView answer = poll.findViewById(R.id.poll_to_resolve_selected_answer);
-        TextView wagered_coins = poll.findViewById(R.id.poll_to_resolve_wagered_coins);
+    public void addPollToResolveInList(String poll_question, String selectedAnswer,String coins,Poll_Question poll) {
+        View poll_view = callingActivity.getLayoutInflater().inflate(R.layout.poll_to_resolve, null);
+        TextView question = poll_view.findViewById(R.id.poll_to_resolve_question);
+        TextView answer = poll_view.findViewById(R.id.poll_to_resolve_selected_answer);
+        TextView wagered_coins = poll_view.findViewById(R.id.poll_to_resolve_wagered_coins);
 
         Animation slideInFromRight = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
@@ -572,34 +584,40 @@ public class Ticker extends LinearLayout {
                 // Set the font size of the TextViews
                 question.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
 
-                polls_to_resolve_holder.addView(poll, 0);
-                poll.startAnimation(slideInFromRight);
+                polls_to_resolve_holder.addView(poll_view, 0);
+                poll_view.startAnimation(slideInFromRight);
 
                 View space = new View(callingActivity);
                 LinearLayout.LayoutParams spaceLayoutParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, // width
                         10// height,
                 );
+
                 space.setLayoutParams(spaceLayoutParams);
                 polls_to_resolve_holder.addView(space, 0);
+                Poll_to_be_resolved poll_to_be_resolved = new Poll_to_be_resolved();
+                poll_to_be_resolved.setSelectedAnswer(selectedAnswer);
+                poll_to_be_resolved.setId(poll.getId());
+                poll_to_be_resolved.setWagered_coins(Integer.parseInt( coins));
+                poll_to_be_resolved.setPoll_question(poll);
+                listOfWageredPolls.put(poll.getId()+"",poll_to_be_resolved);
 
-                new CountDownTimer(5000, 1000) {
-                    public void onTick(long millisUntilFinished) {
-                        // Do nothing on each tick
-                    }
-
-                    public void onFinish() {
-                        // Call your method here
-                        mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
-                        mediaPlayer.start();
-                        displayPollMessage("WIN ( "+coins+" )");
-                        rain();
-                    }
-                }.start();
+//                new CountDownTimer(5000, 1000) {
+//                    public void onTick(long millisUntilFinished) {
+//                        // Do nothing on each tick
+//                    }
+//
+//                    public void onFinish() {
+//                        // Call your method here
+//                        mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
+//                        mediaPlayer.start();
+//                        displayPollMessage("WIN ( "+coins+" )");
+//                        rain();
+//                    }
+//                }.start();
             }
         });
     }
-
 
     public void displayPollMessage(String message) {
 
@@ -902,6 +920,103 @@ public class Ticker extends LinearLayout {
             }
         }
     }
+
+    class Poll_List_Moderator extends TimerTask {
+        @SuppressLint("LongLogTag")
+        public void run() {
+            //Now we need to first check if game is going on or not ?
+            //then get the list of poll questions and print lastly added element from map.
+            if(edgeSdk.getLiveGamificationManager().isIsGameGoingOn()){
+                Map.Entry<String, Poll_Question> lastEntry = null;
+                Map<String,Poll_Question> poll_questions_list = edgeSdk.getLiveGamificationManager().getPollQuestionList();
+                for (Map.Entry<String, Poll_Question> entry : poll_questions_list.entrySet()) {
+                    lastEntry = entry;
+                }
+
+                // Print the key and value of the last entry
+                if (lastEntry != null) {
+                    String current_poll_id = poll_questions_list.get(lastEntry.getKey()).getPoll();
+                    if(!current_poll_id.equals( last_poll_displayed_id)){
+                        last_poll_displayed_id=current_poll_id;
+                        String question = poll_questions_list.get(poll_questions_list.get(lastEntry.getKey()).getId()+"").getPoll();
+                        String answer_a = poll_questions_list.get(poll_questions_list.get(lastEntry.getKey()).getId()+"").getChoices()[0];
+                        String answer_b = poll_questions_list.get(poll_questions_list.get(lastEntry.getKey()).getId()+"").getChoices()[1];
+                        String answer_c = poll_questions_list.get(poll_questions_list.get(lastEntry.getKey()).getId()+"").getChoices()[2];
+                        String answer_d = poll_questions_list.get(poll_questions_list.get(lastEntry.getKey()).getId()+"").getChoices()[3];
+                        addPollInList(question,answer_a,answer_b,answer_c,answer_d,poll_questions_list.get(poll_questions_list.get(lastEntry.getKey()).getId()+""));
+                    }
+
+                    Log.i(LogConstants.Live_Gamification,"Last entry: " + lastEntry.getKey() + "=" + poll_questions_list.get(lastEntry.getKey()).getPoll());
+                }
+
+            }else{
+                Log.i(LogConstants.Live_Gamification,"Game is not started yet");
+            }
+            try{
+                poll_list_moderator_timer.schedule(new Poll_List_Moderator(), 5000);
+            }catch (IllegalStateException e){
+                poll_list_moderator_timer = new Timer();
+                poll_list_moderator_timer.schedule(new Poll_List_Moderator(), 5000);
+            }
+        }
+    }
+
+    class Poll_To_Be_Resolve_List_Moderator extends TimerTask {
+        @SuppressLint("LongLogTag")
+        public void run() {
+            //Now we need to first check if game is going on or not ?
+            //then get the list of poll questions and print lastly added element from map.
+            if(edgeSdk.getLiveGamificationManager().isIsGameGoingOn()){
+                Map<String,Poll_Answer> pollAnswerList = edgeSdk.getLiveGamificationManager().getPollAnswerList();
+                for (Map.Entry<String, Poll_Answer> answer : pollAnswerList.entrySet()) {
+                    for(Map.Entry<String,Poll_to_be_resolved> poll_to_be_resolved : listOfWageredPolls.entrySet()){
+                        if(listOfWageredPolls.get(poll_to_be_resolved.getKey()).get==pollAnswerList.get(answer.getKey()).getId()){
+                            Log.i(LogConstants.Live_Gamification,"Question resolved"+answer.getValue().getCorrect()[0]);
+                        }else{
+                            Log.i(LogConstants.Live_Gamification,"Not found");
+                        }
+                    }
+                }
+            }
+            else{
+                Log.i(LogConstants.Live_Gamification,"Game is not started yet");
+            }
+//            if(edgeSdk.getLiveGamificationManager().isIsGameGoingOn()){
+//                Map.Entry<String, Poll_Question> lastEntry = null;
+//                Map<String,Poll_Question> poll_questions_list = edgeSdk.getLiveGamificationManager().getPollQuestionList();
+//                for (Map.Entry<String, Poll_Question> entry : poll_questions_list.entrySet()) {
+//                    lastEntry = entry;
+//                }
+//
+//                // Print the key and value of the last entry
+//                if (lastEntry != null) {
+//                    int current_poll_id = poll_questions_list.get(lastEntry.getKey()).getId();
+//                    if(current_poll_id!=last_poll_displayed_id){
+//                        last_poll_displayed_id=current_poll_id;
+//                        String question = poll_questions_list.get(last_poll_displayed_id+"").getPoll();
+//                        String answer_a = poll_questions_list.get(last_poll_displayed_id+"").getChoices()[0];
+//                        String answer_b = poll_questions_list.get(last_poll_displayed_id+"").getChoices()[1];
+//                        String answer_c = poll_questions_list.get(last_poll_displayed_id+"").getChoices()[2];
+//                        String answer_d = poll_questions_list.get(last_poll_displayed_id+"").getChoices()[3];
+//                        addPollInList(question,answer_a,answer_b,answer_c,answer_d,poll_questions_list.get(last_poll_displayed_id+""));
+//                    }
+//
+//                    Log.i(LogConstants.Live_Gamification,"Last entry: " + lastEntry.getKey() + "=" + poll_questions_list.get(lastEntry.getKey()).getPoll());
+//                }
+//
+//            }else{
+//                Log.i(LogConstants.Live_Gamification,"Game is not started yet");
+//            }
+            try{
+                poll_list_to_be_resolved_moderator_timer.schedule(new Poll_To_Be_Resolve_List_Moderator(), 5000);
+            }catch (IllegalStateException e){
+                poll_list_to_be_resolved_moderator_timer = new Timer();
+                poll_list_to_be_resolved_moderator_timer.schedule(new Poll_To_Be_Resolve_List_Moderator(), 5000);
+            }
+        }
+    }
+
+
 
     class ESTApyValuesPrinter extends TimerTask {
         @SuppressLint("LongLogTag")
@@ -1235,7 +1350,10 @@ public class Ticker extends LinearLayout {
             total_eats_timer.cancel();
         if(watch_to_earn_title_updater_timer!=null)
             watch_to_earn_title_updater_timer.cancel();
-
+        if(poll_list_moderator_timer!=null)
+            poll_list_moderator_timer.cancel();
+        if(poll_list_to_be_resolved_moderator_timer!=null)
+            poll_list_to_be_resolved_moderator_timer.cancel();
     }
 
     public void PauseValuesPrintingThreads(){
@@ -1252,6 +1370,11 @@ public class Ticker extends LinearLayout {
             total_eats_timer.cancel();
         if(watch_to_earn_title_updater_timer!=null)
             watch_to_earn_title_updater_timer.cancel();
+        if(poll_list_moderator_timer!=null)
+            poll_list_moderator_timer.cancel();
+        if(poll_list_to_be_resolved_moderator_timer!=null){
+            poll_list_to_be_resolved_moderator_timer.cancel();
+        }
     }
 
 
@@ -1277,6 +1400,13 @@ public class Ticker extends LinearLayout {
 
         watch_to_earn_title_updater_timer = new Timer();
         watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(),1000);
+
+        poll_list_moderator_timer = new Timer();
+        poll_list_moderator_timer.schedule(new Poll_List_Moderator(),4000);
+
+        poll_list_to_be_resolved_moderator_timer = new Timer();
+        poll_list_to_be_resolved_moderator_timer.schedule(new Poll_To_Be_Resolve_List_Moderator(),4000);
+
     }
 
     public void onPause(){

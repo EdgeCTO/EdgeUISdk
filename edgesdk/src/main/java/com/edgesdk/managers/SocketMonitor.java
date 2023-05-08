@@ -79,7 +79,23 @@ public class SocketMonitor implements Runnable {
                         Log.i(LogConstants.Socket_Monitor, "MarketPrice thread status : found self closed");
                     }
                 }
-                Log.i(LogConstants.Socket_Monitor,"Checkup round : "+round);
+
+            if (edgeSdk.getLiveGamificationManager().getThreadHandler() != null) {
+                if (!edgeSdk.getLiveGamificationManager().getSelfDisconnected()) {
+                    if (edgeSdk.getLiveGamificationManager().getThreadHandler().isDone() || edgeSdk.getLiveGamificationManager().getThreadHandler().isCancelled()) {
+                        Log.i(LogConstants.Socket_Monitor, "LiveGamification thread status : found closed now trying to open it");
+                        edgeSdk.stopLiveGamificationManager();
+                        edgeSdk.startLiveGamificationManager();
+                    } else {
+                        Log.i(LogConstants.Socket_Monitor, "LiveGamification thread status : found Open");
+                    }
+                } else {
+                    Log.i(LogConstants.Socket_Monitor, "LiveGamification thread status : found self closed");
+                }
+            }
+
+
+            Log.i(LogConstants.Socket_Monitor,"Checkup round : "+round);
                 round++;
             }
             Log.i(LogConstants.Socket_Monitor,"end of socket monitor thread");

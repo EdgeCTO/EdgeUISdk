@@ -10,10 +10,12 @@ import androidx.annotation.NonNull;
 
 import com.edgesdk.R;
 import com.edgesdk.Ticker;
+import com.edgesdk.models.Poll_Question;
 
 public class WagerPointsDialogue extends Dialog {
     Ticker ticker;
-    public WagerPointsDialogue(@NonNull Context context, String question, String answer, Ticker ticker) {
+    Poll_Question poll;
+    public WagerPointsDialogue(@NonNull Context context, String question, String answer, Ticker ticker, Poll_Question poll) {
         super(context);
         this.ticker=ticker;
         setContentView(R.layout.wager_dialogue);
@@ -23,11 +25,11 @@ public class WagerPointsDialogue extends Dialog {
         EditText wagered_coins = findViewById(R.id.wagered_coins);
         question_view.setText("Question : "+question);
         answer_view.setText("Selected answer : "+answer);
-
+        this.poll=poll;
         btn_wager.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ticker.addPollToResolveInList(question,answer,wagered_coins.getText().toString());
+                ticker.addPollToResolveInList(question,answer,wagered_coins.getText().toString(),poll);
                 dismiss();
             }
         });

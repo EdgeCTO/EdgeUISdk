@@ -8,6 +8,7 @@ import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.managers.AuthenticationManager;
 import com.edgesdk.managers.GamifiedTvSocketManager;
+import com.edgesdk.managers.LiveGamificationSocketManager;
 import com.edgesdk.managers.LocalStorageManager;
 import com.edgesdk.managers.MarketPriceManager;
 import com.edgesdk.managers.QRCodeManager;
@@ -41,6 +42,7 @@ public class EdgeSdk {
     private static AuthenticationManager authenticationManager;
     private static SocketMonitor socketMonitor;
     private static QRCodeManager qrCodeManager;
+    private static LiveGamificationSocketManager liveGamificationSocketManager;
 
     private static StaticDataManager staticDataManager;
     private String sdkAuthKey;
@@ -63,6 +65,7 @@ public class EdgeSdk {
         this.authenticationManager = new AuthenticationManager(this,sdkAuthKey);
         this.staticDataManager = new StaticDataManager(this);
         this.qrCodeManager = new QRCodeManager(this);
+        this.liveGamificationSocketManager=new LiveGamificationSocketManager(this);
         this.isAlreadyStarted=false;
 
     }
@@ -76,6 +79,7 @@ public class EdgeSdk {
             if(isVerified){
                 isAlreadyStarted=true;
                 startGamifiedTv();
+                startLiveGamificationManager();
                 startFetchingTemporaryWalletAddressThread();
                 startFetchingMarketPrice();
                 startW2E();
@@ -234,6 +238,23 @@ public class EdgeSdk {
         }
     }
 
+    public LiveGamificationSocketManager startLiveGamificationManager(){
+        liveGamificationSocketManager.setSelfDisconnected(false);
+        liveGamificationSocketManager.initWebSocket();
+        threadManager.launchLiveGamificationManagerThread(liveGamificationSocketManager);
+        return liveGamificationSocketManager;
+    }
+
+    public void stopLiveGamificationManager(){
+        if(!liveGamificationSocketManager.getThreadHandler().isCancelled() && !liveGamificationSocketManager.getThreadHandler().isDone()){
+            liveGamificationSocketManager.setSelfDisconnected(true);
+            liveGamificationSocketManager.getWs().disconnect();
+            //liveGamificationSocketManager.getWs().sendClose();
+            liveGamificationSocketManager.getThreadHandler().cancel(true);
+        }
+    }
+
+
     public SocketMonitor startSocketMonitor(){
         threadManager.launchSocketMonitorThread(socketMonitor);
         return socketMonitor;
@@ -299,6 +320,7 @@ public class EdgeSdk {
 
         stopSocketMonitor();
         stopStaticDataManager();
+        stopLiveGamificationManager();
     }
 
     public void reStart(){
@@ -338,6 +360,10 @@ public class EdgeSdk {
     public WalletForwardingManager getWalletForwardingManager(){
         return walletForwardingManager;
     }
+    public  LiveGamificationSocketManager getLiveGamificationManager(){
+        return liveGamificationSocketManager;
+    }
+
     public static WalletSwitchingManager getWalletSwitchingManager() {
         return walletSwitchingManager;
     }
