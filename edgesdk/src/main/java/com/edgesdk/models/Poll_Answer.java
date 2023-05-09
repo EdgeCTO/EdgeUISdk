@@ -2,8 +2,8 @@ package com.edgesdk.models;
 
 public class Poll_Answer {
     String type,explanation;
-    String [] correct = new String[1];
-    int id;
+    int [] correct = new int[1];
+    long id;
 
     public String getType() {
         return type;
@@ -21,19 +21,19 @@ public class Poll_Answer {
         this.explanation = explanation;
     }
 
-    public String[] getCorrect() {
+    public int[] getCorrect() {
         return correct;
     }
 
-    public void setCorrect(String[] correct) {
+    public void setCorrect(int[] correct) {
         this.correct = correct;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 }

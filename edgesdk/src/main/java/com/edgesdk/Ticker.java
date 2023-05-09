@@ -90,7 +90,7 @@ public class Ticker extends LinearLayout {
     private LinearLayout win_message_layout;
     private TextView number_of_won_coins;
     Party party;
-    String last_poll_displayed_id;
+    long last_poll_displayed_id;
     private Map<String, Poll_to_be_resolved> listOfWageredPolls;
     public Ticker(Context context,EdgeSdk edgeSdk) {
         super(context);
@@ -375,7 +375,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer b is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this,poll);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_b,Ticker.this,poll);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -388,7 +388,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer c is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this,poll);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_c,Ticker.this,poll);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -401,7 +401,7 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer d is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this,poll);
+                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_d,Ticker.this,poll);
                         wagerPointsDialogue.show();
                     }
                 });
@@ -448,6 +448,8 @@ public class Ticker extends LinearLayout {
                 answer_b.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
                 answer_c.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
                 answer_d.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+                Log.i(LogConstants.Live_Gamification,"(int) poll.getId()"+(int) poll.getId());
+                poll_view.setId((int) poll.getId());
 
                 polls_holder.addView(poll_view, 0);
 
@@ -465,6 +467,20 @@ public class Ticker extends LinearLayout {
                 polls_holder.addView(space, 0);
                 mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.new_game_started_sound);
                 mediaPlayer.start();
+            }
+        });
+    }
+
+    public void removePollFromPollList(int id){
+        polls_holder.post(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < polls_holder.getChildCount(); i++) {
+                    View childView = polls_holder.getChildAt(i);
+                    if(childView.getId()==id){
+                        polls_holder.removeView(childView);
+                    }
+                }
             }
         });
     }
@@ -539,68 +555,95 @@ public class Ticker extends LinearLayout {
     }
 
     public void addPollToResolveInList(String poll_question, String selectedAnswer,String coins,Poll_Question poll) {
-        View poll_view = callingActivity.getLayoutInflater().inflate(R.layout.poll_to_resolve, null);
-        TextView question = poll_view.findViewById(R.id.poll_to_resolve_question);
-        TextView answer = poll_view.findViewById(R.id.poll_to_resolve_selected_answer);
-        TextView wagered_coins = poll_view.findViewById(R.id.poll_to_resolve_wagered_coins);
 
-        Animation slideInFromRight = new TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-        slideInFromRight.setDuration(1000);
+        int poll_mode = poll.getMode();
+        Log.i(LogConstants.Live_Gamification,"poll_mode: "+poll_mode);
+        if(poll_mode==2 || poll_mode==3){
+            Log.i(LogConstants.Live_Gamification,"Its MCQs question");
+            //it means don't need to wait for poll resolutions
+            String[] all_answers = poll.getChoices();
+            int correctAnswerIndex = poll.getCorrect()[0];
+            String correctAnswer = all_answers[correctAnswerIndex];
 
-        polls_to_resolve_holder.post(new Runnable() {
-            @Override
-            public void run() {
-                question.setText(poll_question);
-                answer.setText((selectedAnswer));
-                wagered_coins.setText(coins+" coins wagered");
-                // Get the width of the TextView container
-                int containerWidth = question.getWidth();
+            Log.i(LogConstants.Live_Gamification,"correctAnswer:"+correctAnswer);
+            Log.i(LogConstants.Live_Gamification,"selectedAnswer:"+selectedAnswer);
 
-                // Get the total text length of the question and answers
-                int totalTextLength = poll_question.length() ;
+            if(selectedAnswer.equals(correctAnswer)){
+                //correct answer
+                mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
+                mediaPlayer.start();
+                displayPollMessage("WIN ( "+coins+" )");
+                rain();
+            }else{
+                //wrong answer
+                displayPollMessage("LOST ( "+coins+" )");
+            }
+            removePollFromPollList((int) poll.getId());
+        }else {
+            Log.i(LogConstants.Live_Gamification,"Its waiting question");
+            //add in waiting list.
+            View poll_view = callingActivity.getLayoutInflater().inflate(R.layout.poll_to_resolve, null);
+            TextView question = poll_view.findViewById(R.id.poll_to_resolve_question);
+            TextView answer = poll_view.findViewById(R.id.poll_to_resolve_selected_answer);
+            TextView wagered_coins = poll_view.findViewById(R.id.poll_to_resolve_wagered_coins);
 
-                // Calculate the average text length per character
-                float averageTextLengthPerChar = (float) totalTextLength / (float) (poll_question.length() );
+            Animation slideInFromRight = new TranslateAnimation(
+                    Animation.RELATIVE_TO_PARENT, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
+                    Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+            slideInFromRight.setDuration(1000);
 
-                // Calculate the font size based on the container width and average text length per character
-                float fontSize = containerWidth / (averageTextLengthPerChar * 1.5f);
+            polls_to_resolve_holder.post(new Runnable() {
+                @Override
+                public void run() {
+                    question.setText(poll_question);
+                    answer.setText((selectedAnswer));
+                    wagered_coins.setText(coins + " coins wagered");
+                    // Get the width of the TextView container
+                    int containerWidth = question.getWidth();
 
-                // Set the maximum and minimum font sizes
-                float maxFontSize = 18f;
-                float minFontSize = 12f;
+                    // Get the total text length of the question and answers
+                    int totalTextLength = poll_question.length();
 
-                // If the calculated font size is greater than the maximum font size, set it to the maximum font size
-                if (fontSize > maxFontSize) {
-                    fontSize = maxFontSize;
-                }
+                    // Calculate the average text length per character
+                    float averageTextLengthPerChar = (float) totalTextLength / (float) (poll_question.length());
 
-                // If the calculated font size is less than the minimum font size, set it to the minimum font size
-                if (fontSize < minFontSize) {
-                    fontSize = minFontSize;
-                }
+                    // Calculate the font size based on the container width and average text length per character
+                    float fontSize = containerWidth / (averageTextLengthPerChar * 1.5f);
 
-                // Set the font size of the TextViews
-                question.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+                    // Set the maximum and minimum font sizes
+                    float maxFontSize = 18f;
+                    float minFontSize = 12f;
 
-                polls_to_resolve_holder.addView(poll_view, 0);
-                poll_view.startAnimation(slideInFromRight);
+                    // If the calculated font size is greater than the maximum font size, set it to the maximum font size
+                    if (fontSize > maxFontSize) {
+                        fontSize = maxFontSize;
+                    }
 
-                View space = new View(callingActivity);
-                LinearLayout.LayoutParams spaceLayoutParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, // width
-                        10// height,
-                );
+                    // If the calculated font size is less than the minimum font size, set it to the minimum font size
+                    if (fontSize < minFontSize) {
+                        fontSize = minFontSize;
+                    }
 
-                space.setLayoutParams(spaceLayoutParams);
-                polls_to_resolve_holder.addView(space, 0);
-                Poll_to_be_resolved poll_to_be_resolved = new Poll_to_be_resolved();
-                poll_to_be_resolved.setSelectedAnswer(selectedAnswer);
-                poll_to_be_resolved.setId(poll.getId());
-                poll_to_be_resolved.setWagered_coins(Integer.parseInt( coins));
-                poll_to_be_resolved.setPoll_question(poll);
-                listOfWageredPolls.put(poll.getId()+"",poll_to_be_resolved);
+                    // Set the font size of the TextViews
+                    question.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+                    poll_view.setId((int) poll.getId());
+                    polls_to_resolve_holder.addView(poll_view, 0);
+                    poll_view.startAnimation(slideInFromRight);
+
+                    View space = new View(callingActivity);
+                    LinearLayout.LayoutParams spaceLayoutParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT, // width
+                            10// height,
+                    );
+
+                    space.setLayoutParams(spaceLayoutParams);
+                    polls_to_resolve_holder.addView(space, 0);
+                    Poll_to_be_resolved poll_to_be_resolved = new Poll_to_be_resolved();
+                    poll_to_be_resolved.setSelectedAnswer(selectedAnswer);
+                    poll_to_be_resolved.setId(poll.getId());
+                    poll_to_be_resolved.setWagered_coins(Integer.parseInt(coins));
+                    poll_to_be_resolved.setPoll_question(poll);
+                    listOfWageredPolls.put(poll.getId() + "", poll_to_be_resolved);
 
 //                new CountDownTimer(5000, 1000) {
 //                    public void onTick(long millisUntilFinished) {
@@ -615,6 +658,21 @@ public class Ticker extends LinearLayout {
 //                        rain();
 //                    }
 //                }.start();
+                }
+            });
+        }
+    }
+
+    public void removePollFromListOfPendingPolls(int id){
+        polls_to_resolve_holder.post(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < polls_to_resolve_holder.getChildCount(); i++) {
+                    View childView = polls_to_resolve_holder.getChildAt(i);
+                    if(childView.getId()==id){
+                        polls_to_resolve_holder.removeView(childView);
+                    }
+                }
             }
         });
     }
@@ -648,7 +706,6 @@ public class Ticker extends LinearLayout {
             }
         }, 3000);
     }
-
 
     public void hideQRCodeForGamification(){
         qrCodeViewhandler.post(new Runnable() {
@@ -930,13 +987,16 @@ public class Ticker extends LinearLayout {
                 Map.Entry<String, Poll_Question> lastEntry = null;
                 Map<String,Poll_Question> poll_questions_list = edgeSdk.getLiveGamificationManager().getPollQuestionList();
                 for (Map.Entry<String, Poll_Question> entry : poll_questions_list.entrySet()) {
+                    Log.i(LogConstants.Live_Gamification,"Poll list items : "+entry.getValue().getId());
                     lastEntry = entry;
                 }
-
+                Log.i(LogConstants.Live_Gamification,"Last item : "+lastEntry.getValue().getId());
                 // Print the key and value of the last entry
                 if (lastEntry != null) {
-                    String current_poll_id = poll_questions_list.get(lastEntry.getKey()).getPoll();
-                    if(!current_poll_id.equals( last_poll_displayed_id)){
+                    long current_poll_id = poll_questions_list.get(lastEntry.getKey()).getId();
+                    Log.i(LogConstants.Live_Gamification,"Current Poll id :"+current_poll_id);
+                    Log.i(LogConstants.Live_Gamification,"Last Poll id :"+last_poll_displayed_id);
+                    if(current_poll_id!=last_poll_displayed_id){
                         last_poll_displayed_id=current_poll_id;
                         String question = poll_questions_list.get(poll_questions_list.get(lastEntry.getKey()).getId()+"").getPoll();
                         String answer_a = poll_questions_list.get(poll_questions_list.get(lastEntry.getKey()).getId()+"").getChoices()[0];
@@ -946,7 +1006,8 @@ public class Ticker extends LinearLayout {
                         addPollInList(question,answer_a,answer_b,answer_c,answer_d,poll_questions_list.get(poll_questions_list.get(lastEntry.getKey()).getId()+""));
                     }
 
-                    Log.i(LogConstants.Live_Gamification,"Last entry: " + lastEntry.getKey() + "=" + poll_questions_list.get(lastEntry.getKey()).getPoll());
+                    Log.i(LogConstants.Live_Gamification,"Current Poll Question :"+poll_questions_list.get(lastEntry.getKey()).getPoll());
+                    //Log.i(LogConstants.Live_Gamification,"Last entry: " + lastEntry.getKey() + "=" + poll_questions_list.get(lastEntry.getKey()).getPoll());
                 }
 
             }else{
@@ -967,11 +1028,34 @@ public class Ticker extends LinearLayout {
             //Now we need to first check if game is going on or not ?
             //then get the list of poll questions and print lastly added element from map.
             if(edgeSdk.getLiveGamificationManager().isIsGameGoingOn()){
+                Log.i(LogConstants.Live_Gamification,"game is going on ,");
                 Map<String,Poll_Answer> pollAnswerList = edgeSdk.getLiveGamificationManager().getPollAnswerList();
                 for (Map.Entry<String, Poll_Answer> answer : pollAnswerList.entrySet()) {
+                    Log.i(LogConstants.Live_Gamification,"resolved answer :"+answer.getValue().getId());
                     for(Map.Entry<String,Poll_to_be_resolved> poll_to_be_resolved : listOfWageredPolls.entrySet()){
-                        if(listOfWageredPolls.get(poll_to_be_resolved.getKey()).get==pollAnswerList.get(answer.getKey()).getId()){
+                        Log.i(LogConstants.Live_Gamification,"pending answer :"+poll_to_be_resolved.getValue().getId());
+                        if(answer.getValue().getId()==poll_to_be_resolved.getValue().getId()){
                             Log.i(LogConstants.Live_Gamification,"Question resolved"+answer.getValue().getCorrect()[0]);
+                            String correctAnswer = poll_to_be_resolved.getValue().getPoll_question().getChoices()[answer.getValue().getCorrect()[0]-1];
+                            String selectedAnswer = poll_to_be_resolved.getValue().getSelectedAnswer();
+                            Log.i(LogConstants.Live_Gamification,"selectedAnswer"+selectedAnswer);
+                            Log.i(LogConstants.Live_Gamification,"correctAnswer"+correctAnswer);
+                            if(correctAnswer.equals(selectedAnswer)){
+                                mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
+                                mediaPlayer.start();
+                                displayPollMessage("WIN ( "+poll_to_be_resolved.getValue().getWagered_coins()+" )");
+                                rain();
+                                removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
+                                removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
+                            }else {
+                                mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
+                                mediaPlayer.start();
+                                displayPollMessage("LOST ( "+poll_to_be_resolved.getValue().getWagered_coins()+" )");
+                                removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
+                                removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
+
+                            }
+                            listOfWageredPolls.remove(poll_to_be_resolved.getKey());
                         }else{
                             Log.i(LogConstants.Live_Gamification,"Not found");
                         }
@@ -981,32 +1065,7 @@ public class Ticker extends LinearLayout {
             else{
                 Log.i(LogConstants.Live_Gamification,"Game is not started yet");
             }
-//            if(edgeSdk.getLiveGamificationManager().isIsGameGoingOn()){
-//                Map.Entry<String, Poll_Question> lastEntry = null;
-//                Map<String,Poll_Question> poll_questions_list = edgeSdk.getLiveGamificationManager().getPollQuestionList();
-//                for (Map.Entry<String, Poll_Question> entry : poll_questions_list.entrySet()) {
-//                    lastEntry = entry;
-//                }
-//
-//                // Print the key and value of the last entry
-//                if (lastEntry != null) {
-//                    int current_poll_id = poll_questions_list.get(lastEntry.getKey()).getId();
-//                    if(current_poll_id!=last_poll_displayed_id){
-//                        last_poll_displayed_id=current_poll_id;
-//                        String question = poll_questions_list.get(last_poll_displayed_id+"").getPoll();
-//                        String answer_a = poll_questions_list.get(last_poll_displayed_id+"").getChoices()[0];
-//                        String answer_b = poll_questions_list.get(last_poll_displayed_id+"").getChoices()[1];
-//                        String answer_c = poll_questions_list.get(last_poll_displayed_id+"").getChoices()[2];
-//                        String answer_d = poll_questions_list.get(last_poll_displayed_id+"").getChoices()[3];
-//                        addPollInList(question,answer_a,answer_b,answer_c,answer_d,poll_questions_list.get(last_poll_displayed_id+""));
-//                    }
-//
-//                    Log.i(LogConstants.Live_Gamification,"Last entry: " + lastEntry.getKey() + "=" + poll_questions_list.get(lastEntry.getKey()).getPoll());
-//                }
-//
-//            }else{
-//                Log.i(LogConstants.Live_Gamification,"Game is not started yet");
-//            }
+
             try{
                 poll_list_to_be_resolved_moderator_timer.schedule(new Poll_To_Be_Resolve_List_Moderator(), 5000);
             }catch (IllegalStateException e){

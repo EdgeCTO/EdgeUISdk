@@ -3,7 +3,7 @@ package com.edgesdk.models;
 public class Poll_to_be_resolved {
     Poll_Question poll_question;
     String selectedAnswer;
-    int id;
+    long id;
     int wagered_coins;
 
     public Poll_Question getPoll_question() {
@@ -22,11 +22,11 @@ public class Poll_to_be_resolved {
         this.selectedAnswer = selectedAnswer;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

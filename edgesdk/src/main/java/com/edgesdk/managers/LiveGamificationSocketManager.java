@@ -24,6 +24,7 @@ import com.neovisionaries.ws.client.WebSocketState;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -39,8 +40,10 @@ public class LiveGamificationSocketManager implements Runnable{
     public LiveGamificationSocketManager(EdgeSdk edgeSdk) {
         this.edgeSdk = edgeSdk;
         this.setSelfDisconnected(false);
-        this.pollQuestionList = new HashMap<>();
-        this.pollAnswerList = new HashMap<>();
+//        this.pollQuestionList = new HashMap<>();
+//        this.pollAnswerList = new HashMap<>();
+        this.pollQuestionList = new LinkedHashMap<>();
+        this.pollAnswerList = new LinkedHashMap<>();
         this.isGameGoingOn=false;
     }
 
@@ -172,14 +175,14 @@ public class LiveGamificationSocketManager implements Runnable{
                             String type = responseType;
                             int mode = Utils.parser(socketResponse).get("mode").intValue();
                             JsonNode correct=null;
-                            String correctAnswer[] = new String[1];
-                            if(mode==3){
+                            int correctAnswer[] = new int[1];
+                            if(mode==3 || mode==2){
                                  correct = Utils.parser(socketResponse).get("correct");
                                 ObjectMapper objectMapper = new ObjectMapper();
-                                correctAnswer = objectMapper.treeToValue(correct, String[].class);
+                                correctAnswer = objectMapper.treeToValue(correct, int[].class);
                             }
                             String explanation = Utils.parser(socketResponse).get("explanation").toString();
-                            int id = Utils.parser(socketResponse).get("id").intValue();
+                            long id = Utils.parser(socketResponse).get("id").longValue();
                             JsonNode choices = Utils.parser(socketResponse).get("choices");
                             ObjectMapper objectMapper = new ObjectMapper();
                             String[] choicesArray = objectMapper.treeToValue(choices, String[].class);
@@ -191,24 +194,27 @@ public class LiveGamificationSocketManager implements Runnable{
                             poll_question.setId(id);
                             poll_question.setCorrect(correctAnswer);
                             pollQuestionList.put(id+"",poll_question);
-                            //Log.i(LogConstants.Live_Gamification,pollQuestionList.get(id+"").getPoll()+"");
+                            Log.i(LogConstants.Live_Gamification,"Adding question with id : "+id);
+                            Log.i(LogConstants.Live_Gamification,"Question : "+pollQuestionList.get(id+"").getPoll());
+
                         }catch (Exception e){
                             Log.i(LogConstants.Live_Gamification,e.getMessage());
-                            Poll_Answer poll_answer = new Poll_Answer();
-                            String type = responseType;
-                            String explanation = Utils.parser(socketResponse).get("explanation").toString();
-                            int id = Utils.parser(socketResponse).get("id").intValue();
-                            JsonNode correct = Utils.parser(socketResponse).get("correct");
-                            ObjectMapper objectMapper = new ObjectMapper();
-                            String[] correctAnswer = objectMapper.treeToValue(correct, String[].class);
-                            poll_answer.setCorrect(correctAnswer);
-                            poll_answer.setExplanation(explanation);
-                            poll_answer.setId(id);
-                            poll_answer.setType(type);
-                            pollAnswerList.put(id+"",poll_answer);
                         }
                         }else if(responseType.equals("resolve")){
-                        Log.i(LogConstants.Live_Gamification,"Poll Answer");
+                        Poll_Answer poll_answer = new Poll_Answer();
+                        String type = responseType;
+                        String explanation = Utils.parser(socketResponse).get("explanation").toString();
+                        long id = Utils.parser(socketResponse).get("id").longValue();
+                        JsonNode correct = Utils.parser(socketResponse).get("correct");
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        int[] correctAnswer = objectMapper.treeToValue(correct, int[].class);
+                        poll_answer.setCorrect(correctAnswer);
+                        poll_answer.setExplanation(explanation);
+                        poll_answer.setId(id);
+                        poll_answer.setType(type);
+                        pollAnswerList.put(id+"",poll_answer);
+                        Log.i(LogConstants.Live_Gamification,"Poll Answer:"+id);
+
                     }
                 }
 
