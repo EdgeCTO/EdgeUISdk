@@ -17,7 +17,7 @@
             android:padding="5dp"
             android:background="@color/baseDark"
             android:textColor="@color/white"
-            android:text="Wager your coins"></TextView>
+            android:text="Wager your points"></TextView>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -63,7 +63,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tokens to wager" />
+                android:text="Points to wager" />
 
             <EditText
                 android:layout_marginTop="10dp"
