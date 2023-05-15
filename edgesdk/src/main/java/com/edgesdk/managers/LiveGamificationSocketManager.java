@@ -310,6 +310,12 @@ public class LiveGamificationSocketManager implements Runnable{
 
     }
 
+    public void removePollFromPollQuestionList(int id){
+        pollQuestionList.remove(id+"");
+    }
+    public void removePollFromPollAnswerList(int id){
+        pollAnswerList.remove(id+"");
+    }
 
     @Override
     public void run() {

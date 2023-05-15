@@ -17,6 +17,7 @@ import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +90,7 @@ public class Ticker extends LinearLayout {
     private Shape.DrawableShape drawableShape = null;
     private MediaPlayer mediaPlayer;
     private LinearLayout win_message_layout;
+    private ScrollView polls_holder_scroll_container;
     private TextView number_of_won_coins;
     Party party;
     long last_poll_displayed_id;
@@ -135,7 +138,9 @@ public class Ticker extends LinearLayout {
         win_message_layout = view.findViewById(R.id.win_message_layout);
         number_of_won_coins = view.findViewById(R.id.number_of_won_coins);
         //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
+        polls_holder_scroll_container = findViewById(R.id.polls_holder_scroll_container);
         gamificationStatusLayout = findViewById(R.id.gamificationStatusLayout);
+
         gamificationStatusLayout.setVisibility(View.INVISIBLE);
 
         ticker_layout = findViewById(R.id.ticker_layout);
@@ -346,6 +351,7 @@ public class Ticker extends LinearLayout {
     @SuppressLint("MissingInflatedId")
     public void addPollInList(String poll_question, String poll_answer_a, String poll_answer_b, String poll_answer_c, String poll_answer_d,Poll_Question poll) {
         View poll_view = callingActivity.getLayoutInflater().inflate(R.layout.poll, null);
+        Log.i(LogConstants.Live_Gamification,"currentView"+poll_view);
         TextView question = poll_view.findViewById(R.id.poll_question);
         TextView answer_a = poll_view.findViewById(R.id.poll_answer_a);
         TextView answer_b = poll_view.findViewById(R.id.poll_answer_b);
@@ -355,6 +361,7 @@ public class Ticker extends LinearLayout {
                 Animation.RELATIVE_TO_PARENT, -1.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
         slideInFromLeft.setDuration(1000);
+
 
         answer_a.setOnClickListener(new OnClickListener() {
             @Override
@@ -372,6 +379,7 @@ public class Ticker extends LinearLayout {
                 });
             }
         });
+
 
         answer_b.setOnClickListener(new OnClickListener() {
             @Override
@@ -423,6 +431,8 @@ public class Ticker extends LinearLayout {
                 });
             }
         });
+
+
 
         polls_holder.post(new Runnable() {
             @Override
@@ -485,6 +495,53 @@ public class Ticker extends LinearLayout {
                 polls_holder.addView(space, 0);
                 mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.new_game_started_sound);
                 mediaPlayer.start();
+
+                answer_a.setOnKeyListener(new OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_UP) {
+                            int currentIndex = polls_holder.indexOfChild(poll_view);
+                            if (currentIndex > 0) {
+                                View previousView = polls_holder.getChildAt(currentIndex-2);
+                                if (previousView != null) {
+                                    TextView previousAnswer = (TextView) previousView.findViewById(R.id.poll_answer_d);
+                                    if (previousAnswer != null) {
+                                        // Do something with the previous view
+                                        polls_holder_scroll_container.smoothScrollBy(0, -previousView.getHeight());
+                                        previousAnswer.setFocusable(true);
+                                        previousAnswer.requestFocus();
+                                    }
+                                }
+                            }
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+
+                //shifting focus to previous question
+                answer_d.setOnKeyListener(new OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN) {
+                            int currentIndex = polls_holder.indexOfChild(poll_view);
+                            if (currentIndex > 0) {
+                                View nextView = polls_holder.getChildAt(currentIndex+2);
+                                if (nextView != null) {
+                                    TextView previousAnswer = (TextView) nextView.findViewById(R.id.poll_answer_a);
+                                    if (previousAnswer != null) {
+                                        // Do something with the previous view
+                                        polls_holder_scroll_container.smoothScrollBy(0, nextView.getHeight());
+                                        previousAnswer.setFocusable(true);
+                                        previousAnswer.requestFocus();
+                                    }
+                                }
+                            }
+                            return true;
+                        }
+                        return false;
+                    }
+                });
             }
         });
     }
@@ -495,14 +552,27 @@ public class Ticker extends LinearLayout {
             public void run() {
                 for (int i = 0; i < polls_holder.getChildCount(); i++) {
                     View childView = polls_holder.getChildAt(i);
+                    View spaceView = polls_holder.getChildAt(i+1);
+
                     if(childView.getId()==id){
                         polls_holder.removeView(childView);
+                        polls_holder.removeView(spaceView);
+                        edgeSdk.getLiveGamificationManager().removePollFromPollQuestionList(id);
                     }
                 }
             }
         });
     }
 
+    public int getViewIndex(int id){
+        for (int i = 0; i < polls_holder.getChildCount(); i++) {
+            View childView = polls_holder.getChildAt(i);
+            if(childView.getId()==id){
+                return i;
+            }
+        }
+        return -1;
+    }
     public void showAnimation(){
         rain();
     }
@@ -597,6 +667,7 @@ public class Ticker extends LinearLayout {
                 displayPollMessage("LOST ( "+coins+" )");
             }
             removePollFromPollList((int) poll.getId());
+
         }else {
             Log.i(LogConstants.Live_Gamification,"Its waiting question");
             //add in waiting list.
@@ -662,26 +733,13 @@ public class Ticker extends LinearLayout {
                     poll_to_be_resolved.setWagered_coins(Integer.parseInt(coins));
                     poll_to_be_resolved.setPoll_question(poll);
                     listOfWageredPolls.put(poll.getId() + "", poll_to_be_resolved);
-
-//                new CountDownTimer(5000, 1000) {
-//                    public void onTick(long millisUntilFinished) {
-//                        // Do nothing on each tick
-//                    }
-//
-//                    public void onFinish() {
-//                        // Call your method here
-//                        mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
-//                        mediaPlayer.start();
-//                        displayPollMessage("WIN ( "+coins+" )");
-//                        rain();
-//                    }
-//                }.start();
+                    removePollFromPollList((int) poll.getId());
                 }
             });
         }
     }
 
-    public void removePollFromListOfPendingPolls(int id){
+    public void  removePollFromListOfPendingPolls(int id){
         polls_to_resolve_holder.post(new Runnable() {
             @Override
             public void run() {
@@ -689,6 +747,7 @@ public class Ticker extends LinearLayout {
                     View childView = polls_to_resolve_holder.getChildAt(i);
                     if(childView.getId()==id){
                         polls_to_resolve_holder.removeView(childView);
+                        edgeSdk.getLiveGamificationManager().removePollFromPollAnswerList(id);
                     }
                 }
             }
@@ -1073,7 +1132,6 @@ public class Ticker extends LinearLayout {
                                     displayPollMessage("LOST ( " + poll_to_be_resolved.getValue().getWagered_coins() + " )");
                                     removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
                                     removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
-
                                 }
                                 listOfWageredPolls.remove(poll_to_be_resolved.getKey());
                             } else {
@@ -1086,6 +1144,7 @@ public class Ticker extends LinearLayout {
                 }
 
             }catch (Exception e){
+                Log.i(LogConstants.Live_Gamification,"Error while moderating list of pending polls :"+ e);
                 Log.i(LogConstants.Live_Gamification,"Error while moderating list of pending polls :"+e.getMessage());
             }
 
@@ -1097,7 +1156,6 @@ public class Ticker extends LinearLayout {
             }
         }
     }
-
 
 
     class ESTApyValuesPrinter extends TimerTask {
