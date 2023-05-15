@@ -177,7 +177,7 @@ public class LiveGamificationSocketManager implements Runnable{
                             JsonNode correct=null;
                             int correctAnswer[] = new int[1];
                             if(mode==3 || mode==2){
-                                 correct = Utils.parser(socketResponse).get("correct");
+                                correct = Utils.parser(socketResponse).get("correct");
                                 ObjectMapper objectMapper = new ObjectMapper();
                                 correctAnswer = objectMapper.treeToValue(correct, int[].class);
                             }

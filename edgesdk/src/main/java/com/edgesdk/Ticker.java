@@ -362,8 +362,12 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer a is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_a,Ticker.this,poll);
-                        wagerPointsDialogue.show();
+                        if(poll.getMode()==1) {
+                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_a, Ticker.this, poll);
+                            wagerPointsDialogue.show();
+                        }else{
+                            addPollToResolveInList(poll_question,poll_answer_a,"1",poll);
+                        }
                     }
                 });
             }
@@ -375,8 +379,12 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer b is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_b,Ticker.this,poll);
-                        wagerPointsDialogue.show();
+                        if(poll.getMode()==1) {
+                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_b, Ticker.this, poll);
+                            wagerPointsDialogue.show();
+                        }else{
+                            addPollToResolveInList(poll_question,poll_answer_b,"1",poll);
+                        }
                     }
                 });
             }
@@ -388,8 +396,12 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer c is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_c,Ticker.this,poll);
-                        wagerPointsDialogue.show();
+                        if(poll.getMode()==1) {
+                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_c, Ticker.this, poll);
+                            wagerPointsDialogue.show();
+                        }else{
+                            addPollToResolveInList(poll_question,poll_answer_c,"1",poll);
+                        }
                     }
                 });
             }
@@ -401,12 +413,17 @@ public class Ticker extends LinearLayout {
                 //Toast.makeText(callingActivity, "Answer d is selected", Toast.LENGTH_SHORT).show();
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity,poll_question,poll_answer_d,Ticker.this,poll);
-                        wagerPointsDialogue.show();
+                        if(poll.getMode()==1) {
+                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_d, Ticker.this, poll);
+                            wagerPointsDialogue.show();
+                        }else{
+                            addPollToResolveInList(poll_question,poll_answer_d,"1",poll);
+                        }
                     }
                 });
             }
         });
+
         polls_holder.post(new Runnable() {
             @Override
             public void run() {
@@ -463,6 +480,7 @@ public class Ticker extends LinearLayout {
                         LinearLayout.LayoutParams.MATCH_PARENT, // width
                         10// height,
                 );
+
                 space.setLayoutParams(spaceLayoutParams);
                 polls_holder.addView(space, 0);
                 mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.new_game_started_sound);
@@ -990,6 +1008,7 @@ public class Ticker extends LinearLayout {
                     Log.i(LogConstants.Live_Gamification,"Poll list items : "+entry.getValue().getId());
                     lastEntry = entry;
                 }
+
                 Log.i(LogConstants.Live_Gamification,"Last item : "+lastEntry.getValue().getId());
                 // Print the key and value of the last entry
                 if (lastEntry != null) {
@@ -1027,43 +1046,47 @@ public class Ticker extends LinearLayout {
         public void run() {
             //Now we need to first check if game is going on or not ?
             //then get the list of poll questions and print lastly added element from map.
-            if(edgeSdk.getLiveGamificationManager().isIsGameGoingOn()){
-                Log.i(LogConstants.Live_Gamification,"game is going on ,");
-                Map<String,Poll_Answer> pollAnswerList = edgeSdk.getLiveGamificationManager().getPollAnswerList();
-                for (Map.Entry<String, Poll_Answer> answer : pollAnswerList.entrySet()) {
-                    Log.i(LogConstants.Live_Gamification,"resolved answer :"+answer.getValue().getId());
-                    for(Map.Entry<String,Poll_to_be_resolved> poll_to_be_resolved : listOfWageredPolls.entrySet()){
-                        Log.i(LogConstants.Live_Gamification,"pending answer :"+poll_to_be_resolved.getValue().getId());
-                        if(answer.getValue().getId()==poll_to_be_resolved.getValue().getId()){
-                            Log.i(LogConstants.Live_Gamification,"Question resolved"+answer.getValue().getCorrect()[0]);
-                            String correctAnswer = poll_to_be_resolved.getValue().getPoll_question().getChoices()[answer.getValue().getCorrect()[0]-1];
-                            String selectedAnswer = poll_to_be_resolved.getValue().getSelectedAnswer();
-                            Log.i(LogConstants.Live_Gamification,"selectedAnswer"+selectedAnswer);
-                            Log.i(LogConstants.Live_Gamification,"correctAnswer"+correctAnswer);
-                            if(correctAnswer.equals(selectedAnswer)){
-                                mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
-                                mediaPlayer.start();
-                                displayPollMessage("WIN ( "+poll_to_be_resolved.getValue().getWagered_coins()+" )");
-                                rain();
-                                removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
-                                removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
-                            }else {
-                                mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
-                                mediaPlayer.start();
-                                displayPollMessage("LOST ( "+poll_to_be_resolved.getValue().getWagered_coins()+" )");
-                                removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
-                                removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
+            try {
+                if (edgeSdk.getLiveGamificationManager().isIsGameGoingOn()) {
+                    Log.i(LogConstants.Live_Gamification, "game is going on ,");
+                    Map<String, Poll_Answer> pollAnswerList = edgeSdk.getLiveGamificationManager().getPollAnswerList();
+                    for (Map.Entry<String, Poll_Answer> answer : pollAnswerList.entrySet()) {
+                        Log.i(LogConstants.Live_Gamification, "resolved answer :" + answer.getValue().getId());
+                        for (Map.Entry<String, Poll_to_be_resolved> poll_to_be_resolved : listOfWageredPolls.entrySet()) {
+                            Log.i(LogConstants.Live_Gamification, "pending answer :" + poll_to_be_resolved.getValue().getId());
+                            if (answer.getValue().getId() == poll_to_be_resolved.getValue().getId()) {
+                                Log.i(LogConstants.Live_Gamification, "Question resolved" + answer.getValue().getCorrect()[0]);
+                                String correctAnswer = poll_to_be_resolved.getValue().getPoll_question().getChoices()[answer.getValue().getCorrect()[0] - 1];
+                                String selectedAnswer = poll_to_be_resolved.getValue().getSelectedAnswer();
+                                Log.i(LogConstants.Live_Gamification, "selectedAnswer" + selectedAnswer);
+                                Log.i(LogConstants.Live_Gamification, "correctAnswer" + correctAnswer);
+                                if (correctAnswer.equals(selectedAnswer)) {
+                                    mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
+                                    mediaPlayer.start();
+                                    displayPollMessage("WIN ( " + poll_to_be_resolved.getValue().getWagered_coins() + " )");
+                                    rain();
+                                    removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
+                                    removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
+                                } else {
+                                    mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
+                                    mediaPlayer.start();
+                                    displayPollMessage("LOST ( " + poll_to_be_resolved.getValue().getWagered_coins() + " )");
+                                    removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
+                                    removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
 
+                                }
+                                listOfWageredPolls.remove(poll_to_be_resolved.getKey());
+                            } else {
+                                Log.i(LogConstants.Live_Gamification, "Not found");
                             }
-                            listOfWageredPolls.remove(poll_to_be_resolved.getKey());
-                        }else{
-                            Log.i(LogConstants.Live_Gamification,"Not found");
                         }
                     }
+                } else {
+                    Log.i(LogConstants.Live_Gamification, "Game is not started yet");
                 }
-            }
-            else{
-                Log.i(LogConstants.Live_Gamification,"Game is not started yet");
+
+            }catch (Exception e){
+                Log.i(LogConstants.Live_Gamification,"Error while moderating list of pending polls :"+e.getMessage());
             }
 
             try{
