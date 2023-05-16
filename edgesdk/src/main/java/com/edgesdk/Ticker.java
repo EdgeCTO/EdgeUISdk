@@ -1,6 +1,10 @@
 package com.edgesdk;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -21,13 +25,17 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,9 +100,11 @@ public class Ticker extends LinearLayout {
     private LinearLayout win_message_layout;
     private ScrollView polls_holder_scroll_container;
     private TextView number_of_won_coins;
+
     Party party;
     long last_poll_displayed_id;
     private Map<String, Poll_to_be_resolved> listOfWageredPolls;
+
     public Ticker(Context context,EdgeSdk edgeSdk) {
         super(context);
         this.edgeSdk=edgeSdk;
@@ -122,7 +132,6 @@ public class Ticker extends LinearLayout {
         txt_total_points = view.findViewById(R.id.txt_total_points);
         txt_title_total_points = view.findViewById(R.id.txt_title_total_points);
         polls_holder = view.findViewById(R.id.polls_holder);
-
         polls_to_resolve_holder = view.findViewById(R.id.polls_waiting_to_resolve_holder);
 
         txt_today = view.findViewById(R.id.txt_today);
@@ -661,11 +670,14 @@ public class Ticker extends LinearLayout {
                 mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
                 mediaPlayer.start();
                 displayPollMessage("WIN ( "+coins+" )");
+                updatePointsNumber(Float.parseFloat(coins+""));
                 rain();
             }else{
                 //wrong answer
                 displayPollMessage("LOST ( "+coins+" )");
+                updatePointsNumber(-Float.parseFloat(coins+""));
             }
+
             removePollFromPollList((int) poll.getId());
 
         }else {
@@ -1126,12 +1138,14 @@ public class Ticker extends LinearLayout {
                                     rain();
                                     removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
                                     removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
+                                    updatePointsNumber(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+""));
                                 } else {
                                     mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
                                     mediaPlayer.start();
                                     displayPollMessage("LOST ( " + poll_to_be_resolved.getValue().getWagered_coins() + " )");
                                     removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
                                     removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
+                                    updatePointsNumber( - (Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+"")));
                                 }
                                 listOfWageredPolls.remove(poll_to_be_resolved.getKey());
                             } else {
@@ -1344,6 +1358,77 @@ public class Ticker extends LinearLayout {
                 ticker_values_timer.schedule(new TickerValuePrinter(), 1000);
             }
         }
+    }
+
+    public void updatePointsNumber(float points){
+
+        callingActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final float startValue = edgeSdk.getW2EarnManager().getResults().getOffChainBalance();
+                final float endValue = startValue + points;
+                edgeSdk.getW2EarnManager().getResults().setPoints(points);
+
+                // Define the colors for normal and changed states
+                int normalColor = getResources().getColor(R.color.white);
+                int changedColor = getResources().getColor(R.color.yellow);
+                if(points<0){
+                    changedColor = getResources().getColor(R.color.red);
+                }
+                // Create a ValueAnimator for the scale animation
+                ValueAnimator scaleAnimator = ObjectAnimator.ofPropertyValuesHolder(
+                        txt_total_points,
+                        PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.0f),
+                        PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.2f)
+                );
+                scaleAnimator.setDuration(2000);
+                scaleAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+                scaleAnimator.setRepeatMode(ValueAnimator.REVERSE);
+                scaleAnimator.setRepeatCount(1);
+
+                // Create an ObjectAnimator for the color change animation
+                ObjectAnimator colorAnimator = ObjectAnimator.ofArgb(txt_total_points, "textColor", normalColor, changedColor);
+                colorAnimator.setDuration(2000);
+                colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
+                colorAnimator.setRepeatCount(1);
+
+                // Create an AnimatorSet to play the animations together
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.playTogether(scaleAnimator, colorAnimator);
+                animatorSet.start();
+
+
+                if (points>0) {
+                    // Win animation
+                    Animation winAnimation = AnimationUtils.loadAnimation(callingActivity, R.anim.win_animation);
+                    txt_total_points.startAnimation(winAnimation);
+                } else {
+                    // Lose animation
+                    Animation loseAnimation = AnimationUtils.loadAnimation(callingActivity, R.anim.win_animation);
+                    txt_total_points.startAnimation(loseAnimation);
+                }
+                // Create a ValueAnimator for the counter effect
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(startValue, endValue);
+                valueAnimator.setDuration(5000);
+                valueAnimator.setInterpolator(new DecelerateInterpolator());
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    DecimalFormat decimalFormat = new DecimalFormat("#0.000");
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        float counterValue = (float) animation.getAnimatedValue();
+                        String formattedValue = decimalFormat.format(counterValue);
+                        txt_total_points.setText(formattedValue);
+
+                        // Apply animation to the TextView
+
+                    }
+                });
+
+                valueAnimator.start();
+            }
+        });
+
+
     }
 
     public String roundTwoDecimals(double d)

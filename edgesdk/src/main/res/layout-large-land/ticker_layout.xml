@@ -115,6 +115,7 @@
                             android:text="0.00"
                             android:textColor="@color/ticker_primary_txt"
                             android:textSize="18dp" />
+
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

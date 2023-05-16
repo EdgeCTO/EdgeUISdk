@@ -11,6 +11,7 @@ public class TickerResults {
     long lastReceivedScore;
     float oldScore;
     private static EdgeSdk edgeSdk;
+    private float points;
     public TickerResults(float[] w2eValues, float earning, float reward, float lastReward, String lastRewardTime, EdgeSdk edgeSdk) {
         this.w2eValues = w2eValues;
         this.earning = earning;
@@ -18,6 +19,7 @@ public class TickerResults {
         this.lastReward = lastReward;
         this.lastRewardTime = lastRewardTime;
         this.edgeSdk=edgeSdk;
+        this.points=0;
     }
 
     public float[] getW2eValues() {
@@ -93,11 +95,14 @@ public class TickerResults {
     }
 
     public float getOffChainBalance() {
-        return offChainBalance;
+        return offChainBalance+points;
     }
 
     public void setOffChainBalance(float offChainBalance) {
         this.offChainBalance = offChainBalance;
+    }
+    public void setPoints(float points){
+        this.points+=points;
     }
 
     public long getLastReceivedScore() {
