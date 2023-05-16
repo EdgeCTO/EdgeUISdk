@@ -651,6 +651,77 @@ public class Ticker extends LinearLayout {
        });
     }
 
+    public void addWINOrLooseMsgToResolveInList(String poll_question, String selectedAnswer,String coins,Poll_Question poll,String type) {
+
+        View poll_view = callingActivity.getLayoutInflater().inflate( type=="win" ? R.layout.poll_win_msg_card : R.layout.poll_loose_msg_card, null);
+        TextView question = poll_view.findViewById(R.id.poll_to_resolve_question);
+        TextView answer = poll_view.findViewById(R.id.poll_to_resolve_selected_answer);
+        TextView wagered_coins = poll_view.findViewById(R.id.poll_to_resolve_wagered_coins);
+
+        Animation slideInFromRight = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        slideInFromRight.setDuration(1000);
+
+        polls_to_resolve_holder.post(new Runnable() {
+            @Override
+            public void run() {
+                question.setText(poll_question);
+                answer.setText((selectedAnswer));
+                wagered_coins.setText(coins + " coins wagered");
+                // Get the width of the TextView container
+                int containerWidth = question.getWidth();
+
+                // Get the total text length of the question and answers
+                int totalTextLength = poll_question.length();
+
+                // Calculate the average text length per character
+                float averageTextLengthPerChar = (float) totalTextLength / (float) (poll_question.length());
+
+                // Calculate the font size based on the container width and average text length per character
+                float fontSize = containerWidth / (averageTextLengthPerChar * 1.5f);
+
+                // Set the maximum and minimum font sizes
+                float maxFontSize = 18f;
+                float minFontSize = 12f;
+
+                // If the calculated font size is greater than the maximum font size, set it to the maximum font size
+                if (fontSize > maxFontSize) {
+                    fontSize = maxFontSize;
+                }
+
+                // If the calculated font size is less than the minimum font size, set it to the minimum font size
+                if (fontSize < minFontSize) {
+                    fontSize = minFontSize;
+                }
+
+                // Set the font size of the TextViews
+                question.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+                poll_view.setId((int) poll.getId());
+                polls_to_resolve_holder.addView(poll_view, 0);
+                poll_view.startAnimation(slideInFromRight);
+
+                View space = new View(callingActivity);
+                LinearLayout.LayoutParams spaceLayoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, // width
+                        10// height,
+                );
+
+                space.setLayoutParams(spaceLayoutParams);
+                polls_to_resolve_holder.addView(space, 0);
+                Poll_to_be_resolved poll_to_be_resolved = new Poll_to_be_resolved();
+                poll_to_be_resolved.setSelectedAnswer(selectedAnswer);
+                poll_to_be_resolved.setId(poll.getId());
+                poll_to_be_resolved.setWagered_coins(Integer.parseInt(coins));
+                poll_to_be_resolved.setPoll_question(poll);
+                listOfWageredPolls.put(poll.getId() + "", poll_to_be_resolved);
+                removePollFromPollList((int) poll.getId());
+
+            }
+        });
+    }
+
+
     public void addPollToResolveInList(String poll_question, String selectedAnswer,String coins,Poll_Question poll) {
 
         int poll_mode = poll.getMode();
@@ -670,12 +741,14 @@ public class Ticker extends LinearLayout {
                 mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
                 mediaPlayer.start();
                 displayPollMessage("WIN ( "+coins+" )");
+                //addWINOrLooseMsgToResolveInList(poll_question,selectedAnswer,coins,poll,"win");
                 updatePointsNumber(Float.parseFloat(coins+""));
                 rain();
             }else{
                 //wrong answer
-                displayPollMessage("LOST ( "+coins+" )");
-                updatePointsNumber(-Float.parseFloat(coins+""));
+                displayPollMessage("X ["+poll.getChoices()[poll.getCorrect()[0]]+"]");
+                //addWINOrLooseMsgToResolveInList(poll_question,selectedAnswer,coins,poll,"loose");
+                //updatePointsNumber(-Float.parseFloat(coins+""));
             }
 
             removePollFromPollList((int) poll.getId());
@@ -1138,6 +1211,7 @@ public class Ticker extends LinearLayout {
                                     rain();
                                     removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
                                     removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
+                                    //addWINOrLooseMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(), String.valueOf(poll_to_be_resolved.getValue().getWagered_coins()),poll_to_be_resolved.getValue().getPoll_question(),"win");
                                     updatePointsNumber(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+""));
                                 } else {
                                     mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
@@ -1145,6 +1219,7 @@ public class Ticker extends LinearLayout {
                                     displayPollMessage("LOST ( " + poll_to_be_resolved.getValue().getWagered_coins() + " )");
                                     removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
                                     removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
+                                    //addWINOrLooseMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(), String.valueOf(poll_to_be_resolved.getValue().getWagered_coins()),poll_to_be_resolved.getValue().getPoll_question(),"loose");
                                     updatePointsNumber( - (Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+"")));
                                 }
                                 listOfWageredPolls.remove(poll_to_be_resolved.getKey());

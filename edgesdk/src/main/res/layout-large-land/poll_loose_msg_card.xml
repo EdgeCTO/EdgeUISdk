@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:id="@+id/poll"
+    android:layout_width="match_parent"
+    android:background="@drawable/poll_to_resolve_border"
+    android:layout_height="wrap_content"
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"
+        android:layout_gravity="right"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/eat_logo"></ImageView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="15dp"
+        android:orientation="vertical">
+       <TextView
+            android:focusable="true"
+            android:id="@+id/poll_to_resolve_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:maxLines="5"
+            android:ellipsize="none"
+
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeMaxTextSize="12sp"
+            android:text="Poll question goes here"></TextView>
+        <LinearLayout
+            android:layout_marginTop="5dp"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/poll_to_resolve_selected_answer_border"
+            android:layout_height="wrap_content">
+            <TextView
+                android:focusable="true"
+                android:id="@+id/poll_to_resolve_selected_answer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:maxLines="3"
+                android:padding="2dp"
+                android:ellipsize="none"
+                android:background="@drawable/focused_unfocused_border"
+                android:autoSizeStepGranularity="2sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="14sp"
+                android:text="His boxing idols and the old-time champions who fought in the 30s and 40s"></TextView>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="5dp"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LOOSED"
+                android:gravity="center"
+                android:textColor="@color/red"
+                android:textSize="15sp"></TextView>
+
+        </LinearLayout>
+        <TextView
+            android:focusable="true"
+            android:id="@+id/poll_to_resolve_wagered_coins"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:maxLines="5"
+            android:ellipsize="none"
+
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="15sp"
+            android:text="10 Coins"></TextView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:textSize="7dp"
+            android:textColor="#296897"
+            android:text="Gaimified TV by EDGE-ai">
+
+        </TextView>
+    </LinearLayout>
+
+</LinearLayout>
