@@ -80,17 +80,10 @@
                 android:id="@+id/correct_msg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LOOSED"
+                android:text="CORRECT"
                 android:gravity="center"
-                android:textColor="@color/green"
-                android:textSize="12sp"></TextView>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="LOOSED"
-                android:gravity="center"
-                android:textColor="@color/red"
-                android:textSize="12sp"></TextView>
+                android:textColor="@color/yellow"
+                android:textSize="15sp"></TextView>
 
         </LinearLayout>
         <TextView
@@ -103,7 +96,7 @@
             android:textColor="@color/white"
             android:maxLines="5"
             android:ellipsize="none"
-
+            android:visibility="gone"
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:autoSizeMinTextSize="10sp"

@@ -191,9 +191,9 @@ public class LiveGamificationSocketManager implements Runnable{
                             poll_question.setPoll(poll);
                             poll_question.setMode(mode);
                             poll_question.setType(type);
-                            poll_question.setId(id);
+                            poll_question.setId((int)id);
                             poll_question.setCorrect(correctAnswer);
-                            pollQuestionList.put(id+"",poll_question);
+                            pollQuestionList.put(poll_question.getId()+"",poll_question);
                             Log.i(LogConstants.Live_Gamification,"Adding question with id : "+id);
                             Log.i(LogConstants.Live_Gamification,"Question : "+pollQuestionList.get(id+"").getPoll());
 
@@ -210,10 +210,10 @@ public class LiveGamificationSocketManager implements Runnable{
                         int[] correctAnswer = objectMapper.treeToValue(correct, int[].class);
                         poll_answer.setCorrect(correctAnswer);
                         poll_answer.setExplanation(explanation);
-                        poll_answer.setId(id);
+                        poll_answer.setId((int) id);
                         poll_answer.setType(type);
-                        pollAnswerList.put(id+"",poll_answer);
-                        Log.i(LogConstants.Live_Gamification,"Poll Answer:"+id);
+                        pollAnswerList.put( poll_answer.getId()+"",poll_answer);
+                        Log.i(LogConstants.Live_Gamification,"Poll Answer:"+((int) id));
 
                     }
                 }
@@ -314,7 +314,11 @@ public class LiveGamificationSocketManager implements Runnable{
         pollQuestionList.remove(id+"");
     }
     public void removePollFromPollAnswerList(int id){
+        Log.i("childView","removing : "+id);
+        Log.i("childView","current : "+pollAnswerList.get(id+"").getId());
         pollAnswerList.remove(id+"");
+        Log.i("childView","current : "+pollAnswerList.get(id+""));
+
     }
 
     @Override

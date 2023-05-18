@@ -3,7 +3,7 @@ package com.edgesdk.models;
 public class Poll_Answer {
     String type,explanation;
     int [] correct = new int[1];
-    long id;
+    int id;
 
     public String getType() {
         return type;
@@ -29,11 +29,11 @@ public class Poll_Answer {
         this.correct = correct;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 }
