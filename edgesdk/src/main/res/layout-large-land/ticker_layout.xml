@@ -505,15 +505,23 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
-            <LinearLayout
+        <ScrollView
             android:layout_marginTop="1dp"
-            android:id="@+id/polls_waiting_to_resolve_holder"
             android:layout_width="0dp"
             android:layout_weight="15"
+            android:id="@+id/polls_waiting_to_resolve_container"
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
+            <LinearLayout
+                android:id="@+id/polls_waiting_to_resolve_holder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
             </LinearLayout>
+        </ScrollView>
+
     </LinearLayout>
 
 </LinearLayout>

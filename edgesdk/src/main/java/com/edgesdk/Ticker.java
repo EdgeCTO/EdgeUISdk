@@ -98,9 +98,9 @@ public class Ticker extends LinearLayout {
     private Shape.DrawableShape drawableShape = null;
     private MediaPlayer mediaPlayer;
     private LinearLayout win_message_layout;
-    private ScrollView polls_holder_scroll_container;
+    private ScrollView polls_holder_scroll_container,polls_waiting_to_resolve_container;
     private TextView number_of_won_coins;
-
+    private boolean isFocusOnLeftSide;
     Party party;
     long last_poll_displayed_id;
     private Map<String, Poll_to_be_resolved> listOfWageredPolls;
@@ -148,6 +148,7 @@ public class Ticker extends LinearLayout {
         number_of_won_coins = view.findViewById(R.id.number_of_won_coins);
         //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
         polls_holder_scroll_container = findViewById(R.id.polls_holder_scroll_container);
+        polls_waiting_to_resolve_container = findViewById(R.id.polls_waiting_to_resolve_container);
         gamificationStatusLayout = findViewById(R.id.gamificationStatusLayout);
 
         gamificationStatusLayout.setVisibility(View.INVISIBLE);
@@ -172,6 +173,7 @@ public class Ticker extends LinearLayout {
 
         custom_font = Typeface.createFromAsset(getContext().getAssets(), "fonts/proxima_nova_regular.ttf");
         isPrintingThreadsRunning=false;
+        isFocusOnLeftSide=true;
         //setting-up fonts
         txt_total_eats.setTypeface(custom_font);
         txt_title_total_eats.setTypeface(custom_font);
@@ -487,9 +489,12 @@ public class Ticker extends LinearLayout {
 
                 polls_holder.addView(poll_view, 0);
 
-                answer_a.setFocusable(true);
-                answer_a.setFocusableInTouchMode(true);///add this line
-                answer_a.requestFocus();
+                if(isFocusOnLeftSide) {
+                    //do not set focus to new question if user is on right
+                    answer_a.setFocusable(true);
+                    answer_a.setFocusableInTouchMode(true);///add this line
+                    answer_a.requestFocus();
+                }
 
                 poll_view.startAnimation(slideInFromLeft);
                 View space = new View(callingActivity);
@@ -522,6 +527,17 @@ public class Ticker extends LinearLayout {
                             }
                             return true;
                         }
+                        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && event.getAction() == KeyEvent.ACTION_UP) {
+                            View childView = polls_to_resolve_holder.getChildAt(1);
+                            if(childView!=null) {
+                                TextView poll_to_resolve_selected_answer = childView.findViewById(R.id.poll_to_resolve_selected_answer);
+                                Log.i(LogConstants.Live_Gamification, "poll_to_resolve_selected_answer" + poll_to_resolve_selected_answer.getText());
+                                poll_to_resolve_selected_answer.setFocusable(true);
+                                poll_to_resolve_selected_answer.requestFocus();
+                                isFocusOnLeftSide=false;
+                            }
+                            }
+
                         return false;
                     }
                 });
@@ -550,13 +566,13 @@ public class Ticker extends LinearLayout {
                     }
                 });
 
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        polls_holder.removeView(poll_view);
-                    }
-                }, 20000); // 20 seconds delay (in milliseconds)
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        polls_holder.removeView(poll_view);
+//                    }
+//                }, 20000); // 20 seconds delay (in milliseconds)
             }
         });
     }
@@ -724,6 +740,7 @@ public class Ticker extends LinearLayout {
                 poll_to_be_resolved.setWagered_coins(Integer.parseInt(coins));
                 poll_to_be_resolved.setPoll_question(poll);
                 listOfWageredPolls.put(poll.getId() + "", poll_to_be_resolved);
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -811,7 +828,6 @@ public class Ticker extends LinearLayout {
             }
         });
     }
-
 
     public void addPollToResolveInList(String poll_question, String selectedAnswer,String coins,Poll_Question poll) {
 
@@ -1752,7 +1768,6 @@ public class Ticker extends LinearLayout {
             poll_list_to_be_resolved_moderator_timer.cancel();
         }
     }
-
 
     public void ResumeValuesPrintingThreads(){
         isPrintingThreadsRunning=true;

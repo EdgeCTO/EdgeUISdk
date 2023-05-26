@@ -315,7 +315,7 @@ public class LiveGamificationSocketManager implements Runnable{
     }
     public void removePollFromPollAnswerList(int id){
         Log.i("childView","removing : "+id);
-        Log.i("childView","current : "+pollAnswerList.get(id+"").getId());
+        //Log.i("childView","current : "+pollAnswerList.get(id+"").getId());
         pollAnswerList.remove(id+"");
         Log.i("childView","current : "+pollAnswerList.get(id+""));
 
