@@ -566,13 +566,13 @@ public class Ticker extends LinearLayout {
                     }
                 });
 
-//                Handler handler = new Handler();
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        polls_holder.removeView(poll_view);
-//                    }
-//                }, 20000); // 20 seconds delay (in milliseconds)
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        polls_holder.removeView(poll_view);
+                    }
+                }, 20000); // 20 seconds delay (in milliseconds)
             }
         });
     }
