@@ -371,7 +371,6 @@ public class Ticker extends LinearLayout {
                 Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
         slideInFromLeft.setDuration(1000);
 
-
         answer_a.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -388,7 +387,6 @@ public class Ticker extends LinearLayout {
                 });
             }
         });
-
 
         answer_b.setOnClickListener(new OnClickListener() {
             @Override
@@ -551,6 +549,14 @@ public class Ticker extends LinearLayout {
                         return false;
                     }
                 });
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        polls_holder.removeView(poll_view);
+                    }
+                }, 20000); // 20 seconds delay (in milliseconds)
             }
         });
     }
@@ -1367,24 +1373,10 @@ public class Ticker extends LinearLayout {
                 float earning_per_hr = edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()*edgeSdk.getMarketPriceManager().getPrice();
                 //Log.i(LogConstants.Watch_2_Earn,"earning_per_hr :"+earning_per_hr);
                 float finalEarning_per_hr = earning_per_hr;
-//                txt_per_day.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if(finalEarning_per_hr !=0.0)
-//                            txt_per_day.setText("$"+roundThreeDecimals(finalEarning_per_hr));
-//                        else txt_per_day.setText("$"+Constants.DEFAULT_VALUE_EAT_HR);
-//                    }
-//                });
 
             }
             catch (Exception e){
                 Log.e("error","error while printing total earning per day "+e.getMessage());
-//                txt_per_day.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        //txt_per_day.setText("-.--");
-//                    }
-//                });
             }
 
             try {
