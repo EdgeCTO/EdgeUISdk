@@ -8,6 +8,7 @@ import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.Utils.Urls;
 import com.edgesdk.Utils.Utils;
 import com.edgesdk.models.CreateMessage;
+import com.edgesdk.models.PollWagerAnswer_Message;
 import com.edgesdk.models.Poll_Answer;
 import com.edgesdk.models.Poll_Question;
 import com.edgesdk.models.SetScreenMessage;
@@ -320,7 +321,19 @@ public class LiveGamificationSocketManager implements Runnable{
         Log.i("childView","current : "+pollAnswerList.get(id+""));
 
     }
-
+    public boolean sendAnswerToSocketServer(int poll_id,int answer_index,int wager_amount){
+        PollWagerAnswer_Message pollWagerAnswer_message=new PollWagerAnswer_Message(poll_id,answer_index,wager_amount);
+        Log.i(LogConstants.Live_Gamification,"sending answer : "+pollWagerAnswer_message.toJson());
+        if(ws!=null){
+            if(ws.isOpen()){
+                ws.sendText(pollWagerAnswer_message.toJson());
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return false;
+    }
     @Override
     public void run() {
         if(!this.ws.isOpen()) {

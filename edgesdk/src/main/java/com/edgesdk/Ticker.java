@@ -383,7 +383,7 @@ public class Ticker extends LinearLayout {
                             WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_a, Ticker.this, poll);
                             wagerPointsDialogue.show();
                         }else{
-                            addPollToResolveInList(poll_question,poll_answer_a,"10",poll);
+                            addPollToResolveInList(poll_question,poll_answer_a,"5",poll);
                         }
                     }
                 });
@@ -400,7 +400,7 @@ public class Ticker extends LinearLayout {
                             WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_b, Ticker.this, poll);
                             wagerPointsDialogue.show();
                         }else{
-                            addPollToResolveInList(poll_question,poll_answer_b,"10",poll);
+                            addPollToResolveInList(poll_question,poll_answer_b,"5",poll);
                         }
                     }
                 });
@@ -417,7 +417,7 @@ public class Ticker extends LinearLayout {
                             WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_c, Ticker.this, poll);
                             wagerPointsDialogue.show();
                         }else{
-                            addPollToResolveInList(poll_question,poll_answer_c,"10",poll);
+                            addPollToResolveInList(poll_question,poll_answer_c,"5",poll);
                         }
                     }
                 });
@@ -434,7 +434,7 @@ public class Ticker extends LinearLayout {
                             WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_d, Ticker.this, poll);
                             wagerPointsDialogue.show();
                         }else{
-                            addPollToResolveInList(poll_question,poll_answer_d,"10",poll);
+                            addPollToResolveInList(poll_question,poll_answer_d,"5",poll);
                         }
                     }
                 });
@@ -842,7 +842,9 @@ public class Ticker extends LinearLayout {
 
             Log.i(LogConstants.Live_Gamification,"correctAnswer:"+correctAnswer);
             Log.i(LogConstants.Live_Gamification,"selectedAnswer:"+selectedAnswer);
-
+            int selectedAnswerIndex=getAnswerIndex(selectedAnswer,poll.getChoices());
+            Log.i(LogConstants.Live_Gamification,"selectedAnswerIndex : "+selectedAnswerIndex);
+            edgeSdk.getLiveGamificationManager().sendAnswerToSocketServer( poll.getId(),selectedAnswerIndex,5);
             if(selectedAnswer.equals(correctAnswer)){
                 //correct answer
                 mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
@@ -1312,7 +1314,12 @@ public class Ticker extends LinearLayout {
                                 String selectedAnswer = poll_to_be_resolved.getValue().getSelectedAnswer();
                                 Log.i(LogConstants.Live_Gamification, "selectedAnswer" + selectedAnswer);
                                 Log.i(LogConstants.Live_Gamification, "correctAnswer" + correctAnswer);
+                                int selectedAnswerIndex=getAnswerIndex(selectedAnswer,poll_to_be_resolved.getValue().getPoll_question().getChoices());
+                                Log.i(LogConstants.Live_Gamification,"selectedAnswerIndex : "+selectedAnswerIndex);
+                                edgeSdk.getLiveGamificationManager().sendAnswerToSocketServer((int) poll_to_be_resolved.getValue().getId(),selectedAnswerIndex,poll_to_be_resolved.getValue().getWagered_coins());
+                                //won
                                 if (correctAnswer.equals(selectedAnswer)) {
+                                    //send message to
                                     mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
                                     mediaPlayer.start();
                                     rain();
@@ -1320,7 +1327,9 @@ public class Ticker extends LinearLayout {
                                     removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
                                     addWINOrLooseMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(), String.valueOf(poll_to_be_resolved.getValue().getWagered_coins()),poll_to_be_resolved.getValue().getPoll_question(),null,"win");
                                     updatePointsNumber(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+""));
-                                } else {
+                                }
+                                //loosed
+                                else {
                                     mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.loose_sound);
                                     mediaPlayer.start();
                                     removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
@@ -1328,6 +1337,7 @@ public class Ticker extends LinearLayout {
                                     addWINOrLooseMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(), String.valueOf(poll_to_be_resolved.getValue().getWagered_coins()),poll_to_be_resolved.getValue().getPoll_question(),correctAnswer,"loose");
                                     updatePointsNumber(-(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+"")));
                                 }
+
                                 listOfWageredPolls.remove(poll_to_be_resolved.getKey());
                             } else {
                                 Log.i(LogConstants.Live_Gamification, "Not found");
@@ -1352,6 +1362,15 @@ public class Ticker extends LinearLayout {
         }
     }
 
+    private int getAnswerIndex(String selectedAnswer,String choices[]){
+        for(int i=0;i<4;i++){
+            if(choices[i].equals(selectedAnswer)){
+                return i;
+            }
+        }
+
+        return -1;
+    }
 
     class ESTApyValuesPrinter extends TimerTask {
         @SuppressLint("LongLogTag")

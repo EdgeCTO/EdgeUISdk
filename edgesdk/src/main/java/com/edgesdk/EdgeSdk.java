@@ -54,6 +54,10 @@ public class EdgeSdk {
         this.threadManager = new ThreadManager();
         this.temporaryWalletManager = new TemporaryWalletManager(this);
         this.localStorageManager = new LocalStorageManager(context);
+
+        //storing auth key in local storage
+        this.getLocalStorageManager().storeStringValue(sdkAuthKey,Constants.AUTH_KEY);
+
         this.walletForwardingManager = new WalletForwardingManager(this);
         this.walletSwitchingManager = new WalletSwitchingManager(this);
         this.w2EarnManager=new W2EarnManager(this);

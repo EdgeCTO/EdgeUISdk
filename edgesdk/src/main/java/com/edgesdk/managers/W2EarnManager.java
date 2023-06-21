@@ -9,6 +9,7 @@ import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.Utils.Urls;
 import com.edgesdk.Utils.Utils;
+import com.edgesdk.models.PlatformKeyType_Message;
 import com.edgesdk.models.TickerResults;
 import com.edgesdk.models.Type_Channel;
 import com.edgesdk.models.Type_Rate;
@@ -81,6 +82,9 @@ public class W2EarnManager implements Runnable{
 
                     try{
                         if(channelWalletAddress!=null && viewerWalletAddress!=null) {
+                            PlatformKeyType_Message platformKeyType_message = new PlatformKeyType_Message(edgeSdk.getLocalStorageManager().getStringValue(Constants.AUTH_KEY));
+                            Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+platformKeyType_message.toJson());
+                            ws.sendText(platformKeyType_message.toJson());
                             Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
                             ws.sendText(tcdhm.toJson());
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+tcdhm.toJson());
