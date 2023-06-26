@@ -385,7 +385,7 @@
 
         </LinearLayout>
     </LinearLayout>
-
+ 
     <LinearLayout
         android:id="@+id/gamification_poll_layout"
         android:layout_width="match_parent"
