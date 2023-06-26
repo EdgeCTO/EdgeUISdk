@@ -101,6 +101,7 @@ public class Ticker extends LinearLayout {
     private ScrollView polls_holder_scroll_container,polls_waiting_to_resolve_container;
     private TextView number_of_won_coins;
     private boolean isFocusOnLeftSide;
+    private LinearLayout gamification_ticker_layout,gamification_poll_layout;
     Party party;
     long last_poll_displayed_id;
     private Map<String, Poll_to_be_resolved> listOfWageredPolls;
@@ -154,6 +155,12 @@ public class Ticker extends LinearLayout {
         gamificationStatusLayout.setVisibility(View.INVISIBLE);
 
         ticker_layout = findViewById(R.id.ticker_layout);
+        gamification_ticker_layout = findViewById(R.id.gamification_ticker_layout);
+        gamification_poll_layout = findViewById(R.id.gamification_poll_layout);
+
+        ticker_layout.setVisibility(VISIBLE);
+        gamification_poll_layout.setVisibility(GONE);
+        gamification_ticker_layout.setVisibility(GONE);
 
         gamificationQRCode = findViewById(R.id.gamificationQRCode);
         // Set the image source for the ImageView
@@ -292,6 +299,18 @@ public class Ticker extends LinearLayout {
                 .position(0.0, 0.0, 1.0, 0.0)
                 .build();
     }
+
+    public void switchUIForGamification(){
+         ticker_layout.setVisibility(GONE);
+         gamification_poll_layout.setVisibility(VISIBLE);
+         gamification_ticker_layout.setVisibility(VISIBLE);
+    }
+    public void switchUIForW2E(){
+        ticker_layout.setVisibility(VISIBLE);
+         gamification_poll_layout.setVisibility(GONE);
+         gamification_ticker_layout.setVisibility(GONE);
+    }
+
 
     public boolean isPlaying() {
         return playing;
