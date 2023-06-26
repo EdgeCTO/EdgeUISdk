@@ -300,7 +300,7 @@ public class Ticker extends LinearLayout {
     }
 
     public void switchUIForGamification(){
-         ticker_layout.setVisibility(VISIBLE);
+         ticker_layout.setVisibility(GONE);
          gamification_poll_layout.setVisibility(VISIBLE);
          gamification_ticker_layout.setVisibility(VISIBLE);
     }
