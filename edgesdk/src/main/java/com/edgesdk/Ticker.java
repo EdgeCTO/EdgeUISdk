@@ -158,9 +158,7 @@ public class Ticker extends LinearLayout {
         gamification_ticker_layout = findViewById(R.id.gamification_ticker_layout);
         gamification_poll_layout = findViewById(R.id.gamification_poll_layout);
 
-        ticker_layout.setVisibility(VISIBLE);
-        gamification_poll_layout.setVisibility(GONE);
-        gamification_ticker_layout.setVisibility(GONE);
+        switchUIForGamification();
 
         gamificationQRCode = findViewById(R.id.gamificationQRCode);
         // Set the image source for the ImageView

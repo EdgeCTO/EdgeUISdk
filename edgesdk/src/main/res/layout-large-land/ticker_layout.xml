@@ -708,6 +708,7 @@
         android:id="@+id/gamification_poll_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/red"
         android:orientation="horizontal"
         >
             <ScrollView
@@ -826,7 +827,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
-        <ScrollView
+            <ScrollView
             android:layout_marginTop="1dp"
             android:layout_width="0dp"
             android:layout_weight="15"
