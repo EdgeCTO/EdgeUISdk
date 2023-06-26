@@ -16,6 +16,7 @@ public class Constants {
     public static String LOGO_URL="LOGO_URL";
     public static String LOGO_IMAGE_PATH="LOGO_IMAGE_PATH";
     public static String AUTH_KEY="AUTH_KEY";
+    public static String CHANNEL_DATA="CHANNEL_DATA";
 
     public static String IS_APP_OPEN="is_app_open";
     public static int StringCONNECTED= 0;

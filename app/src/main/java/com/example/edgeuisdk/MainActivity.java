@@ -20,7 +20,10 @@ import android.widget.Toast;
 
 import com.edgesdk.EdgeSdk;
 import com.edgesdk.Ticker;
+import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
+
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -124,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
                     Thread.sleep(5000);
                     edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
                     ticker.makeGamificationLayoutVisible(3000);
+                  //  JSONObject jsonObject = edgeSdk.getLocalStorageManager().getJSONValue(Constants.CHANNEL_DATA);
 //                    ticker.displayQRCodeForGamification(8000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

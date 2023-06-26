@@ -5,6 +5,14 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 public class LocalStorageManager {
     private SharedPreferences prefs;
     static SharedPreferences.Editor editor;
@@ -29,6 +37,23 @@ public class LocalStorageManager {
     public void storeIntValue(int value,String key){
         editor.putInt(key,value);
         editor.apply();
+    }
+    public void storeJSONValue(JsonNode value, String key) {
+        editor.putString(key, value.toString());
+        editor.apply();
+    }
+
+    public JsonNode getJSONValue(String key) {
+        String jsonString = prefs.getString(key, null);
+        if (jsonString != null) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readTree(jsonString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public String getStringValue(String key){

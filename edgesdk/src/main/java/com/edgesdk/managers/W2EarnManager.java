@@ -88,6 +88,7 @@ public class W2EarnManager implements Runnable{
                             channel_wallet_address.put("type", "wallet");
                             channel_wallet_address.put("address", edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
                             ws.sendText(channel_wallet_address.toString());
+                            Log.i(LogConstants.Watch_2_Earn,"channel_wallet_address"+channel_wallet_address.toString());
                             PlatformKeyType_Message platformKeyType_message = new PlatformKeyType_Message(edgeSdk.getLocalStorageManager().getStringValue(Constants.AUTH_KEY));
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+platformKeyType_message.toJson());
                             ws.sendText(platformKeyType_message.toJson());
