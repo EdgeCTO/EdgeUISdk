@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         layout.addView(ticker);
         ticker.onResume();
-
+        ticker.switchUIForW2E();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     ticker.makeGamificationLayoutVisible(3000);
                   //  JSONObject jsonObject = edgeSdk.getLocalStorageManager().getJSONValue(Constants.CHANNEL_DATA);
 //                    ticker.displayQRCodeForGamification(8000);
+                    ticker.switchUIForGamification();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
