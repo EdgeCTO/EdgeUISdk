@@ -307,7 +307,7 @@ public class Ticker extends LinearLayout {
     public void switchUIForW2E(){
          ticker_layout.setVisibility(VISIBLE);
          gamification_poll_layout.setVisibility(GONE);
-         gamification_ticker_layout.setVisibility(GONE);
+         gamification_ticker_layout.setVisibility(VISIBLE);
     }
 
 
