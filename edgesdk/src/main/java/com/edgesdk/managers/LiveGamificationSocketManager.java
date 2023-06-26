@@ -22,6 +22,8 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,6 +108,11 @@ public class LiveGamificationSocketManager implements Runnable{
                 @Override
                 public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
                     Log.i(LogConstants.Live_Gamification,"Live gamification socket opened");
+                    JSONObject openingMessage = new JSONObject();
+                    openingMessage.put("type","wallet");
+                    openingMessage.put("address", edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
+                    Log.i(LogConstants.Live_Gamification,"openingMessage"+openingMessage.toString());
+                    ws.sendText(openingMessage.toString());
                 }
 
                 @Override
@@ -182,6 +189,7 @@ public class LiveGamificationSocketManager implements Runnable{
                                 ObjectMapper objectMapper = new ObjectMapper();
                                 correctAnswer = objectMapper.treeToValue(correct, int[].class);
                             }
+
                             String explanation = Utils.parser(socketResponse).get("explanation").toString();
                             long id = Utils.parser(socketResponse).get("id").longValue();
                             JsonNode choices = Utils.parser(socketResponse).get("choices");
@@ -201,7 +209,8 @@ public class LiveGamificationSocketManager implements Runnable{
                         }catch (Exception e){
                             Log.i(LogConstants.Live_Gamification,e.getMessage());
                         }
-                        }else if(responseType.equals("resolve")){
+                        }
+                        else if(responseType.equals("resolve")){
                         Poll_Answer poll_answer = new Poll_Answer();
                         String type = responseType;
                         String explanation = Utils.parser(socketResponse).get("explanation").toString();
@@ -215,8 +224,12 @@ public class LiveGamificationSocketManager implements Runnable{
                         poll_answer.setType(type);
                         pollAnswerList.put( poll_answer.getId()+"",poll_answer);
                         Log.i(LogConstants.Live_Gamification,"Poll Answer:"+((int) id));
-
                     }
+                        if(responseType.equals("winloss")){
+                            //
+                            int amount =Integer.parseInt(Utils.parser(socketResponse).get("amount").toString());
+                            Log.i(LogConstants.Live_Gamification,"Resolve amount:"+amount);
+                        }
                 }
 
                 @Override
@@ -312,6 +325,7 @@ public class LiveGamificationSocketManager implements Runnable{
     }
 
     public void removePollFromPollQuestionList(int id){
+        Log.i(LogConstants.Live_Gamification,"removing :"+id);
         pollQuestionList.remove(id+"");
     }
     public void removePollFromPollAnswerList(int id){

@@ -380,7 +380,7 @@ public class Ticker extends LinearLayout {
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
                         if(poll.getMode()==1) {
-                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_a, Ticker.this, poll);
+                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_a, Ticker.this, poll,edgeSdk);
                             wagerPointsDialogue.show();
                         }else{
                             addPollToResolveInList(poll_question,poll_answer_a,"5",poll);
@@ -397,7 +397,7 @@ public class Ticker extends LinearLayout {
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
                         if(poll.getMode()==1) {
-                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_b, Ticker.this, poll);
+                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_b, Ticker.this, poll,edgeSdk);
                             wagerPointsDialogue.show();
                         }else{
                             addPollToResolveInList(poll_question,poll_answer_b,"5",poll);
@@ -414,7 +414,7 @@ public class Ticker extends LinearLayout {
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
                         if(poll.getMode()==1) {
-                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_c, Ticker.this, poll);
+                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_c, Ticker.this, poll,edgeSdk);
                             wagerPointsDialogue.show();
                         }else{
                             addPollToResolveInList(poll_question,poll_answer_c,"5",poll);
@@ -431,7 +431,7 @@ public class Ticker extends LinearLayout {
                 callingActivity.runOnUiThread(new Runnable() {
                     public void run() {
                         if(poll.getMode()==1) {
-                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_d, Ticker.this, poll);
+                            WagerPointsDialogue wagerPointsDialogue = new WagerPointsDialogue(callingActivity, poll_question, poll_answer_d, Ticker.this, poll,edgeSdk);
                             wagerPointsDialogue.show();
                         }else{
                             addPollToResolveInList(poll_question,poll_answer_d,"5",poll);
@@ -570,7 +570,8 @@ public class Ticker extends LinearLayout {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        polls_holder.removeView(poll_view);
+                        //polls_holder.removeView(poll_view);
+                        removePollFromPollList(poll_view.getId());
                     }
                 }, 20000); // 20 seconds delay (in milliseconds)
             }
@@ -771,7 +772,7 @@ public class Ticker extends LinearLayout {
                 question.setText(poll_question);
                 answer.setText((selectedAnswer));
                 wagered_coins.setText(coins + " coins wagered");
-                correct_wrong_message.setText(type=="correct" ? "Correct" : poll.getChoices()[poll.getCorrect()[0]]);
+                correct_wrong_message.setText(type=="correct" ? "Correct" : poll.getChoices()[poll.getCorrect()[0]-2]);
                 // Get the width of the TextView container
                 int containerWidth = question.getWidth();
 
@@ -835,10 +836,16 @@ public class Ticker extends LinearLayout {
         Log.i(LogConstants.Live_Gamification,"poll_mode: "+poll_mode);
         if(poll_mode==2 || poll_mode==3){
             Log.i(LogConstants.Live_Gamification,"Its MCQs question");
+
             //it means don't need to wait for poll resolutions
             String[] all_answers = poll.getChoices();
             int correctAnswerIndex = poll.getCorrect()[0];
-            String correctAnswer = all_answers[correctAnswerIndex];
+            Log.i(LogConstants.Live_Gamification,correctAnswerIndex+"");
+            for(int i=0;i<poll.getCorrect().length;i++){
+                Log.i(LogConstants.Live_Gamification,poll.getCorrect()[i]+" array value");
+            }
+
+            String correctAnswer = all_answers[correctAnswerIndex-2];
 
             Log.i(LogConstants.Live_Gamification,"correctAnswer:"+correctAnswer);
             Log.i(LogConstants.Live_Gamification,"selectedAnswer:"+selectedAnswer);

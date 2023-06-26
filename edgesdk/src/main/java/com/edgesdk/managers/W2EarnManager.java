@@ -23,6 +23,8 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -82,6 +84,10 @@ public class W2EarnManager implements Runnable{
 
                     try{
                         if(channelWalletAddress!=null && viewerWalletAddress!=null) {
+                            JSONObject channel_wallet_address = new JSONObject();
+                            channel_wallet_address.put("type", "wallet");
+                            channel_wallet_address.put("address", edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
+                            ws.sendText(channel_wallet_address.toString());
                             PlatformKeyType_Message platformKeyType_message = new PlatformKeyType_Message(edgeSdk.getLocalStorageManager().getStringValue(Constants.AUTH_KEY));
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+platformKeyType_message.toJson());
                             ws.sendText(platformKeyType_message.toJson());
