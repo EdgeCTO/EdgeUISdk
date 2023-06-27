@@ -93,7 +93,7 @@ public class Ticker extends LinearLayout {
     private LinearLayout polls_holder;
     private LinearLayout polls_to_resolve_holder;
     Timer staked_values_timer,est_apy_values_timer,earning_per_day_timer,eat_market_price_timer,ticker_values_timer,is_video_playing_or_paused_detector_timer,total_eats_timer,watch_to_earn_title_updater_timer,second_secreen_command_listener,ticker_visibility_controler_timer,poll_list_moderator_timer,poll_list_to_be_resolved_moderator_timer;
-    private ImageView sdk_logo;
+    private ImageView sdk_logo,sdk_logo_gamification;
     private KonfettiView konfettiView = null;
     private Shape.DrawableShape drawableShape = null;
     private MediaPlayer mediaPlayer;
@@ -102,6 +102,7 @@ public class Ticker extends LinearLayout {
     private TextView number_of_won_coins;
     private boolean isFocusOnLeftSide;
     private LinearLayout gamification_ticker_layout,gamification_poll_layout;
+    private String current_ui_mode;
     Party party;
     long last_poll_displayed_id;
     private Map<String, Poll_to_be_resolved> listOfWageredPolls;
@@ -122,6 +123,7 @@ public class Ticker extends LinearLayout {
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View view = inflater.inflate(R.layout.ticker_layout, this);
+
         txt_total_eats = view.findViewById(R.id.txt_total_eats);
         txt_eat_market_price = view.findViewById(R.id.txt_eat_market_price);
         txt_eat_market_inc_dec = view.findViewById(R.id.txt_eat_market_inc_dec);
@@ -145,6 +147,8 @@ public class Ticker extends LinearLayout {
         txt_title_est_apy = view.findViewById(R.id.txt_title_est_apy);
         txt_title_earned = view.findViewById(R.id.txt_title_earned);
         sdk_logo = view.findViewById(R.id.sdk_logo);
+        sdk_logo_gamification = view.findViewById(R.id.sdk_logo_gamification);
+
         win_message_layout = view.findViewById(R.id.win_message_layout);
         number_of_won_coins = view.findViewById(R.id.number_of_won_coins);
         //txt_title_per_day = view.findViewById(R.id.txt_title_per_day);
@@ -158,7 +162,9 @@ public class Ticker extends LinearLayout {
         gamification_ticker_layout = findViewById(R.id.gamification_ticker_layout);
         gamification_poll_layout = findViewById(R.id.gamification_poll_layout);
 
-        //switchUIForGamification();
+        current_ui_mode="w2e";
+
+        switchUIForW2E();
 
         gamificationQRCode = findViewById(R.id.gamificationQRCode);
         // Set the image source for the ImageView
@@ -263,24 +269,9 @@ public class Ticker extends LinearLayout {
             poll_list_to_be_resolved_moderator_timer = new Timer();
         }
 
-        //getting logo .
-        final Handler handler = new Handler();
-        Runnable runnableCode = new Runnable() {
-            @Override
-            public void run() {
-                String logoPath = edgeSdk.getLocalStorageManager().getStringValue(Constants.LOGO_IMAGE_PATH);
-                if(logoPath != null){
-                    Bitmap bitmap = BitmapFactory.decodeFile(logoPath);
-                    sdk_logo.setImageBitmap(bitmap);
-                    Log.i(LogConstants.Authentication,"updated logo");
-                }else{
-                    Log.i(LogConstants.Authentication,"logo image path is null");
-                    handler.postDelayed(this, 1000); // run this code again after 1 second
-                }
-            }
-        };
-        handler.post(runnableCode);
 
+        //getting and setting logo .
+        refreshLogo();
 
         final Drawable drawable = ContextCompat.getDrawable(callingActivity.getApplicationContext(), R.drawable.ic_heart);
         drawableShape = new Shape.DrawableShape(drawable, true);
@@ -298,29 +289,61 @@ public class Ticker extends LinearLayout {
                 .build();
     }
 
+    public void refreshLogo(){
+        final Handler handler = new Handler();
+        Runnable runnableCode = new Runnable() {
+            @Override
+            public void run() {
+                String logoPath = edgeSdk.getLocalStorageManager().getStringValue(Constants.LOGO_IMAGE_PATH);
+                if(logoPath != null){
+                    Bitmap bitmap = BitmapFactory.decodeFile(logoPath);
+                    if(current_ui_mode.equals("w2e")) {
+                        sdk_logo.setImageBitmap(bitmap);
+                    }else{
+                        sdk_logo_gamification.setImageBitmap(bitmap);
+                    }
+                    Log.i(LogConstants.Authentication,"updated logo");
+                }else{
+                    Log.i(LogConstants.Authentication,"logo image path is null");
+                    handler.postDelayed(this, 1000); // run this code again after 1 second
+                }
+            }
+        };
+
+        handler.post(runnableCode);
+    }
+
     public void switchUIForGamification(){
         ticker_layout.post(new Runnable() {
             @Override
             public void run() {
+                current_ui_mode="gamification";
                 ticker_layout.setVisibility(GONE);
                 gamification_poll_layout.setVisibility(VISIBLE);
                 gamification_ticker_layout.setVisibility(VISIBLE);
+                refreshLogo();
             }
         });
 
     }
+
     public void switchUIForW2E(){
         ticker_layout.post(new Runnable() {
             @Override
             public void run() {
+                current_ui_mode="w2e";
                 ticker_layout.setVisibility(VISIBLE);
                 gamification_poll_layout.setVisibility(GONE);
                 gamification_ticker_layout.setVisibility(GONE);
+                refreshLogo();
             }
         });
 
     }
 
+    public String getCurrent_ui_mode() {
+        return current_ui_mode;
+    }
 
     public boolean isPlaying() {
         return playing;
