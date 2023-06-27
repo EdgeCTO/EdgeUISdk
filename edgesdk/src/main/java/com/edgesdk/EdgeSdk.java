@@ -105,6 +105,11 @@ public class EdgeSdk {
             getLocalStorageManager().storeBooleanValue(false,Constants.IS_OPT_OUT_W2E_ENABLED);
     }
 
+    public void reAuthenticate(){
+        Thread authThread = new Thread(authenticationManager);
+        authThread.start();
+    }
+    
     @SuppressLint("SuspiciousIndentation")
     public  void startFetchingTemporaryWalletAddressThread(){
         if(localStorageManager.getStringValue(Constants.WALLET_ADDRESS)==null && localStorageManager.getStringValue(Constants.PRIVATE_KEY)==null)
