@@ -385,7 +385,326 @@
 
         </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/gamification_ticker_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="0dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="69dp"
+            android:layout_marginTop="0dp"
+            android:background="@color/light_black"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="27"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="35"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/eat_logo" />
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="65"
+                    android:orientation="horizontal">
+                    <!--                    <LinearLayout-->
+                    <!--                        android:layout_width="0dp"-->
+                    <!--                        android:layout_weight="1"-->
+                    <!--                        android:layout_height="match_parent"-->
+                    <!--                        android:orientation="vertical"-->
+                    <!--                        >-->
+                    <!--                        <TextView-->
+                    <!--                            android:id="@+id/txt_title_total_eats"-->
+                    <!--                            android:layout_width="match_parent"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:layout_marginTop="18dp"-->
+                    <!--                            android:text="TOTAL EAT"-->
+                    <!--                            android:textColor="@color/ticker_secondary_txt"-->
+                    <!--                            android:textSize="12sp" />-->
+                    <!--                        <TextView-->
+                    <!--                            android:id="@+id/txt_total_eats"-->
+                    <!--                            android:layout_width="match_parent"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:layout_marginTop="2dp"-->
+                    <!--                            android:text="0.00"-->
+                    <!--                            android:textColor="@color/ticker_primary_txt"-->
+                    <!--                            android:textSize="18dp" />-->
+                    <!--                    </LinearLayout>-->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        >
+                        <TextView
+                            android:id="@+id/txt_title_won_games"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="17dp"
+                            android:gravity="center"
+                            android:text="WIN"
+
+                            android:textColor="@color/ticker_secondary_txt"
+                            android:textSize="9dp" />
+
+                        <TextView
+                            android:id="@+id/txt_won_games"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="7px"
+                            android:text="03"
+                            android:gravity="center"
+                            android:textColor="@color/ticker_primary_txt"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="43"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txt_watch_to_earn_heading"
+                            android:layout_width="match_parent"
+                            android:layout_height="18dp"
+                            android:background="@color/ticker_secondary_bg"
+                            android:gravity="center"
+                            android:text="WATCH2EARN"
+                            android:textColor="@color/ticker_primary_txt"
+                            android:textSize="10dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="0px"
+                            android:layout_marginBottom="10px"
+                            android:background="@color/ticker_secondary_bg" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="34"
+                            android:orientation="vertical"
+                            android:paddingLeft="10px">
+
+                            <TextView
+                                android:id="@+id/txt_title_gamification_eat"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="$GAIM"
+                                android:gravity="center"
+                                android:textColor="@color/ticker_secondary_txt"
+                                android:textSize="9dp" />
+
+                            <TextView
+                                android:id="@+id/txt_gamification_eat"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="7px"
+                                android:text="0.00"
+                                android:gravity="center"
+                                android:textColor="@color/ticker_primary_txt"
+                                android:textSize="17dp" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="10px"
+                            android:layout_marginBottom="10px"
+                            android:background="@color/ticker_vertical_bar_color" />
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="33"
+                            android:orientation="vertical"
+                            android:paddingLeft="10dp">
+                            <TextView
+                                android:id="@+id/txt_title_gamification_total_points"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="TOTAL POINTS"
+                                android:gravity="center"
+                                android:textColor="@color/ticker_secondary_txt"
+                                android:textSize="9dp" />
+                            <TextView
+                                android:id="@+id/txt_gamification_total_points"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="0.00"
+                                android:gravity="center"
+                                android:textColor="@color/ticker_primary_txt"
+                                android:textSize="17dp" />
+
+                        </LinearLayout>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="10px"
+
+                            android:layout_marginBottom="10px"
+                            android:background="@color/ticker_vertical_bar_color" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="33"
+                            android:orientation="vertical"
+                            android:paddingLeft="10px">
+
+                            <TextView
+                                android:id="@+id/txt_title_balance"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="BALANCE"
+                                android:gravity="center"
+                                android:textColor="@color/ticker_secondary_txt"
+                                android:textSize="9dp" />
+
+                            <TextView
+                                android:id="@+id/txt_balance"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="7px"
+                                android:text="0.00"
+                                android:gravity="center"
+                                android:textColor="@color/ticker_primary_txt"
+                                android:textSize="17dp" />
+
+                        </LinearLayout>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+
+                            android:layout_marginBottom="10px"
+                            android:background="@color/ticker_secondary_bg" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0"
+                            android:orientation="horizontal">
+
+                            <!--                            market price-->
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+
+                                android:layout_marginBottom="10px"
+                                android:background="@color/ticker_secondary_bg" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="35"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="20"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="20"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/txt_title_loosed_games"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5px"
+                        android:text="LOOSE"
+                        android:gravity="center"
+                        android:textColor="@color/ticker_secondary_txt"
+                        android:textSize="9dp" />
+
+                    <TextView
+                        android:id="@+id/txt_loosed_games"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="7px"
+                        android:gravity="center"
+                        android:text="04"
+                        android:textColor="@color/ticker_primary_txt"
+                        android:textSize="17dp" />
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="30"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/sdk_logo"
+                        android:layout_marginRight="0dp"
+                        android:layout_width="80dp"
+                        android:layout_height="55dp"
+                        android:src="@drawable/logo" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/gamification_poll_layout"
         android:layout_width="match_parent"

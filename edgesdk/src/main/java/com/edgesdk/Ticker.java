@@ -155,7 +155,7 @@ public class Ticker extends LinearLayout {
         gamificationStatusLayout.setVisibility(View.INVISIBLE);
 
         ticker_layout = findViewById(R.id.ticker_layout);
-        //gamification_ticker_layout = findViewById(R.id.gamification_ticker_layout);
+        gamification_ticker_layout = findViewById(R.id.gamification_ticker_layout);
         gamification_poll_layout = findViewById(R.id.gamification_poll_layout);
 
         //switchUIForGamification();
@@ -304,7 +304,7 @@ public class Ticker extends LinearLayout {
             public void run() {
                 ticker_layout.setVisibility(GONE);
                 gamification_poll_layout.setVisibility(VISIBLE);
-                //gamification_ticker_layout.setVisibility(VISIBLE);
+                gamification_ticker_layout.setVisibility(VISIBLE);
             }
         });
 
@@ -315,7 +315,7 @@ public class Ticker extends LinearLayout {
             public void run() {
                 ticker_layout.setVisibility(VISIBLE);
                 gamification_poll_layout.setVisibility(GONE);
-                //gamification_ticker_layout.setVisibility(GONE);
+                gamification_ticker_layout.setVisibility(GONE);
             }
         });
 
