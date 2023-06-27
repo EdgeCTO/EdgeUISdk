@@ -932,7 +932,7 @@ public class Ticker extends LinearLayout {
                 txt_won_games.post(new Runnable() {
                     @Override
                     public void run() {
-                        number_of_loosed_games++;
+                        number_of_won_games++;
                         txt_won_games.setText(number_of_won_games+"");
                     }
                 });
