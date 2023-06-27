@@ -351,9 +351,19 @@ public class Ticker extends LinearLayout {
                 refreshLogo();
             }
         });
-
     }
-
+    public void switchUIForDefault(){
+        ticker_layout.post(new Runnable() {
+            @Override
+            public void run() {
+                current_ui_mode="w2e";
+                ticker_layout.setVisibility(VISIBLE);
+                gamification_poll_layout.setVisibility(VISIBLE);
+                gamification_ticker_layout.setVisibility(GONE);
+                refreshLogo();
+            }
+        });
+    }
     public String getCurrent_ui_mode() {
         return current_ui_mode;
     }

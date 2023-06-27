@@ -22,6 +22,7 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -348,6 +349,22 @@ public class LiveGamificationSocketManager implements Runnable{
         }
         return false;
     }
+
+    public boolean sendChannelUUIDToSocketServer(String channelUUID) throws JSONException {
+        JSONObject postData = new JSONObject();
+        postData.put("type","channel");
+        postData.put("channel",channelUUID);
+        if(ws!=null){
+            if(ws.isOpen()){
+                ws.sendText(postData.toString());
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void run() {
         if(!this.ws.isOpen()) {
