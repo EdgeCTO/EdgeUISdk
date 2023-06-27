@@ -174,7 +174,7 @@ public class Ticker extends LinearLayout {
 
         current_ui_mode="w2e";
 
-        switchUIForW2E();
+        switchUIForDefault();
 
         gamificationQRCode = findViewById(R.id.gamificationQRCode);
         // Set the image source for the ImageView
@@ -358,7 +358,7 @@ public class Ticker extends LinearLayout {
             public void run() {
                 current_ui_mode="w2e";
                 ticker_layout.setVisibility(VISIBLE);
-                gamification_poll_layout.setVisibility(VISIBLE);
+                gamification_poll_layout.setVisibility(GONE);
                 gamification_ticker_layout.setVisibility(GONE);
                 refreshLogo();
             }
