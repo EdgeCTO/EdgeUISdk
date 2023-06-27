@@ -467,10 +467,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="7px"
-                            android:text="03"
+                            android:text="0"
                             android:gravity="center"
                             android:textColor="@color/ticker_primary_txt"
-                            android:textSize="18sp" />
+                            android:textSize="20sp" />
 
                     </LinearLayout>
 
@@ -525,7 +525,7 @@
                             android:paddingLeft="10px">
 
                             <TextView
-                                android:id="@+id/txt_title_gamification_eat"
+                                android:id="@+id/txt_title_gaim"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
@@ -535,7 +535,7 @@
                                 android:textSize="9dp" />
 
                             <TextView
-                                android:id="@+id/txt_gamification_eat"
+                                android:id="@+id/txt_gaim"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="7px"
@@ -679,9 +679,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="7px"
                         android:gravity="center"
-                        android:text="04"
+                        android:text="0"
                         android:textColor="@color/ticker_primary_txt"
-                        android:textSize="17dp" />
+                        android:textSize="20dp" />
                 </LinearLayout>
 
 

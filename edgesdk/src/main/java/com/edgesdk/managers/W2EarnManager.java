@@ -84,22 +84,17 @@ public class W2EarnManager implements Runnable{
 
                     try{
                         if(channelWalletAddress!=null && viewerWalletAddress!=null) {
-                            //TODO:uncomment for getting win-loss message
-//                            JSONObject channel_wallet_address = new JSONObject();
-//                            channel_wallet_address.put("type", "wallet");
-//                            channel_wallet_address.put("address", edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
-//                            ws.sendText(channel_wallet_address.toString());
-//                            Log.i(LogConstants.Watch_2_Earn,"channel_wallet_address"+channel_wallet_address.toString());
+                            Type_Wallet twdhm = new Type_Wallet(viewerWalletAddress);
+                            edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS);
+                            ws.sendText(twdhm.toJson());
+                            Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+twdhm.toJson());
                             PlatformKeyType_Message platformKeyType_message = new PlatformKeyType_Message(edgeSdk.getLocalStorageManager().getStringValue(Constants.AUTH_KEY));
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+platformKeyType_message.toJson());
                             ws.sendText(platformKeyType_message.toJson());
                             Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
                             ws.sendText(tcdhm.toJson());
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+tcdhm.toJson());
-                            Type_Wallet twdhm = new Type_Wallet(viewerWalletAddress);
-                            edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS);
-                            ws.sendText(twdhm.toJson());
-                            Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+twdhm.toJson());
+
                             Type_Rate trdhm = new Type_Rate(getBaseRate());
                             ws.sendText(trdhm.toJson());
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+trdhm.toJson());

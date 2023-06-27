@@ -56,6 +56,7 @@ public class AuthenticationManager implements Runnable{
                     JsonNode firstSdkNode = dataNode.get(0);
                     if (firstSdkNode != null) {
                         String logoUrl = firstSdkNode.get("logo_url").asText();
+                        edgeSdk.getLocalStorageManager().storeStringValue(logoUrl,Constants.LOGO_IMAGE_URL);
                         // Use the logoUrl as needed
                         Log.i(LogConstants.Authentication,logoUrl);
                         String  imageUrl = edgeSdk.getLocalStorageManager().getStringValue(Constants.LOGO_URL);

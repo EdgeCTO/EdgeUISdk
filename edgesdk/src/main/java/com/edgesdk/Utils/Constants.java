@@ -15,6 +15,8 @@ public class Constants {
     public static String CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS="currentInUseChannelWalletAddress";
     public static String LOGO_URL="LOGO_URL";
     public static String LOGO_IMAGE_PATH="LOGO_IMAGE_PATH";
+    public static String LOGO_IMAGE_URL="LOGO_IMAGE_URL";
+
     public static String AUTH_KEY="AUTH_KEY";
     public static String CHANNEL_DATA="CHANNEL_DATA";
 

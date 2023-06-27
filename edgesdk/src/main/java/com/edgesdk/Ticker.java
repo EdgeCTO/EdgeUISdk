@@ -79,6 +79,7 @@ public class Ticker extends LinearLayout {
     private TextView txt_total_eats,txt_eat_market_price,txt_eat_market_inc_dec,txt_balance,txt_staked,txt_est_apy,txt_earned,txt_per_day,txt_total_points;
     private TextView txt_today,txt_watch_to_earn_heading,txt_title_total_eats,txt_title_eat_market_price,txt_title_eat_market_inc_dec,txt_title_balance,txt_title_staked,txt_title_est_apy,txt_title_earned,txt_title_per_day,txt_title_total_points;
     EdgeSdk edgeSdk;
+    public int number_of_won_games,number_of_loosed_games;
     private LinearLayout ticker_layout;
     Typeface custom_font;
     TickerNotifications[] tickerNotifications;
@@ -106,7 +107,7 @@ public class Ticker extends LinearLayout {
     Party party;
     long last_poll_displayed_id;
     private Map<String, Poll_to_be_resolved> listOfWageredPolls;
-
+    private TextView txt_won_games,txt_loosed_games,txt_gaim,txt_gamification_total_points,txt_balance_gamification;
     public Ticker(Context context,EdgeSdk edgeSdk) {
         super(context);
         this.edgeSdk=edgeSdk;
@@ -148,6 +149,15 @@ public class Ticker extends LinearLayout {
         txt_title_earned = view.findViewById(R.id.txt_title_earned);
         sdk_logo = view.findViewById(R.id.sdk_logo);
         sdk_logo_gamification = view.findViewById(R.id.sdk_logo_gamification);
+
+        txt_won_games=view.findViewById(R.id.txt_won_games);
+        txt_loosed_games=view.findViewById(R.id.txt_loosed_games);
+        txt_gaim=view.findViewById(R.id.txt_gaim);
+        txt_gamification_total_points=view.findViewById(R.id.txt_gamification_total_points);
+        txt_balance_gamification=view.findViewById(R.id.txt_balance_gamification);
+
+        number_of_loosed_games=0;
+        number_of_won_games=0;
 
         win_message_layout = view.findViewById(R.id.win_message_layout);
         number_of_won_coins = view.findViewById(R.id.number_of_won_coins);
@@ -289,12 +299,15 @@ public class Ticker extends LinearLayout {
                 .build();
     }
 
+
     public void refreshLogo(){
         final Handler handler = new Handler();
         Runnable runnableCode = new Runnable() {
             @Override
             public void run() {
                 String logoPath = edgeSdk.getLocalStorageManager().getStringValue(Constants.LOGO_IMAGE_PATH);
+                String logoUrl = edgeSdk.getLocalStorageManager().getStringValue(Constants.LOGO_IMAGE_URL);
+
                 if(logoPath != null){
                     Bitmap bitmap = BitmapFactory.decodeFile(logoPath);
                     if(current_ui_mode.equals("w2e")) {
@@ -906,12 +919,26 @@ public class Ticker extends LinearLayout {
             edgeSdk.getLiveGamificationManager().sendAnswerToSocketServer( poll.getId(),selectedAnswerIndex,5);
             if(selectedAnswer.equals(correctAnswer)){
                 //correct answer
+                txt_won_games.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        number_of_loosed_games++;
+                        txt_won_games.setText(number_of_won_games+"");
+                    }
+                });
                 mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
                 mediaPlayer.start();
                 addCorrectOrWrongMsgToResolveInList(poll_question,selectedAnswer,coins,poll,"correct");
                 updatePointsNumber(Float.parseFloat(coins+""));
                 rain();
             }else{
+                txt_loosed_games.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        number_of_loosed_games++;
+                        txt_loosed_games.setText(number_of_loosed_games+"");
+                    }
+                });
                 addCorrectOrWrongMsgToResolveInList(poll_question,selectedAnswer,coins,poll,"wrong");
                 mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.loose_sound);
                 mediaPlayer.start();
@@ -1379,6 +1406,13 @@ public class Ticker extends LinearLayout {
                                 //won
                                 if (correctAnswer.equals(selectedAnswer)) {
                                     //send message to
+                                    txt_won_games.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            number_of_loosed_games++;
+                                            txt_won_games.setText(number_of_won_games+"");
+                                        }
+                                    });
                                     mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.success_sound);
                                     mediaPlayer.start();
                                     rain();
@@ -1389,6 +1423,13 @@ public class Ticker extends LinearLayout {
                                 }
                                 //loosed
                                 else {
+                                    txt_loosed_games.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            number_of_loosed_games++;
+                                            txt_loosed_games.setText(number_of_loosed_games+"");
+                                        }
+                                    });
                                     mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.loose_sound);
                                     mediaPlayer.start();
                                     removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
@@ -1529,12 +1570,13 @@ public class Ticker extends LinearLayout {
                 public void run() {
                     try {
                         txt_total_eats.setText(roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getBalance()) + "");
-
+                        txt_gaim.setText(roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getBalance()) + "");
                     }catch (Exception e){
                         Log.e("error","error while printing total eats"+e.getMessage());
                         txt_total_eats.post(new Runnable() {
                             @Override
                             public void run() {
+                                txt_gaim.setText("-.--");
                                 txt_total_eats.setText("-.--");
                             }
                         });
@@ -1565,6 +1607,12 @@ public class Ticker extends LinearLayout {
                         txt_balance.setText("$" + roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getEstimatedEarnedEatsInUSD()));
                     }
                 });
+                txt_balance_gamification.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        txt_balance_gamification.setText("$" + roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getEstimatedEarnedEatsInUSD()));
+                    }
+                });
             }catch (Exception e){
                 Log.e(com.edgesdk.Utils.LogConstants.Watch_2_Earn,e.getMessage());
                 txt_balance.post(new Runnable() {
@@ -1593,6 +1641,17 @@ public class Ticker extends LinearLayout {
                     if(edgeSdk.getW2EarnManager().getResults().getPoints()!=0.0)
                         txt_total_points.setText(roundThreeDecimals( edgeSdk.getW2EarnManager().getResults().getPoints()));
                     else txt_total_points.setText("0.00");
+                }
+            });
+
+            txt_gamification_total_points.post(new Runnable() {
+                @SuppressLint("LongLogTag")
+                @Override
+                public void run() {
+                    Log.i("txt_gamification_total_points",edgeSdk.getW2EarnManager().getResults().getPoints()+"");
+                    if(edgeSdk.getW2EarnManager().getResults().getPoints()!=0.0)
+                        txt_gamification_total_points.setText(roundThreeDecimals( edgeSdk.getW2EarnManager().getResults().getPoints()));
+                    else txt_gamification_total_points.setText("0.00");
                 }
             });
 
