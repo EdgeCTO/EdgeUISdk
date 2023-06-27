@@ -303,7 +303,7 @@ public class Ticker extends LinearLayout {
             @Override
             public void run() {
                 ticker_layout.setVisibility(GONE);
-                gamification_poll_layout.setVisibility(GONE);
+                gamification_poll_layout.setVisibility(VISIBLE);
                 //gamification_ticker_layout.setVisibility(VISIBLE);
             }
         });
@@ -314,7 +314,7 @@ public class Ticker extends LinearLayout {
             @Override
             public void run() {
                 ticker_layout.setVisibility(VISIBLE);
-                gamification_poll_layout.setVisibility(VISIBLE);
+                gamification_poll_layout.setVisibility(GONE);
                 //gamification_ticker_layout.setVisibility(GONE);
             }
         });
