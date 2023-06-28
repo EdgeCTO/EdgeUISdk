@@ -371,6 +371,7 @@ public class LiveGamificationSocketManager implements Runnable{
         JSONObject postData = new JSONObject();
         postData.put("type","channel");
         postData.put("channel",channelUUID);
+        Log.i(LogConstants.Live_Gamification,"sendChannelUUIDToSocketServer:"+postData.toString());
         if(ws!=null){
             if(ws.isOpen()){
                 ws.sendText(postData.toString());
