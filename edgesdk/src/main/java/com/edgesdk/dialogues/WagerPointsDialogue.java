@@ -59,7 +59,10 @@ public class WagerPointsDialogue extends Dialog {
                 Log.i(LogConstants.Live_Gamification,"total_points"+total_points);
                 Log.i(LogConstants.Live_Gamification,"wagered_points"+wagered_points);
                 if(total_points>0.0) {
-                    if (total_points > wagered_points) {
+//                    if (total_points > wagered_points) {
+                    //TODO:revert it
+                    if (true) {
+
                         txt_error.setVisibility(View.GONE);
                         ticker.addPollToResolveInList(question, answer, wagered_coins.getText().toString(), poll);
                         dismiss();
