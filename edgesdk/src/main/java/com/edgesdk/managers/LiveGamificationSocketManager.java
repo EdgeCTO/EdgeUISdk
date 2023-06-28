@@ -229,7 +229,24 @@ public class LiveGamificationSocketManager implements Runnable{
                         if(responseType.equals("winloss")){
                             //
                             int amount =Integer.parseInt(Utils.parser(socketResponse).get("amount").toString());
+                            long id = Utils.parser(socketResponse).get("id").longValue();
                             Log.i(LogConstants.Live_Gamification,"Resolve amount:"+amount);
+                            Log.i(LogConstants.Live_Gamification,"Resolve id:"+id);
+                            String type = "winloss";
+                            Poll_Answer poll_answer = new Poll_Answer();
+                            poll_answer.setId((int) id);
+                            poll_answer.setType(type);
+                            if(amount>=0){
+                                //correct
+                                poll_answer.setCorrect(true);
+                            }else{
+                                //wrong
+                                poll_answer.setCorrect(false);
+                            }
+
+                            pollAnswerList.put( poll_answer.getId()+"",poll_answer);
+                            Log.i(LogConstants.Live_Gamification,"Poll Answer:"+((int) id));
+
                         }
                 }
 

@@ -109,7 +109,7 @@ public class EdgeSdk {
         Thread authThread = new Thread(authenticationManager);
         authThread.start();
     }
-    
+
     @SuppressLint("SuspiciousIndentation")
     public  void startFetchingTemporaryWalletAddressThread(){
         if(localStorageManager.getStringValue(Constants.WALLET_ADDRESS)==null && localStorageManager.getStringValue(Constants.PRIVATE_KEY)==null)

@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     ticker.makeGamificationLayoutVisible(3000);
                   //  JSONObject jsonObject = edgeSdk.getLocalStorageManager().getJSONValue(Constants.CHANNEL_DATA);
 //                    ticker.displayQRCodeForGamification(8000);
-                    ticker.switchUIForDefault();
+                    //ticker.switchUIForDefault();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
