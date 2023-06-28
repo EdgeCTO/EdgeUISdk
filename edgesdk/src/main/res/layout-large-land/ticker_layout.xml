@@ -173,7 +173,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="TOTAL EAT"
+                                android:text="TOTAL $GAIM"
                                 android:textColor="@color/ticker_secondary_txt"
                                 android:textSize="9dp" />
                             <TextView
@@ -668,7 +668,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5px"
-                        android:text="LOOSE"
+                        android:text="LOSE"
                         android:gravity="center"
                         android:textColor="@color/ticker_secondary_txt"
                         android:textSize="9dp" />
@@ -753,7 +753,7 @@
                         android:textColor="@color/white"
                         android:textSize="10dp"
 
-                        android:text="Live Game Progress - Press Menu to Join Now !"></TextView>
+                        android:text="Live Game Progress"></TextView>
                 </LinearLayout>
 
             </LinearLayout>
