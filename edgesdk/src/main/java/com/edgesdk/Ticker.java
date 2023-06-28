@@ -848,7 +848,7 @@ public class Ticker extends LinearLayout {
                 question.setText(poll_question);
                 answer.setText((selectedAnswer));
                 wagered_coins.setText(coins + " coins wagered");
-                correct_wrong_message.setText(type=="correct" ? "Correct" : poll.getChoices()[poll.getCorrect()[0]-2]);
+                //correct_wrong_message.setText(type=="correct" ? "Correct" : poll.getChoices()[poll.getCorrect()[0]-2]);
                 // Get the width of the TextView container
                 int containerWidth = question.getWidth();
 
@@ -1179,7 +1179,7 @@ public class Ticker extends LinearLayout {
                         for (Map.Entry<String, Poll_to_be_resolved> poll_to_be_resolved : listOfWageredPolls.entrySet()) {
                             Log.i(LogConstants.Live_Gamification, "pending answer :" + poll_to_be_resolved.getValue().getId());
                             if (answer.getValue().getId() == poll_to_be_resolved.getValue().getId()) {
-                                Log.i(LogConstants.Live_Gamification, "Question resolved" + answer.getValue().getCorrect()[0]);
+                                //Log.i(LogConstants.Live_Gamification, "Question resolved" + answer.getValue().getCorrect()[0]);
                                 //String correctAnswer = poll_to_be_resolved.getValue().getPoll_question().getChoices()[answer.getValue().getCorrect()[0]];
                                 boolean isCorrect = answer.getValue().isCorrect();
                                 //String selectedAnswer = poll_to_be_resolved.getValue().getSelectedAnswer();
