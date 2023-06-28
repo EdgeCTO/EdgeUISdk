@@ -41,6 +41,7 @@ public class LiveGamificationSocketManager implements Runnable{
     private Map<String,Poll_Question> pollQuestionList;
     private Map<String,Poll_Answer> pollAnswerList;
     private static boolean isGameGoingOn;
+    private static String currentChannelUUID;
     public LiveGamificationSocketManager(EdgeSdk edgeSdk) {
         this.edgeSdk = edgeSdk;
         this.setSelfDisconnected(false);
@@ -49,6 +50,7 @@ public class LiveGamificationSocketManager implements Runnable{
         this.pollQuestionList = new LinkedHashMap<>();
         this.pollAnswerList = new LinkedHashMap<>();
         this.isGameGoingOn=false;
+        currentChannelUUID=null;
     }
 
     public Future getThreadHandler() {
@@ -113,6 +115,7 @@ public class LiveGamificationSocketManager implements Runnable{
                     openingMessage.put("type","wallet");
                     openingMessage.put("address", edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
                     Log.i(LogConstants.Live_Gamification,"openingMessage"+openingMessage.toString());
+                    sendChannelUUIDToSocketServer(currentChannelUUID);
                     ws.sendText(openingMessage.toString());
                 }
 
@@ -371,6 +374,7 @@ public class LiveGamificationSocketManager implements Runnable{
         JSONObject postData = new JSONObject();
         postData.put("type","channel");
         postData.put("channel",channelUUID);
+        currentChannelUUID=channelUUID;
         Log.i(LogConstants.Live_Gamification,"sendChannelUUIDToSocketServer:"+postData.toString());
         if(ws!=null){
             if(ws.isOpen()){
