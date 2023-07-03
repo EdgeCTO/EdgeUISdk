@@ -239,6 +239,7 @@ public class LiveGamificationSocketManager implements Runnable{
                             Poll_Answer poll_answer = new Poll_Answer();
                             poll_answer.setId((int) id);
                             poll_answer.setType(type);
+                            
                             if(amount>=0){
                                 //correct
                                 poll_answer.setCorrect(true);

@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
                     ticker.makeGamificationLayoutVisible(3000);
                     edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("7be6bb9c-fa21-43b0-b22f-b857767ab525");
+                    ticker.switchUIForGamification();
                   //  JSONObject jsonObject = edgeSdk.getLocalStorageManager().getJSONValue(Constants.CHANNEL_DATA);
 //                    ticker.displayQRCodeForGamification(8000);
                     //ticker.switchUIForDefault();
