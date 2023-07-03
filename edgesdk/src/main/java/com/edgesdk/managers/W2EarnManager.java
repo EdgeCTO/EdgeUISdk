@@ -9,6 +9,7 @@ import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.Utils.Urls;
 import com.edgesdk.Utils.Utils;
+import com.edgesdk.models.PlatformKeyType_Message;
 import com.edgesdk.models.TickerResults;
 import com.edgesdk.models.Type_Channel;
 import com.edgesdk.models.Type_Rate;
@@ -21,6 +22,8 @@ import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketFrame;
 import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -81,13 +84,17 @@ public class W2EarnManager implements Runnable{
 
                     try{
                         if(channelWalletAddress!=null && viewerWalletAddress!=null) {
-                            Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
-                            ws.sendText(tcdhm.toJson());
-                            Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+tcdhm.toJson());
                             Type_Wallet twdhm = new Type_Wallet(viewerWalletAddress);
                             edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS);
                             ws.sendText(twdhm.toJson());
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+twdhm.toJson());
+                            PlatformKeyType_Message platformKeyType_message = new PlatformKeyType_Message(edgeSdk.getLocalStorageManager().getStringValue(Constants.AUTH_KEY));
+                            Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+platformKeyType_message.toJson());
+                            ws.sendText(platformKeyType_message.toJson());
+                            Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
+                            ws.sendText(tcdhm.toJson());
+                            Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+tcdhm.toJson());
+
                             Type_Rate trdhm = new Type_Rate(getBaseRate());
                             ws.sendText(trdhm.toJson());
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+trdhm.toJson());

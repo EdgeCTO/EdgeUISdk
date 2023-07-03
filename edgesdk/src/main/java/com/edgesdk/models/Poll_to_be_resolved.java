@@ -4,7 +4,7 @@ public class Poll_to_be_resolved {
     Poll_Question poll_question;
     String selectedAnswer;
     long id;
-    int wagered_coins;
+    int wagered_coins,mode;
 
     public Poll_Question getPoll_question() {
         return poll_question;
@@ -36,5 +36,13 @@ public class Poll_to_be_resolved {
 
     public void setWagered_coins(int wagered_coins) {
         this.wagered_coins = wagered_coins;
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
     }
 }

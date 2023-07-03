@@ -54,6 +54,10 @@ public class EdgeSdk {
         this.threadManager = new ThreadManager();
         this.temporaryWalletManager = new TemporaryWalletManager(this);
         this.localStorageManager = new LocalStorageManager(context);
+
+        //storing auth key in local storage
+        this.getLocalStorageManager().storeStringValue(sdkAuthKey,Constants.AUTH_KEY);
+
         this.walletForwardingManager = new WalletForwardingManager(this);
         this.walletSwitchingManager = new WalletSwitchingManager(this);
         this.w2EarnManager=new W2EarnManager(this);
@@ -99,6 +103,11 @@ public class EdgeSdk {
     public void setDefaultValues(){
             getLocalStorageManager().storeBooleanValue(true, Constants.IS_TICKER_ALLOWED_TO_HIDE);
             getLocalStorageManager().storeBooleanValue(false,Constants.IS_OPT_OUT_W2E_ENABLED);
+    }
+
+    public void reAuthenticate(){
+        Thread authThread = new Thread(authenticationManager);
+        authThread.start();
     }
 
     @SuppressLint("SuspiciousIndentation")

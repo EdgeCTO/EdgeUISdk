@@ -3,8 +3,8 @@ package com.edgesdk.models;
 public class Poll_Answer {
     String type,explanation;
     int [] correct = new int[1];
-    int id;
-
+    int id,amount;
+    boolean isCorrect=false;
     public String getType() {
         return type;
     }
@@ -35,5 +35,21 @@ public class Poll_Answer {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isCorrect() {
+        return isCorrect;
+    }
+
+    public void setCorrect(boolean correct) {
+        isCorrect = correct;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

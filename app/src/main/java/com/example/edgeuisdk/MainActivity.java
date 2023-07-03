@@ -20,7 +20,11 @@ import android.widget.Toast;
 
 import com.edgesdk.EdgeSdk;
 import com.edgesdk.Ticker;
+import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -116,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
         layout.addView(ticker);
         ticker.onResume();
-
+        ticker.switchUIForGamification();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -124,8 +128,14 @@ public class MainActivity extends AppCompatActivity {
                     Thread.sleep(5000);
                     edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
                     ticker.makeGamificationLayoutVisible(3000);
+                    edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("7be6bb9c-fa21-43b0-b22f-b857767ab525");
+                    ticker.switchUIForGamification();
+                  //  JSONObject jsonObject = edgeSdk.getLocalStorageManager().getJSONValue(Constants.CHANNEL_DATA);
 //                    ticker.displayQRCodeForGamification(8000);
+                    //ticker.switchUIForDefault();
                 } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }

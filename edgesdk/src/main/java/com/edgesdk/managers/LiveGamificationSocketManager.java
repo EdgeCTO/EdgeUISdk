@@ -8,6 +8,7 @@ import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.Utils.Urls;
 import com.edgesdk.Utils.Utils;
 import com.edgesdk.models.CreateMessage;
+import com.edgesdk.models.PollWagerAnswer_Message;
 import com.edgesdk.models.Poll_Answer;
 import com.edgesdk.models.Poll_Question;
 import com.edgesdk.models.SetScreenMessage;
@@ -20,6 +21,9 @@ import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketFrame;
 import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +41,7 @@ public class LiveGamificationSocketManager implements Runnable{
     private Map<String,Poll_Question> pollQuestionList;
     private Map<String,Poll_Answer> pollAnswerList;
     private static boolean isGameGoingOn;
+    private static String currentChannelUUID;
     public LiveGamificationSocketManager(EdgeSdk edgeSdk) {
         this.edgeSdk = edgeSdk;
         this.setSelfDisconnected(false);
@@ -45,6 +50,7 @@ public class LiveGamificationSocketManager implements Runnable{
         this.pollQuestionList = new LinkedHashMap<>();
         this.pollAnswerList = new LinkedHashMap<>();
         this.isGameGoingOn=false;
+        currentChannelUUID=null;
     }
 
     public Future getThreadHandler() {
@@ -105,6 +111,12 @@ public class LiveGamificationSocketManager implements Runnable{
                 @Override
                 public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
                     Log.i(LogConstants.Live_Gamification,"Live gamification socket opened");
+                    JSONObject openingMessage = new JSONObject();
+                    openingMessage.put("type","wallet");
+                    openingMessage.put("address", edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
+                    Log.i(LogConstants.Live_Gamification,"openingMessage"+openingMessage.toString());
+                    sendChannelUUIDToSocketServer(currentChannelUUID);
+                    ws.sendText(openingMessage.toString());
                 }
 
                 @Override
@@ -176,18 +188,19 @@ public class LiveGamificationSocketManager implements Runnable{
                             int mode = Utils.parser(socketResponse).get("mode").intValue();
                             JsonNode correct=null;
                             int correctAnswer[] = new int[1];
+
                             if(mode==3 || mode==2){
-                                correct = Utils.parser(socketResponse).get("correct");
-                                ObjectMapper objectMapper = new ObjectMapper();
-                                correctAnswer = objectMapper.treeToValue(correct, int[].class);
+//                                correct = Utils.parser(socketResponse).get("correct");
+//                                ObjectMapper objectMapper = new ObjectMapper();
+//                                correctAnswer = objectMapper.treeToValue(correct, int[].class);
                             }
-                            String explanation = Utils.parser(socketResponse).get("explanation").toString();
+                            //String explanation = Utils.parser(socketResponse).get("explanation").toString();
                             long id = Utils.parser(socketResponse).get("id").longValue();
                             JsonNode choices = Utils.parser(socketResponse).get("choices");
                             ObjectMapper objectMapper = new ObjectMapper();
                             String[] choicesArray = objectMapper.treeToValue(choices, String[].class);
                             poll_question.setChoices(choicesArray);
-                            poll_question.setCreated(explanation);
+                            poll_question.setCreated("");
                             poll_question.setPoll(poll);
                             poll_question.setMode(mode);
                             poll_question.setType(type);
@@ -200,22 +213,45 @@ public class LiveGamificationSocketManager implements Runnable{
                         }catch (Exception e){
                             Log.i(LogConstants.Live_Gamification,e.getMessage());
                         }
-                        }else if(responseType.equals("resolve")){
-                        Poll_Answer poll_answer = new Poll_Answer();
-                        String type = responseType;
-                        String explanation = Utils.parser(socketResponse).get("explanation").toString();
-                        long id = Utils.parser(socketResponse).get("id").longValue();
-                        JsonNode correct = Utils.parser(socketResponse).get("correct");
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        int[] correctAnswer = objectMapper.treeToValue(correct, int[].class);
-                        poll_answer.setCorrect(correctAnswer);
-                        poll_answer.setExplanation(explanation);
-                        poll_answer.setId((int) id);
-                        poll_answer.setType(type);
-                        pollAnswerList.put( poll_answer.getId()+"",poll_answer);
-                        Log.i(LogConstants.Live_Gamification,"Poll Answer:"+((int) id));
+                        }
+//                        else if(responseType.equals("resolve")){
+//                        Poll_Answer poll_answer = new Poll_Answer();
+//                        String type = responseType;
+//                        String explanation = Utils.parser(socketResponse).get("explanation").toString();
+//                        long id = Utils.parser(socketResponse).get("id").longValue();
+//                        JsonNode correct = Utils.parser(socketResponse).get("correct");
+//                        ObjectMapper objectMapper = new ObjectMapper();
+//                        int[] correctAnswer = objectMapper.treeToValue(correct, int[].class);
+//                        poll_answer.setCorrect(correctAnswer);
+//                        poll_answer.setExplanation(explanation);
+//                        poll_answer.setId((int) id);
+//                        poll_answer.setType(type);
+//                        pollAnswerList.put( poll_answer.getId()+"",poll_answer);
+//                        Log.i(LogConstants.Live_Gamification,"Poll Answer:"+((int) id));
+//                    }
+                        if(responseType.equals("winloss")){
+                            //
+                            int amount =Integer.parseInt(Utils.parser(socketResponse).get("amount").toString());
+                            long id = Utils.parser(socketResponse).get("id").longValue();
+                            Log.i(LogConstants.Live_Gamification,"Resolve amount:"+amount);
+                            Log.i(LogConstants.Live_Gamification,"Resolve id:"+id);
+                            String type = "winloss";
+                            Poll_Answer poll_answer = new Poll_Answer();
+                            poll_answer.setId((int) id);
+                            poll_answer.setType(type);
+                            
+                            if(amount>=0){
+                                //correct
+                                poll_answer.setCorrect(true);
+                            }else{
+                                //wrong
+                                poll_answer.setCorrect(false);
+                            }
 
-                    }
+                            pollAnswerList.put( poll_answer.getId()+"",poll_answer);
+                            Log.i(LogConstants.Live_Gamification,"Poll Answer:"+((int) id));
+
+                        }
                 }
 
                 @Override
@@ -311,14 +347,45 @@ public class LiveGamificationSocketManager implements Runnable{
     }
 
     public void removePollFromPollQuestionList(int id){
+        Log.i(LogConstants.Live_Gamification,"removing :"+id);
         pollQuestionList.remove(id+"");
     }
     public void removePollFromPollAnswerList(int id){
         Log.i("childView","removing : "+id);
-        Log.i("childView","current : "+pollAnswerList.get(id+"").getId());
+        //Log.i("childView","current : "+pollAnswerList.get(id+"").getId());
         pollAnswerList.remove(id+"");
         Log.i("childView","current : "+pollAnswerList.get(id+""));
 
+    }
+    public boolean sendAnswerToSocketServer(int poll_id,int answer_index,int wager_amount){
+        PollWagerAnswer_Message pollWagerAnswer_message=new PollWagerAnswer_Message(poll_id,answer_index,wager_amount);
+        Log.i(LogConstants.Live_Gamification,"sending answer : "+pollWagerAnswer_message.toJson());
+        if(ws!=null){
+            if(ws.isOpen()){
+                ws.sendText(pollWagerAnswer_message.toJson());
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public boolean sendChannelUUIDToSocketServer(String channelUUID) throws JSONException {
+        JSONObject postData = new JSONObject();
+        postData.put("type","channel");
+        postData.put("channel",channelUUID);
+        currentChannelUUID=channelUUID;
+        Log.i(LogConstants.Live_Gamification,"sendChannelUUIDToSocketServer:"+postData.toString());
+        if(ws!=null){
+            if(ws.isOpen()){
+                ws.sendText(postData.toString());
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return false;
     }
 
     @Override

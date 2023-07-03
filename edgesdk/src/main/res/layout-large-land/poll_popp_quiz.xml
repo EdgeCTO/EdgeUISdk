@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:background="@drawable/poll_to_resolve_border"
     android:layout_height="wrap_content"
+
     >
     <LinearLayout
         android:layout_width="wrap_content"
@@ -52,7 +53,7 @@
             android:background="@drawable/poll_to_resolve_selected_answer_border"
             android:layout_height="wrap_content">
             <TextView
-
+                android:focusable="true"
                 android:id="@+id/poll_to_resolve_selected_answer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,39 +77,15 @@
             android:orientation="vertical"
             android:gravity="center"
             android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/correct_msg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="LOOSED"
-                android:gravity="center"
-                android:textColor="@color/green"
-                android:textSize="12sp"></TextView>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="LOSE"
-                android:gravity="center"
-                android:textColor="@color/red"
-                android:textSize="12sp"></TextView>
+
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/img_w2e_status"
+                android:layout_width="55dp"
+                android:layout_height="36dp"
+                android:src="@drawable/dots_loading"></pl.droidsonroids.gif.GifImageView>
 
         </LinearLayout>
-        <TextView
 
-            android:id="@+id/poll_to_resolve_wagered_coins"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:maxLines="5"
-            android:ellipsize="none"
-
-            android:autoSizeStepGranularity="2sp"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="10sp"
-            android:autoSizeMaxTextSize="15sp"
-            android:text="10 Coins"></TextView>
 
         <TextView
             android:layout_width="match_parent"
