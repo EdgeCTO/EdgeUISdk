@@ -346,10 +346,6 @@ public class LiveGamificationSocketManager implements Runnable{
 
     }
 
-    public void disconnectWs(){
-        this.getWs().disconnect();
-    }
-
     public void removePollFromPollQuestionList(int id){
         Log.i(LogConstants.Live_Gamification,"removing :"+id);
         pollQuestionList.remove(id+"");

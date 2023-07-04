@@ -139,8 +139,8 @@ public class MainActivity extends AppCompatActivity {
                     //edgeSdk.w2EarnManager.ws?.disconnect();
 //                    edgeSdk.getW2EarnManager().disconnectWs();
 //                    edgeSdk.getW2EarnManager().getThreadHandler().cancel(true);
-                    edgeSdk.getLiveGamificationManager().disconnectWs();
-                    edgeSdk.getLiveGamificationManager().getThreadHandler().cancel(true);
+                    //edgeSdk.getLiveGamificationManager().disconnectWs();
+                    //dgeSdk.getLiveGamificationManager().getThreadHandler().cancel(true);
                     //edgeSdk.w2EarnManager.threadHandler?.cancel(true);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
