@@ -346,6 +346,10 @@ public class LiveGamificationSocketManager implements Runnable{
 
     }
 
+    public void disconnectWs(){
+        this.getWs().disconnect();
+    }
+
     public void removePollFromPollQuestionList(int id){
         Log.i(LogConstants.Live_Gamification,"removing :"+id);
         pollQuestionList.remove(id+"");
@@ -376,6 +380,32 @@ public class LiveGamificationSocketManager implements Runnable{
         postData.put("type","channel");
         postData.put("channel",channelUUID);
         currentChannelUUID=channelUUID;
+
+        String channelAddress = "";
+        //look for channel wallet address and update it
+        JsonNode channelData = edgeSdk.getLocalStorageManager().getJSONValue(Constants.CHANNEL_DATA);
+        if (channelData.isArray()) {
+            for (JsonNode channel : channelData) {
+                if (channel.has("channel_id") && channel.get("channel_id").asText().equals(channelUUID)) {
+                    if (channel.has("channel_address")) {
+                        channelAddress = channel.get("channel_address").asText();
+                        // Use the channelAddress variable as needed
+                        Log.i(LogConstants.Live_Gamification,"Channel Address: " + channelAddress);
+                        edgeSdk.getW2EarnManager().updateChannelWalletAddressOnServer(channelAddress);
+                    } else {
+                        Log.i(LogConstants.Live_Gamification,"Channel address does not exist for the specified channel_id.");
+                    }
+                    break; // Exit the loop once the desired channel is found
+                }
+            }
+        } else {
+            Log.i(LogConstants.Live_Gamification,"Invalid JSON data or empty array.");
+        }
+
+        if (channelAddress.isEmpty()) {
+            Log.i(LogConstants.Live_Gamification,"No channel found with the specified channel_id.");
+        }
+
         Log.i(LogConstants.Live_Gamification,"sendChannelUUIDToSocketServer:"+postData.toString());
         if(ws!=null){
             if(ws.isOpen()){

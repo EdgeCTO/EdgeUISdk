@@ -45,6 +45,21 @@ public class AuthenticationManager implements Runnable{
             String message = serverResponse.get("message").toString();
             Log.i(LogConstants.Authentication,"message"+message);
             Log.i(LogConstants.Authentication,"channelData"+channelData.toString());
+
+            if (channelData.isArray() && channelData.size() > 0) {
+                JsonNode channel = channelData.get(0);
+                if (channel.has("channel_address")) {
+                    String channelAddress = channel.get("channel_address").asText();
+                    // Use the channelAddress variable as needed
+                    System.out.println("Channel Address: " + channelAddress);
+                    edgeSdk.getLocalStorageManager().storeStringValue(channelAddress,Constants.DEFAULT_FREEBIE_WALLET_ADDRESS);
+                } else {
+                    System.out.println("Channel address does not exist for the channel at index 0.");
+                }
+            } else {
+                System.out.println("Invalid JSON data or empty array.");
+            }
+
             edgeSdk.getLocalStorageManager().storeJSONValue(channelData,Constants.CHANNEL_DATA);
             if(isVerified){
                 edgeSdk.getLocalStorageManager().storeStringValue("true",sdkAuthKey);

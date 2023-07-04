@@ -121,6 +121,12 @@ public class MainActivity extends AppCompatActivity {
         layout.addView(ticker);
         ticker.onResume();
         ticker.switchUIForGamification();
+        try {
+            edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("7be6bb9c-fa21-43b0-b22f-b857767ab525");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -128,11 +134,14 @@ public class MainActivity extends AppCompatActivity {
                     Thread.sleep(5000);
                     edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
                     ticker.makeGamificationLayoutVisible(3000);
-                    edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("7be6bb9c-fa21-43b0-b22f-b857767ab525");
-                    ticker.switchUIForGamification();
-                  //  JSONObject jsonObject = edgeSdk.getLocalStorageManager().getJSONValue(Constants.CHANNEL_DATA);
-//                    ticker.displayQRCodeForGamification(8000);
-                    //ticker.switchUIForDefault();
+                    Thread.sleep(61000);
+                    edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("966591e3-b2ec-4b93-95a1-9d07c24b7fc9");
+                    //edgeSdk.w2EarnManager.ws?.disconnect();
+//                    edgeSdk.getW2EarnManager().disconnectWs();
+//                    edgeSdk.getW2EarnManager().getThreadHandler().cancel(true);
+                    edgeSdk.getLiveGamificationManager().disconnectWs();
+                    edgeSdk.getLiveGamificationManager().getThreadHandler().cancel(true);
+                    //edgeSdk.w2EarnManager.threadHandler?.cancel(true);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {

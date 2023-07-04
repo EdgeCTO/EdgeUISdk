@@ -39,7 +39,7 @@ public class W2EarnManager implements Runnable{
     private static int oldBaseRate;
     private static String channelWalletAddress,viewerWalletAddress;
     private static TickerResults results;
-    private static WebSocket ws;
+    public static WebSocket ws;
     private Boolean isSelfDisconnected;
     public W2EarnManager(EdgeSdk edgeSdk) {
         this.threadHandler=null;
@@ -64,12 +64,11 @@ public class W2EarnManager implements Runnable{
 
 
         String wallet = edgeSdk.getLocalStorageManager().getStringValue(Constants.FREEBIE_MOVIES_WALLET);
-        this.channelWalletAddress = wallet!=null?wallet:edgeSdk.getLocalStorageManager().getStringValue(Constants.DEFAULT_FREEBIE_WALLET_ADDRESS);
+        this.channelWalletAddress = edgeSdk.getLocalStorageManager().getStringValue(Constants.DEFAULT_FREEBIE_WALLET_ADDRESS);
         this.viewerWalletAddress =  edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS);
         setBaseRate(0);
         this.ws = null;
         try {
-
             this.ws = new WebSocketFactory().createSocket(Urls.W2E_SOCKET_SERVER,10000);
             this.ws.setPingInterval(3000);
             this.ws.addListener(new WebSocketListener() {
@@ -351,7 +350,9 @@ public class W2EarnManager implements Runnable{
     public  WebSocket getWs() {
         return ws;
     }
-
+    public void disconnectWs(){
+        this.getWs().disconnect();
+    }
     public Boolean getSelfDisconnected() {
         return isSelfDisconnected;
     }
@@ -363,6 +364,7 @@ public class W2EarnManager implements Runnable{
     public boolean updateChannelWalletAddressOnServer(String viewerWalletAddress){
         try {
             this.edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS);
+            this.edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.DEFAULT_FREEBIE_WALLET_ADDRESS);
             Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
             Log.i(LogConstants.Watch_2_Earn,"updating channel wallet address : "+tcdhm.toJson());
             ws.sendText(tcdhm.toJson());
