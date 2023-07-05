@@ -360,7 +360,7 @@ public class Ticker extends LinearLayout {
                 ticker_layout.setVisibility(GONE);
                 gamification_poll_layout.setVisibility(GONE);
                 gamification_ticker_layout.setVisibility(GONE);
-                //because its neither w2e nor gamified..
+                //because it
                 edgeSdk.getW2EarnManager().updateBaseRateOnServer(0);
                 refreshLogo();
             }
@@ -604,16 +604,8 @@ public class Ticker extends LinearLayout {
                             }
                             return true;
                         }
-                        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && event.getAction() == KeyEvent.ACTION_UP) {
-                            View childView = polls_to_resolve_holder.getChildAt(1);
-                            if(childView!=null) {
-                                TextView poll_to_resolve_selected_answer = childView.findViewById(R.id.poll_to_resolve_selected_answer);
-                                Log.i(LogConstants.Live_Gamification, "poll_to_resolve_selected_answer" + poll_to_resolve_selected_answer.getText());
-                                poll_to_resolve_selected_answer.setFocusable(true);
-                                poll_to_resolve_selected_answer.requestFocus();
-                                isFocusOnLeftSide=false;
-                            }
-                            }
+
+
 
                         return false;
                     }
