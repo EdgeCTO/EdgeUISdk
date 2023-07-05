@@ -357,9 +357,11 @@ public class Ticker extends LinearLayout {
             @Override
             public void run() {
                 current_ui_mode="w2e";
-                ticker_layout.setVisibility(VISIBLE);
+                ticker_layout.setVisibility(GONE);
                 gamification_poll_layout.setVisibility(GONE);
                 gamification_ticker_layout.setVisibility(GONE);
+                //because its neither w2e nor gamified..
+                edgeSdk.getW2EarnManager().updateBaseRateOnServer(0);
                 refreshLogo();
             }
         });
