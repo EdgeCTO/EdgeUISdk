@@ -561,7 +561,7 @@ public class Ticker extends LinearLayout {
                 answer_d.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
                 Log.i(LogConstants.Live_Gamification,"(int) poll.getId()"+(int) poll.getId());
                 poll_view.setId((int) poll.getId());
-
+                polls_holder.removeAllViews();
                 polls_holder.addView(poll_view, 0);
 
                 if(isFocusOnLeftSide) {
