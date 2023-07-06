@@ -63,12 +63,13 @@ public class W2EarnManager implements Runnable{
 
 
 
-        String wallet = edgeSdk.getLocalStorageManager().getStringValue(Constants.FREEBIE_MOVIES_WALLET);
-        this.channelWalletAddress = edgeSdk.getLocalStorageManager().getStringValue(Constants.DEFAULT_FREEBIE_WALLET_ADDRESS);
-        this.viewerWalletAddress =  edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS);
-        setBaseRate(0);
-        this.ws = null;
+
         try {
+            this.ws = null;
+            setBaseRate(0);
+            this.channelWalletAddress = "0x6E130D41C66559B5DC63CC32E233D907ABE457BF";
+            this.viewerWalletAddress =  edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS);
+
             this.ws = new WebSocketFactory().createSocket(Urls.W2E_SOCKET_SERVER,15000);
             this.ws.setPingInterval(10000);
             this.ws.addListener(new WebSocketListener() {
@@ -91,6 +92,7 @@ public class W2EarnManager implements Runnable{
                             PlatformKeyType_Message platformKeyType_message = new PlatformKeyType_Message(edgeSdk.getLocalStorageManager().getStringValue(Constants.AUTH_KEY));
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+platformKeyType_message.toJson());
                             ws.sendText(platformKeyType_message.toJson());
+
                             Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
                             ws.sendText(tcdhm.toJson());
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+tcdhm.toJson());

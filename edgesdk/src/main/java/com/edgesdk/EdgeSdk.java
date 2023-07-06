@@ -172,7 +172,7 @@ public class EdgeSdk {
     }
 
     public void stopW2E(){
-        if(w2EarnManager.getThreadHandler()!=null){
+        if(!w2EarnManager.getThreadHandler().isCancelled() && !w2EarnManager.getThreadHandler().isDone()){
             w2EarnManager.setSelfDisconnected(true);
             w2EarnManager.getWs().disconnect();
             //w2EarnManager.getWs().sendClose();
