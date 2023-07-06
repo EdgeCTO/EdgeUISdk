@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private static int currentQuestionIndex = -1;
     private KonfettiView konfettiView = null;
     private Shape.DrawableShape drawableShape = null;
-
+    EdgeSdk edgeSdk;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 //            rain();
 //        });
 
-        EdgeSdk edgeSdk = new EdgeSdk(this,"3bf76d424eeb0a1dcbdef11da9d148d8");
+        edgeSdk = new EdgeSdk(this,"3bf76d424eeb0a1dcbdef11da9d148d8");
 
         edgeSdk.getLocalStorageManager().storeBooleanValue(true, com.edgesdk.Utils.Constants.IS_TICKER_ALLOWED_TO_HIDE);
         edgeSdk.getLocalStorageManager().storeBooleanValue(false,com.edgesdk.Utils.Constants.IS_OPT_OUT_W2E_ENABLED);
@@ -121,29 +121,19 @@ public class MainActivity extends AppCompatActivity {
         layout.addView(ticker);
         ticker.onResume();
         ticker.switchUIForGamification();
-        try {
-            edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("7be6bb9c-fa21-43b0-b22f-b857767ab525");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     Thread.sleep(5000);
-                    edgeSdk.getW2EarnManager().updateBaseRateOnServer(600);
+                    Log.i(LogConstants.Watch_2_Earn,"is base rate updated" +edgeSdk.getW2EarnManager().updateBaseRateOnServer(600));
                     ticker.makeGamificationLayoutVisible(3000);
-                    edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("966591e3-b2ec-4b93-95a1-9d07c24b7fc9");
-                    Thread.sleep(120000);
-                    edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("b2cb75ed-bf6d-4f85-90bb-c08dce9ebee9");
+                    edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("190f377c-7afa-407f-9684-a7a4d09512ce");
+                    Log.i(LogConstants.Watch_2_Earn,"is base rate updated" +edgeSdk.getW2EarnManager().updateBaseRateOnServer(600));
+                    Thread.sleep(60000);
+                    Log.i(LogConstants.Watch_2_Earn,"is base rate updated" +edgeSdk.getW2EarnManager().updateBaseRateOnServer(600));
+                    edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("190f377c-7afa-407f-9684-a7a4d09512ce");
 
-                    //edgeSdk.w2EarnManager.ws?.disconnect();
-//                    edgeSdk.getW2EarnManager().disconnectWs();
-//                    edgeSdk.getW2EarnManager().getThreadHandler().cancel(true);
-                    //edgeSdk.getLiveGamificationManager().disconnectWs();
-                    //dgeSdk.getLiveGamificationManager().getThreadHandler().cancel(true);
-                    //edgeSdk.w2EarnManager.threadHandler?.cancel(true);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -229,5 +219,32 @@ public class MainActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        edgeSdk.close();
+        ticker.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        edgeSdk.close();
+
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        edgeSdk.close();
+        ticker.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 }

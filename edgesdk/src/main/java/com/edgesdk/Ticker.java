@@ -1208,10 +1208,11 @@ public class Ticker extends LinearLayout {
                                     //check what is mode of question
                                     if( poll_to_be_resolved.getValue().getMode()==1) {
                                         addWINOrLooseMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(), poll_to_be_resolved.getValue().getSelectedAnswer(), String.valueOf(poll_to_be_resolved.getValue().getWagered_coins()), poll_to_be_resolved.getValue().getPoll_question(), null, "win");
-                                        updatePointsNumber(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+""));
+                                        //updatePointsNumber(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+""));
                                     }else{
                                         addCorrectOrWrongMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(),answer.getValue().getAmount()+"",poll_to_be_resolved.getValue().getPoll_question(),"correct");
-                                        updatePointsNumber(Float.parseFloat(answer.getValue().getAmount()+""));
+                                        Log.i(LogConstants.Live_Gamification,"amount :"+Float.parseFloat(answer.getValue().getAmount()+""));
+                                        //updatePointsNumber(Float.parseFloat(answer.getValue().getAmount()+""));
                                     }
                                 }
                                 //loosed
@@ -1230,9 +1231,11 @@ public class Ticker extends LinearLayout {
                                     //check what is mode of question
                                     if( poll_to_be_resolved.getValue().getMode()==1) {
                                         addWINOrLooseMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(), poll_to_be_resolved.getValue().getSelectedAnswer(), String.valueOf(poll_to_be_resolved.getValue().getWagered_coins()), poll_to_be_resolved.getValue().getPoll_question(), null, "loose");
-                                        updatePointsNumber(-(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+"")));
+                                        //updatePointsNumber(-(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+"")));
                                     }else{
                                         addCorrectOrWrongMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(),answer.getValue().getAmount()+"",poll_to_be_resolved.getValue().getPoll_question(),"wrong");
+                                        Log.i(LogConstants.Live_Gamification,"amount :"+Float.parseFloat(answer.getValue().getAmount()+""));
+                                        //updatePointsNumber(Float.parseFloat(answer.getValue().getAmount()+""));
                                     }
                                 }
 
@@ -1822,7 +1825,6 @@ public class Ticker extends LinearLayout {
                         float counterValue = (float) animation.getAnimatedValue();
                         String formattedValue = decimalFormat.format(counterValue);
                         txt_total_points.setText(formattedValue);
-
                         // Apply animation to the TextView
 
                     }
@@ -1964,6 +1966,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void StopValuesPrintingThreads(){
+        Log.i(LogConstants.Live_Gamification,"StopValuesPrintingThreads");
+        Log.i(LogConstants.Watch_2_Earn,"StopValuesPrintingThreads");
+
         isPrintingThreadsRunning=false;
         if(staked_values_timer!=null)
             staked_values_timer.cancel();
@@ -1986,6 +1991,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void PauseValuesPrintingThreads(){
+        Log.i(LogConstants.Live_Gamification,"PauseValuesPrintingThreads");
+        Log.i(LogConstants.Watch_2_Earn,"PauseValuesPrintingThreads");
+
         isPrintingThreadsRunning=false;
         if(staked_values_timer!=null)
             staked_values_timer.cancel();
@@ -2007,6 +2015,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void ResumeValuesPrintingThreads(){
+        Log.i(LogConstants.Live_Gamification,"ResumeValuesPrintingThreads");
+        Log.i(LogConstants.Watch_2_Earn,"ResumeValuesPrintingThreads");
+
         isPrintingThreadsRunning=true;
         staked_values_timer = new Timer();
         staked_values_timer.schedule(new StakedValuesPrinter(),1000);
@@ -2038,6 +2049,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void onPause(){
+        Log.i(LogConstants.Live_Gamification,"onPause");
+        Log.i(LogConstants.Watch_2_Earn,"onPause");
+
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             StopValuesPrintingThreads();
@@ -2049,6 +2063,9 @@ public class Ticker extends LinearLayout {
         }
     }
     public void onResume(){
+        Log.i(LogConstants.Live_Gamification,"onResume");
+        Log.i(LogConstants.Watch_2_Earn,"onResume");
+
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             //HomeActivity.edgeSdkExecutor.startStaking();
@@ -2060,6 +2077,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void onStop(){
+        Log.i(LogConstants.Live_Gamification,"onStop");
+        Log.i(LogConstants.Watch_2_Earn,"onStop");
+
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             StopValuesPrintingThreads();
@@ -2074,6 +2094,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void onBackPressed(){
+        Log.i(LogConstants.Live_Gamification,"onBack");
+        Log.i(LogConstants.Watch_2_Earn,"onBack");
+
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             StopValuesPrintingThreads();

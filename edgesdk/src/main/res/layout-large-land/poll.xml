@@ -68,6 +68,8 @@
                 android:autoSizeMaxTextSize="14sp"
                 android:nextFocusDown="@id/poll_answer_b"
                 android:nextFocusUp="@id/poll_answer_a"
+                android:nextFocusRight="@id/poll_answer_a"
+                android:nextFocusLeft="@id/poll_answer_a"
                 android:text="His boxing idols and the old-time champions who fought in the 30s and 40s"></TextView>
         </LinearLayout>
 
@@ -95,6 +97,8 @@
                 android:autoSizeMaxTextSize="14sp"
                 android:nextFocusDown="@id/poll_answer_c"
                 android:nextFocusUp="@id/poll_answer_a"
+                android:nextFocusRight="@id/poll_answer_b"
+                android:nextFocusLeft="@id/poll_answer_b"
                 android:text="His bodyguards for the neighborhood he's in"></TextView>
         </LinearLayout>
         <LinearLayout
@@ -122,7 +126,8 @@
                 android:autoSizeMaxTextSize="14sp"
                 android:nextFocusDown="@id/poll_answer_d"
                 android:nextFocusUp="@id/poll_answer_b"
-
+                android:nextFocusRight="@id/poll_answer_c"
+                android:nextFocusLeft="@id/poll_answer_c"
                 />     </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -147,6 +152,8 @@
                 android:autoSizeMinTextSize="8sp"
                 android:autoSizeMaxTextSize="14sp"
                 android:nextFocusUp="@id/poll_answer_c"
+                android:nextFocusRight="@id/poll_answer_d"
+                android:nextFocusLeft="@id/poll_answer_d"
                 android:nextFocusDown="@id/poll_answer_d" />
         </LinearLayout>
         <TextView

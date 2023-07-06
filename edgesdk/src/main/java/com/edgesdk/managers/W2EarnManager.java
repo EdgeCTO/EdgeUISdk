@@ -69,8 +69,8 @@ public class W2EarnManager implements Runnable{
         setBaseRate(0);
         this.ws = null;
         try {
-            this.ws = new WebSocketFactory().createSocket(Urls.W2E_SOCKET_SERVER,10000);
-            this.ws.setPingInterval(3000);
+            this.ws = new WebSocketFactory().createSocket(Urls.W2E_SOCKET_SERVER,15000);
+            this.ws.setPingInterval(10000);
             this.ws.addListener(new WebSocketListener() {
                 @Override
                 public void onStateChanged(WebSocket websocket, WebSocketState newState) throws Exception {
@@ -82,6 +82,7 @@ public class W2EarnManager implements Runnable{
                     Log.i(LogConstants.Watch_2_Earn,"New- Successfully opened w2e socket connection..");
 
                     try{
+                        Log.e(LogConstants.Watch_2_Earn,"channelWalletAddress"+channelWalletAddress+" and viewerWalletAddress:"+viewerWalletAddress);
                         if(channelWalletAddress!=null && viewerWalletAddress!=null) {
                             Type_Wallet twdhm = new Type_Wallet(viewerWalletAddress);
                             edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS);
@@ -273,7 +274,7 @@ public class W2EarnManager implements Runnable{
 
                 @Override
                 public void onError(WebSocket websocket, WebSocketException cause) throws Exception {
-
+                    Log.e(LogConstants.Watch_2_Earn,cause.toString());
                 }
 
                 @Override
@@ -283,7 +284,7 @@ public class W2EarnManager implements Runnable{
 
                 @Override
                 public void onMessageError(WebSocket websocket, WebSocketException cause, List<WebSocketFrame> frames) throws Exception {
-
+                    Log.e(LogConstants.Watch_2_Earn,cause.toString());
                 }
 
                 @Override
@@ -303,7 +304,7 @@ public class W2EarnManager implements Runnable{
 
                 @Override
                 public void onUnexpectedError(WebSocket websocket, WebSocketException cause) throws Exception {
-
+                    Log.e(LogConstants.Watch_2_Earn,cause.toString());
                 }
 
                 @Override
@@ -320,7 +321,7 @@ public class W2EarnManager implements Runnable{
             e.printStackTrace();
             //TODO:Cancel the w2e thread..which should cause restart
         }
-        this.ws.setPingInterval(3000);
+
     }
 
     public Future getThreadHandler() {
@@ -401,12 +402,14 @@ public class W2EarnManager implements Runnable{
                 if(baseRate!=oldBaseRate) {
                     oldBaseRate=baseRate;
                     setBaseRate(baseRate);
-                    Type_Rate twdhm = new Type_Rate(getBaseRate());
+                    Type_Rate twdhm = new Type_Rate(baseRate);
                     Log.i(LogConstants.Watch_2_Earn,"Updating base to : "+getBaseRate());
                     this.ws.sendText(twdhm.toJson());
                 }
 
                 return true;
+            }else {
+                return false;
             }
         }
         return false;

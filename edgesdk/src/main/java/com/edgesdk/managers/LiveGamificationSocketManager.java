@@ -115,7 +115,9 @@ public class LiveGamificationSocketManager implements Runnable{
                     openingMessage.put("type","wallet");
                     openingMessage.put("address", edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
                     Log.i(LogConstants.Live_Gamification,"openingMessage"+openingMessage.toString());
-                    sendChannelUUIDToSocketServer(currentChannelUUID);
+                    if(currentChannelUUID!=null) {
+                        sendChannelUUIDToSocketServer(currentChannelUUID);
+                    }
                     ws.sendText(openingMessage.toString());
                 }
 
@@ -127,6 +129,7 @@ public class LiveGamificationSocketManager implements Runnable{
                 @Override
                 public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
                     Log.i(LogConstants.Live_Gamification,"Unfortunately Live gamification socket server is disconnected");
+                    setIsGameGoingOn(false);
                     if(!isSelfDisconnected){
                         //it is disconnected automatically so restart.
                         edgeSdk.startLiveGamificationManager();
@@ -178,8 +181,9 @@ public class LiveGamificationSocketManager implements Runnable{
                     //We will socket messages here.
                     Log.i(LogConstants.Live_Gamification,"Live gamification socket response : "+socketResponse);
                     String responseType = Utils.trimStartingAndEndingCommas(Utils.parser(socketResponse).get("type").toString());
-                    setIsGameGoingOn(true);
+
                     if(responseType.equals("poll")){
+                        setIsGameGoingOn(true);
                         try {
                             Log.i(LogConstants.Live_Gamification, "Adding new question");
                             Poll_Question poll_question = new Poll_Question();
@@ -225,12 +229,15 @@ public class LiveGamificationSocketManager implements Runnable{
                             Poll_Answer poll_answer = new Poll_Answer();
                             poll_answer.setId((int) id);
                             poll_answer.setType(type);
-                            
+
+
                             if(amount>=0){
                                 //correct
+                                poll_answer.setAmount(amount);
                                 poll_answer.setCorrect(true);
                             }else{
                                 //wrong
+                                poll_answer.setAmount(0); //it will not update score
                                 poll_answer.setCorrect(false);
                             }
 
