@@ -68,7 +68,7 @@ import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class Ticker extends LinearLayout {
     private TextView txt_total_eats,txt_eat_market_price,txt_eat_market_inc_dec,txt_balance,txt_staked,txt_est_apy,txt_earned,txt_per_day,txt_total_points;
-    private TextView txt_today,txt_watch_to_earn_heading,txt_title_total_eats,txt_title_eat_market_price,txt_title_eat_market_inc_dec,txt_title_balance,txt_title_staked,txt_title_est_apy,txt_title_earned,txt_title_per_day,txt_title_total_points;
+    private TextView txt_today,txt_watch_to_earn_heading,txt_title_total_eats,txt_title_eat_market_price,txt_title_eat_market_inc_dec,txt_title_balance,txt_title_staked,txt_title_est_apy,txt_title_earned,txt_title_per_day,txt_title_total_points,txt_watch_to_earn_heading_gamification;
     EdgeSdk edgeSdk;
     public int number_of_won_games,number_of_loosed_games;
     private LinearLayout ticker_layout;
@@ -123,6 +123,7 @@ public class Ticker extends LinearLayout {
         txt_staked = view.findViewById(R.id.txt_staked);
         txt_est_apy = view.findViewById(R.id.txt_est_apy);
         txt_earned = view.findViewById(R.id.txt_earned);
+        txt_watch_to_earn_heading_gamification = view.findViewById(R.id.txt_watch_to_earn_heading_gamification);
         //txt_per_day = view.findViewById(R.id.txt_per_day);
         txt_total_points = view.findViewById(R.id.txt_total_points);
         txt_title_total_points = view.findViewById(R.id.txt_title_total_points);
@@ -187,6 +188,7 @@ public class Ticker extends LinearLayout {
         isPrintingThreadsRunning=false;
         isFocusOnLeftSide=true;
         //setting-up fonts
+        txt_watch_to_earn_heading_gamification.setTypeface(custom_font);
         txt_total_eats.setTypeface(custom_font);
         txt_title_total_eats.setTypeface(custom_font);
         txt_eat_market_price.setTypeface(custom_font);
@@ -1367,164 +1369,178 @@ public class Ticker extends LinearLayout {
                 }
             });
 
-            //setting up default value.
-            if(!isBackpressed()) {
-                if(isPlaying()){
-                    try {
-                        //case 1 Wallet not forwarded.
-                        if(!edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_VIEWER_WALLET_ADDRESS_FORWARDED))
-                        {
-                            //wallet not forwarded and connected to w2e server and staking is working and staking is 0 and hrs remaking is null:
-                            if(
-                                    !tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
-                                            && edgeSdk.isW2ESocketOpen()
-                                            && edgeSdk.isStakingServerRunning()
-                                            && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn()==null
-                                            && roundTwoDecimals(edgeSdk.getStakingValueFetchingManager().getStkResults().getStakingPercentage()).equals("0.00")
-                                            && (
-                                            currentNotificationMsgNumber==0
-                                                    || currentNotificationMsgNumber==1
-                                                    || currentNotificationMsgNumber==2
-                                    )
-                            )
-                            {
-                                //w2e : active
-                                txt_watch_to_earn_heading.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if(currentNotificationMsgNumber==1 && edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_BOOST_ENABLED)){
-                                            txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage()+" & Boosted");
-                                        }else{
-                                            txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
-                                        }
-                                    }
-                                });
-
-                                isTickerVisibilityThreadRunning=false; //setting it up to false will allow to control visibility with remote
-                                try {Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());} catch (Exception e) {}
-                                currentNotificationMsgNumber++;
-
-                            }
-                            else if(
-                                    !tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
-                                            && edgeSdk.isW2ESocketOpen()
-                                            && !edgeSdk.isStakingServerRunning()
-                                            && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn()==null
-                                            && roundTwoDecimals(edgeSdk.getStakingValueFetchingManager().getStkResults().getStakingPercentage()).equals("0.00")
-                                            && (
-                                            currentNotificationMsgNumber==0
-                                                    || currentNotificationMsgNumber==1
-                                                    || currentNotificationMsgNumber==3
-                                    )
-                            ){
-
-                                txt_watch_to_earn_heading.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
-                                    }
-                                });
-
-                                isTickerVisibilityThreadRunning=false; //setting it up to false will allow to control visibility with remote
-                                try {Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());} catch (Exception e) {}
-                                currentNotificationMsgNumber++;
-
-                            }else{
-                                if(currentNotificationMsgNumber>0)currentNotificationMsgNumber++;
-                            }
-
-                        }else{
-                            //wallet forwarded
-                            if(edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_VIEWER_WALLET_ADDRESS_FORWARDED))
-                            {
-                                if(
-                                        tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
+            if(current_ui_mode=="w2e") {
+                //setting up default value.
+                if (!isBackpressed()) {
+                    if (isPlaying()) {
+                        try {
+                            //case 1 Wallet not forwarded.
+                            if (!edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_VIEWER_WALLET_ADDRESS_FORWARDED)) {
+                                //wallet not forwarded and connected to w2e server and staking is working and staking is 0 and hrs remaking is null:
+                                if (
+                                        !tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
                                                 && edgeSdk.isW2ESocketOpen()
                                                 && edgeSdk.isStakingServerRunning()
-                                                && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn()==null
+                                                && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn() == null
+                                                && roundTwoDecimals(edgeSdk.getStakingValueFetchingManager().getStkResults().getStakingPercentage()).equals("0.00")
                                                 && (
-                                                currentNotificationMsgNumber==3
-                                                        || currentNotificationMsgNumber==4
+                                                currentNotificationMsgNumber == 0
+                                                        || currentNotificationMsgNumber == 1
+                                                        || currentNotificationMsgNumber == 2
                                         )
-                                )
-                                {
+                                ) {
+                                    //w2e : active
                                     txt_watch_to_earn_heading.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if(currentNotificationMsgNumber==3 && edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_BOOST_ENABLED)){
-                                                txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage()+" & Boosted");
-                                            }else{
+                                            if (currentNotificationMsgNumber == 1 && edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_BOOST_ENABLED)) {
+                                                txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage() + " & Boosted");
+                                            } else {
                                                 txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
                                             }
                                         }
                                     });
 
-                                    isTickerVisibilityThreadRunning=false; //setting it up to false will allow to control visibility with remote
-                                    try {Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());} catch (Exception e) {}
-                                    currentNotificationMsgNumber++;
-                                }
-                                else if(
-                                        tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
-                                                && edgeSdk.isW2ESocketOpen()
-                                                && edgeSdk.isStakingServerRunning()
-                                                && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn()!=null
-                                                && (
-                                                currentNotificationMsgNumber==3
-                                                        || currentNotificationMsgNumber==5
-                                        )
-                                )
-                                {
-                                    Log.i("debug_ticker_visibility","case 3 detected");
-                                    if(currentNotificationMsgNumber!=5) {
-                                        txt_watch_to_earn_heading.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
-                                            }
-                                        });
-
-                                    }else if(currentNotificationMsgNumber==5){
-                                        // xx days.
-                                        txt_watch_to_earn_heading.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                String remTime = edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn();
-                                                txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage().replace("xx",remTime));
-                                            }
-                                        });
+                                    isTickerVisibilityThreadRunning = false; //setting it up to false will allow to control visibility with remote
+                                    try {
+                                        Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());
+                                    } catch (Exception e) {
                                     }
-
-                                    Log.i("debug_ticker_visibility","wait for : "+tickerNotifications[currentNotificationMsgNumber].getTimeForTickerToAppear());
-                                    isTickerVisibilityThreadRunning=false; //setting it up to false will allow to control visibility with remote
-                                    try {Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());} catch (Exception e) {}
-                                    Log.i("debug_ticker_visibility","waited for: "+tickerNotifications[currentNotificationMsgNumber].getTimeForTickerToAppear());
                                     currentNotificationMsgNumber++;
 
+                                } else if (
+                                        !tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
+                                                && edgeSdk.isW2ESocketOpen()
+                                                && !edgeSdk.isStakingServerRunning()
+                                                && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn() == null
+                                                && roundTwoDecimals(edgeSdk.getStakingValueFetchingManager().getStkResults().getStakingPercentage()).equals("0.00")
+                                                && (
+                                                currentNotificationMsgNumber == 0
+                                                        || currentNotificationMsgNumber == 1
+                                                        || currentNotificationMsgNumber == 3
+                                        )
+                                ) {
+
+                                    txt_watch_to_earn_heading.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
+                                        }
+                                    });
+
+                                    isTickerVisibilityThreadRunning = false; //setting it up to false will allow to control visibility with remote
+                                    try {
+                                        Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());
+                                    } catch (Exception e) {
+                                    }
+                                    currentNotificationMsgNumber++;
+
+                                } else {
+                                    if (currentNotificationMsgNumber > 0)
+                                        currentNotificationMsgNumber++;
                                 }
-                                else{
-                                    //TODO:Cause problem in notification
-                                    currentNotificationMsgNumber++;
+
+                            } else {
+                                //wallet forwarded
+                                if (edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_VIEWER_WALLET_ADDRESS_FORWARDED)) {
+                                    if (
+                                            tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
+                                                    && edgeSdk.isW2ESocketOpen()
+                                                    && edgeSdk.isStakingServerRunning()
+                                                    && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn() == null
+                                                    && (
+                                                    currentNotificationMsgNumber == 3
+                                                            || currentNotificationMsgNumber == 4
+                                            )
+                                    ) {
+                                        txt_watch_to_earn_heading.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (currentNotificationMsgNumber == 3 && edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_BOOST_ENABLED)) {
+                                                    txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage() + " & Boosted");
+                                                } else {
+                                                    txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
+                                                }
+                                            }
+                                        });
+
+                                        isTickerVisibilityThreadRunning = false; //setting it up to false will allow to control visibility with remote
+                                        try {
+                                            Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());
+                                        } catch (Exception e) {
+                                        }
+                                        currentNotificationMsgNumber++;
+                                    } else if (
+                                            tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
+                                                    && edgeSdk.isW2ESocketOpen()
+                                                    && edgeSdk.isStakingServerRunning()
+                                                    && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn() != null
+                                                    && (
+                                                    currentNotificationMsgNumber == 3
+                                                            || currentNotificationMsgNumber == 5
+                                            )
+                                    ) {
+                                        Log.i("debug_ticker_visibility", "case 3 detected");
+                                        if (currentNotificationMsgNumber != 5) {
+                                            txt_watch_to_earn_heading.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
+                                                }
+                                            });
+
+                                        } else if (currentNotificationMsgNumber == 5) {
+                                            // xx days.
+                                            txt_watch_to_earn_heading.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    String remTime = edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn();
+                                                    txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage().replace("xx", remTime));
+                                                }
+                                            });
+                                        }
+
+                                        Log.i("debug_ticker_visibility", "wait for : " + tickerNotifications[currentNotificationMsgNumber].getTimeForTickerToAppear());
+                                        isTickerVisibilityThreadRunning = false; //setting it up to false will allow to control visibility with remote
+                                        try {
+                                            Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());
+                                        } catch (Exception e) {
+                                        }
+                                        Log.i("debug_ticker_visibility", "waited for: " + tickerNotifications[currentNotificationMsgNumber].getTimeForTickerToAppear());
+                                        currentNotificationMsgNumber++;
+
+                                    } else {
+                                        //TODO:Cause problem in notification
+                                        currentNotificationMsgNumber++;
+                                    }
                                 }
                             }
+
+                            watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
+
+                        } catch (IllegalStateException e) {
+                            watch_to_earn_title_updater_timer = new Timer();
+                            watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
+                            currentNotificationMsgNumber = 0;
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            Log.i("debug_ticker_visibility", "printed all messages");
+                            isTickerVisibilityThreadRunning = false;
+                            currentNotificationMsgNumber = 0;
+                            watch_to_earn_title_updater_timer = new Timer();
+                            watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
                         }
-
-                        watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
-
-                    }   catch (IllegalStateException e) {
-                        watch_to_earn_title_updater_timer = new Timer();
-                        watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
-                        currentNotificationMsgNumber=0;
-                    } catch (ArrayIndexOutOfBoundsException e){
-                        Log.i("debug_ticker_visibility","printed all messages");
-                        isTickerVisibilityThreadRunning=false;
-                        currentNotificationMsgNumber=0;
-                        watch_to_earn_title_updater_timer = new Timer();
-                        watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
                     }
+                } else {
+                    Log.i("debug_ticker_visibility", "waiting for video to play.");
+                    watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 100);
                 }
             }else{
-                Log.i("debug_ticker_visibility","waiting for video to play.");
-                watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 100);
+                txt_watch_to_earn_heading_gamification.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        txt_watch_to_earn_heading_gamification.setText("Gaimified TV Powered By Edge-AI");
+                    }
+                });
             }
 
         }
