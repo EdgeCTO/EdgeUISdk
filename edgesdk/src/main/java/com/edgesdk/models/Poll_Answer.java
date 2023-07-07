@@ -21,11 +21,11 @@ public class Poll_Answer {
         this.explanation = explanation;
     }
 
-    public int[] getCorrect() {
+    public int[] getCorrectArray() {
         return correct;
     }
 
-    public void setCorrect(int[] correct) {
+    public void setCorrectArray(int[] correct) {
         this.correct = correct;
     }
 

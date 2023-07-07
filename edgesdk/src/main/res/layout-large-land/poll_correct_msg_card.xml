@@ -84,7 +84,22 @@
                 android:gravity="center"
                 android:textColor="@color/yellow"
                 android:textSize="15sp"></TextView>
+            <TextView
 
+                android:id="@+id/mcq_correct_msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:maxLines="5"
+                android:visibility="gone"
+                android:ellipsize="none"
+                android:autoSizeStepGranularity="2sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="10sp"
+                android:autoSizeMaxTextSize="11sp"
+                android:text="Correct Answer"></TextView>
         </LinearLayout>
         <TextView
 

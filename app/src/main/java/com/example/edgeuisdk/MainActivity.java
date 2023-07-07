@@ -128,11 +128,11 @@ public class MainActivity extends AppCompatActivity {
                     Thread.sleep(5000);
                     Log.i(LogConstants.Watch_2_Earn,"is base rate updated" +edgeSdk.getW2EarnManager().updateBaseRateOnServer(600));
                     ticker.makeGamificationLayoutVisible(3000);
-                    edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("190f377c-7afa-407f-9684-a7a4d09512ce");
+                    edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("1a78edce-80f8-48e1-8cc2-e74dfccf8f3d");
                     Log.i(LogConstants.Watch_2_Earn,"is base rate updated" +edgeSdk.getW2EarnManager().updateBaseRateOnServer(600));
                     Thread.sleep(60000);
                     Log.i(LogConstants.Watch_2_Earn,"is base rate updated" +edgeSdk.getW2EarnManager().updateBaseRateOnServer(600));
-                    edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("190f377c-7afa-407f-9684-a7a4d09512ce");
+                    edgeSdk.getLiveGamificationManager().sendChannelUUIDToSocketServer("966591e3-b2ec-4b93-95a1-9d07c24b7fc9");
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();

@@ -67,7 +67,7 @@ public class W2EarnManager implements Runnable{
         try {
             this.ws = null;
             setBaseRate(0);
-            this.channelWalletAddress = "0x6E130D41C66559B5DC63CC32E233D907ABE457BF";
+            //this.channelWalletAddress = "0x6E130D41C66559B5DC63CC32E233D907ABE457BF";
             this.viewerWalletAddress =  edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS);
 
             this.ws = new WebSocketFactory().createSocket(Urls.W2E_SOCKET_SERVER,15000);
@@ -83,19 +83,20 @@ public class W2EarnManager implements Runnable{
                     Log.i(LogConstants.Watch_2_Earn,"New- Successfully opened w2e socket connection..");
 
                     try{
-                        Log.e(LogConstants.Watch_2_Earn,"channelWalletAddress"+channelWalletAddress+" and viewerWalletAddress:"+viewerWalletAddress);
-                        if(channelWalletAddress!=null && viewerWalletAddress!=null) {
+                        //Log.e(LogConstants.Watch_2_Earn,"channelWalletAddress"+channelWalletAddress+" and viewerWalletAddress:"+viewerWalletAddress);
+                        //if(channelWalletAddress!=null && viewerWalletAddress!=null) {
+                            if(viewerWalletAddress!=null) {
                             Type_Wallet twdhm = new Type_Wallet(viewerWalletAddress);
-                            edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS);
                             ws.sendText(twdhm.toJson());
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+twdhm.toJson());
+
                             PlatformKeyType_Message platformKeyType_message = new PlatformKeyType_Message(edgeSdk.getLocalStorageManager().getStringValue(Constants.AUTH_KEY));
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+platformKeyType_message.toJson());
                             ws.sendText(platformKeyType_message.toJson());
 
-                            Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
-                            ws.sendText(tcdhm.toJson());
-                            Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+tcdhm.toJson());
+                            //Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
+                            //ws.sendText(tcdhm.toJson());
+                            //Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+tcdhm.toJson());
 
                             Type_Rate trdhm = new Type_Rate(getBaseRate());
                             ws.sendText(trdhm.toJson());
@@ -368,7 +369,7 @@ public class W2EarnManager implements Runnable{
         try {
             this.edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS);
             this.edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.DEFAULT_FREEBIE_WALLET_ADDRESS);
-            Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
+            Type_Channel tcdhm = new Type_Channel(viewerWalletAddress);
             Log.i(LogConstants.Watch_2_Earn,"updating channel wallet address : "+tcdhm.toJson());
             ws.sendText(tcdhm.toJson());
             return true;

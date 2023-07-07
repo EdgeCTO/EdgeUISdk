@@ -223,13 +223,17 @@ public class LiveGamificationSocketManager implements Runnable{
                             //
                             int amount =Integer.parseInt(Utils.parser(socketResponse).get("amount").toString());
                             long id = Utils.parser(socketResponse).get("id").longValue();
+                            JsonNode correct = Utils.parser(socketResponse).get("correct");
                             Log.i(LogConstants.Live_Gamification,"Resolve amount:"+amount);
                             Log.i(LogConstants.Live_Gamification,"Resolve id:"+id);
+                            ObjectMapper objectMapper = new ObjectMapper();
+                            int[] correctArray = objectMapper.treeToValue(correct, int[].class);
+
                             String type = "winloss";
                             Poll_Answer poll_answer = new Poll_Answer();
                             poll_answer.setId((int) id);
                             poll_answer.setType(type);
-
+                            poll_answer.setCorrectArray(correctArray);
 
                             if(amount>=0){
                                 //correct
@@ -369,10 +373,12 @@ public class LiveGamificationSocketManager implements Runnable{
 
     public boolean sendChannelUUIDToSocketServer(String channelUUID) throws JSONException {
         clearPollQuestionList(); //so that we shall not see old games
+
         JSONObject postData = new JSONObject();
         postData.put("type","channel");
         postData.put("channel",channelUUID);
         currentChannelUUID=channelUUID;
+
         String channelAddress = "";
         //look for channel wallet address and update it
         JsonNode channelData = edgeSdk.getLocalStorageManager().getJSONValue(Constants.CHANNEL_DATA);
@@ -383,7 +389,9 @@ public class LiveGamificationSocketManager implements Runnable{
                         channelAddress = channel.get("channel_address").asText();
                         // Use the channelAddress variable as needed
                         Log.i(LogConstants.Live_Gamification,"Channel Address: " + channelAddress);
+                        if(channelAddress!=null)
                         edgeSdk.getW2EarnManager().updateChannelWalletAddressOnServer(channelAddress);
+                        else  Log.i(LogConstants.Live_Gamification,"Channel address found null");
                     } else {
                         Log.i(LogConstants.Live_Gamification,"Channel address does not exist for the specified channel_id.");
                     }

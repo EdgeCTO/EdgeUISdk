@@ -52,7 +52,7 @@ public class AuthenticationManager implements Runnable{
                     String channelAddress = channel.get("channel_address").asText();
                     // Use the channelAddress variable as needed
                     System.out.println("Channel Address: " + channelAddress);
-                    edgeSdk.getLocalStorageManager().storeStringValue(channelAddress,Constants.DEFAULT_FREEBIE_WALLET_ADDRESS);
+                    edgeSdk.getLocalStorageManager().storeStringValue(channelAddress,Constants.CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS);
                 } else {
                     System.out.println("Channel address does not exist for the channel at index 0.");
                 }

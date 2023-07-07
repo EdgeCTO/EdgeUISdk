@@ -103,14 +103,29 @@
             android:textSize="12sp"
             android:textColor="@color/white"
             android:maxLines="5"
-            android:ellipsize="none"
             android:visibility="gone"
+            android:ellipsize="none"
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:autoSizeMinTextSize="10sp"
-            android:autoSizeMaxTextSize="15sp"
-            android:text="10 Coins"></TextView>
+            android:autoSizeMaxTextSize="11sp"
+            android:text="Correct Answer"></TextView>
+        <TextView
 
+            android:id="@+id/mcq_correct_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:maxLines="5"
+
+            android:ellipsize="none"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="11sp"
+            android:text="Correct Answer"></TextView>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

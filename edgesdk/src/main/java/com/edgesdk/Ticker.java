@@ -1,6 +1,5 @@
 package com.edgesdk;
 
-import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -8,14 +7,12 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
@@ -24,21 +21,16 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.core.content.ContextCompat;
@@ -51,7 +43,6 @@ import com.edgesdk.models.Poll_Answer;
 import com.edgesdk.models.Poll_Question;
 import com.edgesdk.models.Poll_to_be_resolved;
 import com.edgesdk.models.TickerNotifications;
-import com.github.jinatonic.confetti.ConfettiManager;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -832,12 +823,13 @@ public class Ticker extends LinearLayout {
         });
     }
 
-    public void addCorrectOrWrongMsgToResolveInList(String poll_question, String selectedAnswer,String coins,Poll_Question poll,String type) {
+    public void addCorrectOrWrongMsgToResolveInList(Poll_Answer actual_answer, String poll_question, String selectedAnswer, String coins, Poll_Question poll, String type) {
 
         View poll_view = callingActivity.getLayoutInflater().inflate( type=="correct" ? R.layout.poll_correct_msg_card : R.layout.poll_wrong_msg_card, null);
         TextView question = poll_view.findViewById(R.id.poll_to_resolve_question);
         TextView answer = poll_view.findViewById(R.id.poll_to_resolve_selected_answer);
         TextView wagered_coins = poll_view.findViewById(R.id.poll_to_resolve_wagered_coins);
+        TextView mcq_correct_msg = poll_view.findViewById(R.id.mcq_correct_msg);
         TextView correct_wrong_message = poll_view.findViewById(type=="correct" ? R.id.correct_msg : R.id.wrong_msg );
         Animation slideInFromRight = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
@@ -850,6 +842,8 @@ public class Ticker extends LinearLayout {
                 question.setText(poll_question);
                 answer.setText((selectedAnswer));
                 wagered_coins.setText(coins + " coins wagered");
+                Log.i(LogConstants.Live_Gamification,"Correct answer is : "+poll.getChoices()[actual_answer.getCorrectArray()[0]]);
+                mcq_correct_msg.setText(poll.getChoices()[actual_answer.getCorrectArray()[0]]);
                 //correct_wrong_message.setText(type=="correct" ? "Correct" : poll.getChoices()[poll.getCorrect()[0]-2]);
                 // Get the width of the TextView container
                 int containerWidth = question.getWidth();
@@ -1210,9 +1204,9 @@ public class Ticker extends LinearLayout {
                                         addWINOrLooseMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(), poll_to_be_resolved.getValue().getSelectedAnswer(), String.valueOf(poll_to_be_resolved.getValue().getWagered_coins()), poll_to_be_resolved.getValue().getPoll_question(), null, "win");
                                         //updatePointsNumber(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+""));
                                     }else{
-                                        addCorrectOrWrongMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(),answer.getValue().getAmount()+"",poll_to_be_resolved.getValue().getPoll_question(),"correct");
+                                        addCorrectOrWrongMsgToResolveInList(answer.getValue(),poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(),answer.getValue().getAmount()+"",poll_to_be_resolved.getValue().getPoll_question(),"correct");
                                         Log.i(LogConstants.Live_Gamification,"amount :"+Float.parseFloat(answer.getValue().getAmount()+""));
-                                        //updatePointsNumber(Float.parseFloat(answer.getValue().getAmount()+""));
+                                        //updatePointsNumber(Flanswer.getValue().get
                                     }
                                 }
                                 //loosed
@@ -1233,7 +1227,7 @@ public class Ticker extends LinearLayout {
                                         addWINOrLooseMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(), poll_to_be_resolved.getValue().getSelectedAnswer(), String.valueOf(poll_to_be_resolved.getValue().getWagered_coins()), poll_to_be_resolved.getValue().getPoll_question(), null, "loose");
                                         //updatePointsNumber(-(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+"")));
                                     }else{
-                                        addCorrectOrWrongMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(),answer.getValue().getAmount()+"",poll_to_be_resolved.getValue().getPoll_question(),"wrong");
+                                        addCorrectOrWrongMsgToResolveInList(answer.getValue(),poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(),answer.getValue().getAmount()+"",poll_to_be_resolved.getValue().getPoll_question(),"wrong");
                                         Log.i(LogConstants.Live_Gamification,"amount :"+Float.parseFloat(answer.getValue().getAmount()+""));
                                         //updatePointsNumber(Float.parseFloat(answer.getValue().getAmount()+""));
                                     }
