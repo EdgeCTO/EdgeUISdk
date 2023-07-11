@@ -133,7 +133,7 @@
             android:layout_marginTop="5dp"
             android:textSize="7dp"
             android:textColor="#296897"
-            android:text="Gaimified TV by EDGE-ai">
+            android:text="Gaimified TV by Edge-AI">
 
         </TextView>
     </LinearLayout>

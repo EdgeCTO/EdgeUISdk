@@ -7,6 +7,8 @@ public class Constants {
     public static String BID="bid";
     public static String IS_VIEWER_WALLET_ADDRESS_FORWARDED="isViewerWalletAddressForwarded";
     public static String IS_TICKER_ALLOWED_TO_HIDE="isTickerAllowedToUser";
+    public static String IS_GAMIFICATION_TICKER_ALLOWED_TO_HIDE="isGamificationTickerAllowedToUser";
+
     public static String IS_OPT_OUT_W2E_ENABLED="isOptOutW2eEnabled";
     public static String IS_BOOST_ENABLED="isBoostEnabled";
     public static String IS_SECOND_SCREEN_CONNECTED="isSecondScreenConnected";

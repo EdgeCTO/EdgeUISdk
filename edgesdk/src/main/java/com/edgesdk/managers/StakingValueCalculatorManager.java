@@ -61,6 +61,7 @@ public class StakingValueCalculatorManager implements Runnable{
                             double stakedPercentage = Utils.CalculateStakedPercentage(edgeSdk.getStakingValueFetchingManager().getStkOldVal().getData(), edgeSdk.getStakingValueFetchingManager().getStkCurrentVal().getData(), lerpFactor);
                             double stakedAmount = Utils.CalculateStakeAmount(edgeSdk.getStakingValueFetchingManager().getStkOldVal().getData(), edgeSdk.getStakingValueFetchingManager().getStkCurrentVal().getData(), lerpFactor, stakedPercentage);
                             double estimate = Utils.CalculateEstimate(edgeSdk.getStakingValueFetchingManager().getStkOldVal().getData(), edgeSdk.getStakingValueFetchingManager().getStkCurrentVal().getData(), lerpFactor,stakedPercentage);
+
                             double estApyHigh=0;
                             if(stakedAmount>0)
                                 estApyHigh = ((double) (estimate * 365)) / stakedAmount;
@@ -69,7 +70,8 @@ public class StakingValueCalculatorManager implements Runnable{
                             edgeSdk.getStakingValueFetchingManager().getStkResults().setStakedAmount(Utils.FormateDecimal(stakedAmount, 4));
                             edgeSdk.getStakingValueFetchingManager().getStkResults().setStakingPercentage(Utils.FormateDecimal(stakedPercentage * 100, 2));
                             edgeSdk.getStakingValueFetchingManager().getStkResults().setEarnedEatsAmount(Utils.FormateDecimal(earnedAmount, 4));
-                            edgeSdk.getStakingValueFetchingManager().getStkResults().setEstimatedEarningPerDay(Utils.FormateDecimal(estimate, 2));
+                            edgeSdk.getStakingValueFetchingManager().getStkResults().setEstimatedEarningPerDay(Utils.FormateDecimal(estimate, 3));
+                            Log.i("estimate-cal",(Utils.FormateDecimal(estimate, 3)+""));
                             Log.i("setEstimatedEarningPerDay",Utils.FormateDecimal(estimate, 2)+"");
                             edgeSdk.getStakingValueFetchingManager().getStkResults().setEstimatedApyPercentage(Utils.FormateDecimal(stakedPercentage*estApyHigh * 100, 2));
                             edgeSdk.getStakingValueFetchingManager().getStkResults().setResumingStakingIn(null);

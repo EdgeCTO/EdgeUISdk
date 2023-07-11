@@ -38,6 +38,7 @@ import androidx.core.content.ContextCompat;
 import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.Utils.Messages;
+import com.edgesdk.Utils.Utils;
 import com.edgesdk.dialogues.WagerPointsDialogue;
 import com.edgesdk.models.Poll_Answer;
 import com.edgesdk.models.Poll_Question;
@@ -328,6 +329,12 @@ public class Ticker extends LinearLayout {
                 gamification_poll_layout.setVisibility(VISIBLE);
                 gamification_ticker_layout.setVisibility(VISIBLE);
                 refreshLogo();
+                txt_watch_to_earn_heading_gamification.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        txt_watch_to_earn_heading_gamification.setText("Gaimified TV Powered By Edge-AI");
+                    }
+                });
             }
         });
 
@@ -342,6 +349,7 @@ public class Ticker extends LinearLayout {
                 gamification_poll_layout.setVisibility(GONE);
                 gamification_ticker_layout.setVisibility(GONE);
                 refreshLogo();
+
             }
         });
     }
@@ -1187,6 +1195,14 @@ public class Ticker extends LinearLayout {
                                 //Log.i(LogConstants.Live_Gamification,"selectedAnswerIndex : "+selectedAnswerIndex);
                                 //edgeSdk.getLiveGamificationManager().sendAnswerToSocketServer((int) poll_to_be_resolved.getValue().getId(),selectedAnswerIndex,poll_to_be_resolved.getValue().getWagered_coins());
                                 //won
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        String off_chain_balance = Utils.getOffChainBalance(edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
+                                        Log.i("off_chain_balance","Fetched: "+off_chain_balance) ;
+                                        edgeSdk.getW2EarnManager().getResults().setOffChainBalance(Float.parseFloat(off_chain_balance));
+                                    }
+                                }).start();
                                 if (isCorrect) {
                                     //send message to
                                     txt_won_games.post(new Runnable() {
@@ -1202,6 +1218,7 @@ public class Ticker extends LinearLayout {
                                     removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
                                     removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
                                     //check what is mode of question
+                                    //Make request to get updated balance ..
                                     if( poll_to_be_resolved.getValue().getMode()==1) {
                                         addWINOrLooseMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(), poll_to_be_resolved.getValue().getSelectedAnswer(), String.valueOf(poll_to_be_resolved.getValue().getWagered_coins()), poll_to_be_resolved.getValue().getPoll_question(), null, "win");
                                         //updatePointsNumber(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+""));
@@ -1542,7 +1559,6 @@ public class Ticker extends LinearLayout {
                     }
                 });
             }
-
         }
     }
 
@@ -1682,8 +1698,10 @@ public class Ticker extends LinearLayout {
                 @Override
                 public void run() {
                     try {
-                        txt_total_eats.setText(roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getBalance()) + "");
-                        txt_gaim.setText(roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getBalance()) + "");
+                        //2EAT= 1 $GAIM
+                        txt_total_eats.setText(roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getBalance()*2) + "");
+                        //2EAT= 1 $GAIM
+                        txt_gaim.setText(roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getBalance()*2) + "");
                     }catch (Exception e){
                         Log.e("error","error while printing total eats"+e.getMessage());
                         txt_total_eats.post(new Runnable() {
@@ -1740,10 +1758,11 @@ public class Ticker extends LinearLayout {
             txt_earned.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("txt_earned",edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()+"");
-                    if(edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()!=0.0)
-                        txt_earned.setText(roundThreeDecimals( edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()));
-                    else txt_earned.setText(Constants.DEFAULT_VALUE_EAT_HR);
+                    Log.i("staking estimate", edgeSdk.getStakingValueFetchingManager().getStkResults().getEstimatedEarningPerDayByStaking()+"");
+                    Log.i("w2e_earnings",edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()+"");
+                    txt_earned.setText(roundThreeDecimals( edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()+edgeSdk.getStakingValueFetchingManager().getStkResults().getEstimatedEarningPerDayByStaking()));
+//                    if(edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()!=0.0)
+//                    else txt_earned.setText(Constants.DEFAULT_VALUE_EAT_HR);
                 }
             });
 
