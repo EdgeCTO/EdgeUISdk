@@ -332,7 +332,7 @@ public class Ticker extends LinearLayout {
                 txt_watch_to_earn_heading_gamification.post(new Runnable() {
                     @Override
                     public void run() {
-                        txt_watch_to_earn_heading_gamification.setText("Gaimified TV Powered By Edge-AI");
+                        txt_watch_to_earn_heading_gamification.setText("Gaimified TV");
                     }
                 });
             }
@@ -353,6 +353,7 @@ public class Ticker extends LinearLayout {
             }
         });
     }
+
     public void switchUIForDefault(){
         ticker_layout.post(new Runnable() {
             @Override
@@ -1555,7 +1556,7 @@ public class Ticker extends LinearLayout {
                 txt_watch_to_earn_heading_gamification.post(new Runnable() {
                     @Override
                     public void run() {
-                        txt_watch_to_earn_heading_gamification.setText("Gaimified TV Powered By Edge-AI");
+                        txt_watch_to_earn_heading_gamification.setText("Gaimified TV");
                     }
                 });
             }
