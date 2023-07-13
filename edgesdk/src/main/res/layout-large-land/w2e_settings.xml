@@ -1,100 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
     <LinearLayout
+        android:id="@+id/w2earn_layout"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="match_parent"
+
         android:focusable="auto"
-
+        android:background="@color/main_screen_bg"
         android:focusableInTouchMode="true"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/txt_settings_heading"
-            android:layout_width="0dp"
-            android:layout_weight="1.2"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="45dp"
-            android:layout_marginTop="0dp"
-            android:text="Gaimified TV"
-            android:textSize="48sp" />
+        android:orientation="vertical">
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="2"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:focusable="auto"
+            android:paddingLeft="30dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
-            android:layout_gravity="center_vertical"
-            >
-            <TextView
-                android:id="@+id/txt_settings__sub_heading"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="0dp"
-                android:text="Watch2Earn"
-                android:textSize="13sp" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="right"
-            >
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginRight="10dp"
-                >
+                android:focusable="auto"
+                android:focusableInTouchMode="true"
+                android:gravity="left|center_vertical"
+                android:orientation="horizontal">
+
                 <TextView
-                    android:id="@+id/txt_w2e_status"
+                    android:id="@+id/txt_settings_heading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:textSize="12dp"
-                    android:text="TextView" />
-                <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/img_w2e_status"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/loading_eat">
-                </pl.droidsonroids.gif.GifImageView>
+
+                    android:text="Gaimified Tv"
+                    android:textColor="@color/white"
+                    android:textSize="48sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="right"
+                    >
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginRight="10dp"
+                        >
+                        <TextView
+                            android:id="@+id/txt_w2e_status_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:textSize="12dp"
+                            android:textColor="@color/white"
+                            android:text="Watch2earn: " />
+                        <TextView
+                            android:id="@+id/txt_w2e_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:textSize="12dp"
+                            android:textColor="@color/yellow"
+                            android:text="Active" />
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginRight="10dp"
+                        >
+                        <TextView
+                            android:id="@+id/txt_staking_status_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:textSize="12dp"
+                            android:textColor="@color/white"
+                            android:text="Staking" />
+
+                        <TextView
+                            android:id="@+id/txt_staking_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:textColor="@color/yellow"
+                            android:textSize="12dp"
+                            android:text="Active" />
+
+                    </LinearLayout>
+
+
+
+
+                </LinearLayout>
+
             </LinearLayout>
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginRight="10dp"
-                >
-                <TextView
-                    android:id="@+id/txt_staking_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:textSize="12dp"
-                    android:text="TextView" />
-                <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/img_staking_status"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/loading_eat">
-
-                </pl.droidsonroids.gif.GifImageView>
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="vertical">
 
             </LinearLayout>
-
-
-
-
         </LinearLayout>
-
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>

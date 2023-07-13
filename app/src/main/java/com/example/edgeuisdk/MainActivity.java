@@ -22,6 +22,7 @@ import com.edgesdk.EdgeSdk;
 import com.edgesdk.Ticker;
 import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
+import com.edgesdk.W2ESettings;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +46,7 @@ import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class MainActivity extends AppCompatActivity {
     Ticker ticker;
+    W2ESettings w2ESettings;
     int poll_number=0;
     private static final String[] QUESTIONS = {
             "What is the capital city of France and how did it get its name?",
@@ -112,13 +114,14 @@ public class MainActivity extends AppCompatActivity {
         edgeSdk.start();
         edgeSdk.startStaking();
         ticker = new Ticker(this,edgeSdk);
+        w2ESettings = new W2ESettings(this,edgeSdk);
 
         ticker.setBackpressed(false);
         ticker.setPlaying(true);
 
         LinearLayout layout = findViewById(R.id.main_layout);
 
-        layout.addView(ticker);
+        layout.addView(w2ESettings);
         ticker.onResume();
         ticker.switchUIForGamification();
         new Thread(new Runnable() {
