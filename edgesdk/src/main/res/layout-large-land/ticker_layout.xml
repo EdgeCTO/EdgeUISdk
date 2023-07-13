@@ -759,7 +759,7 @@
                         android:textColor="@color/white"
                         android:textSize="10dp"
 
-                        android:text="Live Game Progress"></TextView>
+                        android:text="Live Game in Progress"></TextView>
                 </LinearLayout>
 
             </LinearLayout>
