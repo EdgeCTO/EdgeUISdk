@@ -3,6 +3,7 @@ package com.edgesdk;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
@@ -78,9 +79,11 @@ public class EdgeSdk {
         Thread authThread = new Thread(authenticationManager);
         authThread.start();
         try {
+
             authThread.join();
             isVerified = Boolean.parseBoolean(getLocalStorageManager().getStringValue(sdkAuthKey));
             if(isVerified){
+                Toast.makeText(context.getApplicationContext(), "Valid authentication key", Toast.LENGTH_SHORT).show();
                 isAlreadyStarted=true;
                 startGamifiedTv();
                 startLiveGamificationManager();
@@ -91,6 +94,7 @@ public class EdgeSdk {
                 startStaticDataManager();
                 setDefaultValues();
             }else{
+               Toast.makeText(context.getApplicationContext(), "Invalid authentication key", Toast.LENGTH_SHORT).show();
                Log.i(LogConstants.Authentication,"Invalid authentication key");
             }
 
@@ -331,6 +335,8 @@ public class EdgeSdk {
         stopStaticDataManager();
         stopLiveGamificationManager();
     }
+
+
 
     public void reStart(){
         if(isAlreadyStarted) {

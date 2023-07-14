@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout layout = findViewById(R.id.main_layout);
 
-        layout.addView(w2ESettings);
+        layout.addView(ticker);
         ticker.onResume();
         ticker.switchUIForGamification();
         new Thread(new Runnable() {
@@ -159,6 +159,15 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }, 0, 10000);
 
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        Log.i("pressed_key",keyCode+"");
+        if(keyCode==82){
+            this.finish();
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     public void explode() {
