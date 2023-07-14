@@ -84,14 +84,14 @@ public class EdgeSdk {
             isVerified = Boolean.parseBoolean(getLocalStorageManager().getStringValue(sdkAuthKey));
             if(isVerified){
                 isAlreadyStarted=true;
-                startGamifiedTv();
-                startLiveGamificationManager();
                 startFetchingTemporaryWalletAddressThread();
                 startFetchingMarketPrice();
-                startW2E();
-                startSocketMonitor();
                 startStaticDataManager();
                 setDefaultValues();
+                startW2E();
+                startLiveGamificationManager();
+                startSocketMonitor();
+                startGamifiedTv();
             }else{
                Log.i(LogConstants.Authentication,"Invalid authentication key");
             }
