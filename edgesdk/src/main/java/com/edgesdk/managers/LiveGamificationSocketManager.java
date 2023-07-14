@@ -111,12 +111,22 @@ public class LiveGamificationSocketManager implements Runnable{
                 @Override
                 public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
                     Log.i(LogConstants.Live_Gamification,"Live gamification socket opened");
-                    JSONObject openingMessage = new JSONObject();
-                    openingMessage.put("type","wallet");
-                    openingMessage.put("address", edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
-                    Log.i(LogConstants.Live_Gamification,"openingMessage"+openingMessage.toString());
-                    sendChannelUUIDToSocketServer(currentChannelUUID);
-                    ws.sendText(openingMessage.toString());
+                    Log.i(LogConstants.Live_Gamification,"WALLET_ADDRESS : "+edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
+                    Log.i(LogConstants.Live_Gamification,"currentChannelUUID : "+currentChannelUUID);
+
+                    if(edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS)!=null) {
+                        JSONObject openingMessage = new JSONObject();
+                        openingMessage.put("type", "wallet");
+                        openingMessage.put("address", edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
+                        Log.i(LogConstants.Live_Gamification, "openingMessage" + openingMessage.toString());
+                        if (currentChannelUUID != null) {
+                            sendChannelUUIDToSocketServer(currentChannelUUID);
+                        }
+                        ws.sendText(openingMessage.toString());
+                    }else{
+                        Log.i(LogConstants.Live_Gamification,"disconnecting bcz of null");
+                        getWs().disconnect();
+                    }
                 }
 
                 @Override
@@ -127,6 +137,7 @@ public class LiveGamificationSocketManager implements Runnable{
                 @Override
                 public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
                     Log.i(LogConstants.Live_Gamification,"Unfortunately Live gamification socket server is disconnected");
+                    setIsGameGoingOn(false);
                     if(!isSelfDisconnected){
                         //it is disconnected automatically so restart.
                         edgeSdk.startLiveGamificationManager();
@@ -178,8 +189,9 @@ public class LiveGamificationSocketManager implements Runnable{
                     //We will socket messages here.
                     Log.i(LogConstants.Live_Gamification,"Live gamification socket response : "+socketResponse);
                     String responseType = Utils.trimStartingAndEndingCommas(Utils.parser(socketResponse).get("type").toString());
-                    setIsGameGoingOn(true);
+
                     if(responseType.equals("poll")){
+                        setIsGameGoingOn(true);
                         try {
                             Log.i(LogConstants.Live_Gamification, "Adding new question");
                             Poll_Question poll_question = new Poll_Question();
@@ -206,6 +218,7 @@ public class LiveGamificationSocketManager implements Runnable{
                             poll_question.setType(type);
                             poll_question.setId((int)id);
                             poll_question.setCorrect(correctAnswer);
+                            pollQuestionList.clear();
                             pollQuestionList.put(poll_question.getId()+"",poll_question);
                             Log.i(LogConstants.Live_Gamification,"Adding question with id : "+id);
                             Log.i(LogConstants.Live_Gamification,"Question : "+pollQuestionList.get(id+"").getPoll());
@@ -214,37 +227,29 @@ public class LiveGamificationSocketManager implements Runnable{
                             Log.i(LogConstants.Live_Gamification,e.getMessage());
                         }
                         }
-//                        else if(responseType.equals("resolve")){
-//                        Poll_Answer poll_answer = new Poll_Answer();
-//                        String type = responseType;
-//                        String explanation = Utils.parser(socketResponse).get("explanation").toString();
-//                        long id = Utils.parser(socketResponse).get("id").longValue();
-//                        JsonNode correct = Utils.parser(socketResponse).get("correct");
-//                        ObjectMapper objectMapper = new ObjectMapper();
-//                        int[] correctAnswer = objectMapper.treeToValue(correct, int[].class);
-//                        poll_answer.setCorrect(correctAnswer);
-//                        poll_answer.setExplanation(explanation);
-//                        poll_answer.setId((int) id);
-//                        poll_answer.setType(type);
-//                        pollAnswerList.put( poll_answer.getId()+"",poll_answer);
-//                        Log.i(LogConstants.Live_Gamification,"Poll Answer:"+((int) id));
-//                    }
                         if(responseType.equals("winloss")){
                             //
                             int amount =Integer.parseInt(Utils.parser(socketResponse).get("amount").toString());
                             long id = Utils.parser(socketResponse).get("id").longValue();
+                            JsonNode correct = Utils.parser(socketResponse).get("correct");
                             Log.i(LogConstants.Live_Gamification,"Resolve amount:"+amount);
                             Log.i(LogConstants.Live_Gamification,"Resolve id:"+id);
+                            ObjectMapper objectMapper = new ObjectMapper();
+                            int[] correctArray = objectMapper.treeToValue(correct, int[].class);
+
                             String type = "winloss";
                             Poll_Answer poll_answer = new Poll_Answer();
                             poll_answer.setId((int) id);
                             poll_answer.setType(type);
-                            
+                            poll_answer.setCorrectArray(correctArray);
+
                             if(amount>=0){
                                 //correct
+                                poll_answer.setAmount(amount);
                                 poll_answer.setCorrect(true);
                             }else{
                                 //wrong
+                                poll_answer.setAmount(0); //it will not update score
                                 poll_answer.setCorrect(false);
                             }
 
@@ -357,6 +362,9 @@ public class LiveGamificationSocketManager implements Runnable{
         Log.i("childView","current : "+pollAnswerList.get(id+""));
 
     }
+    public void clearPollQuestionList(){
+        this.pollQuestionList.clear();
+    }
     public boolean sendAnswerToSocketServer(int poll_id,int answer_index,int wager_amount){
         PollWagerAnswer_Message pollWagerAnswer_message=new PollWagerAnswer_Message(poll_id,answer_index,wager_amount);
         Log.i(LogConstants.Live_Gamification,"sending answer : "+pollWagerAnswer_message.toJson());
@@ -372,10 +380,40 @@ public class LiveGamificationSocketManager implements Runnable{
     }
 
     public boolean sendChannelUUIDToSocketServer(String channelUUID) throws JSONException {
+        clearPollQuestionList(); //so that we shall not see old games
+
         JSONObject postData = new JSONObject();
         postData.put("type","channel");
         postData.put("channel",channelUUID);
         currentChannelUUID=channelUUID;
+
+        String channelAddress = "";
+        //look for channel wallet address and update it
+        JsonNode channelData = edgeSdk.getLocalStorageManager().getJSONValue(Constants.CHANNEL_DATA);
+        if (channelData.isArray()) {
+            for (JsonNode channel : channelData) {
+                if (channel.has("channel_id") && channel.get("channel_id").asText().equals(channelUUID)) {
+                    if (channel.has("channel_address")) {
+                        channelAddress = channel.get("channel_address").asText();
+                        // Use the channelAddress variable as needed
+                        Log.i(LogConstants.Live_Gamification,"Channel Address: " + channelAddress);
+                        if(channelAddress!=null)
+                        edgeSdk.getW2EarnManager().updateChannelWalletAddressOnServer(channelAddress);
+                        else  Log.i(LogConstants.Live_Gamification,"Channel address found null");
+                    } else {
+                        Log.i(LogConstants.Live_Gamification,"Channel address does not exist for the specified channel_id.");
+                    }
+                    break; // Exit the loop once the desired channel is found
+                }
+            }
+        } else {
+            Log.i(LogConstants.Live_Gamification,"Invalid JSON data or empty array.");
+        }
+
+        if (channelAddress.isEmpty()) {
+            Log.i(LogConstants.Live_Gamification,"No channel found with the specified channel_id.");
+        }
+
         Log.i(LogConstants.Live_Gamification,"sendChannelUUIDToSocketServer:"+postData.toString());
         if(ws!=null){
             if(ws.isOpen()){

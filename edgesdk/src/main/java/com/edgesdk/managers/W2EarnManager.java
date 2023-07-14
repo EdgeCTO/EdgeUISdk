@@ -39,7 +39,7 @@ public class W2EarnManager implements Runnable{
     private static int oldBaseRate;
     private static String channelWalletAddress,viewerWalletAddress;
     private static TickerResults results;
-    private static WebSocket ws;
+    public static WebSocket ws;
     private Boolean isSelfDisconnected;
     public W2EarnManager(EdgeSdk edgeSdk) {
         this.threadHandler=null;
@@ -63,15 +63,15 @@ public class W2EarnManager implements Runnable{
 
 
 
-        String wallet = edgeSdk.getLocalStorageManager().getStringValue(Constants.FREEBIE_MOVIES_WALLET);
-        this.channelWalletAddress = wallet!=null?wallet:edgeSdk.getLocalStorageManager().getStringValue(Constants.DEFAULT_FREEBIE_WALLET_ADDRESS);
-        this.viewerWalletAddress =  edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS);
-        setBaseRate(0);
-        this.ws = null;
-        try {
 
-            this.ws = new WebSocketFactory().createSocket(Urls.W2E_SOCKET_SERVER,10000);
-            this.ws.setPingInterval(3000);
+        try {
+            this.ws = null;
+            setBaseRate(0);
+            //this.channelWalletAddress = "0x6E130D41C66559B5DC63CC32E233D907ABE457BF";
+            this.viewerWalletAddress =  edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS);
+
+            this.ws = new WebSocketFactory().createSocket(Urls.W2E_SOCKET_SERVER,15000);
+            this.ws.setPingInterval(10000);
             this.ws.addListener(new WebSocketListener() {
                 @Override
                 public void onStateChanged(WebSocket websocket, WebSocketState newState) throws Exception {
@@ -83,17 +83,20 @@ public class W2EarnManager implements Runnable{
                     Log.i(LogConstants.Watch_2_Earn,"New- Successfully opened w2e socket connection..");
 
                     try{
-                        if(channelWalletAddress!=null && viewerWalletAddress!=null) {
+                        //Log.e(LogConstants.Watch_2_Earn,"channelWalletAddress"+channelWalletAddress+" and viewerWalletAddress:"+viewerWalletAddress);
+                        //if(channelWalletAddress!=null && viewerWalletAddress!=null) {
+                            if(viewerWalletAddress!=null) {
                             Type_Wallet twdhm = new Type_Wallet(viewerWalletAddress);
-                            edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS);
                             ws.sendText(twdhm.toJson());
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+twdhm.toJson());
+
                             PlatformKeyType_Message platformKeyType_message = new PlatformKeyType_Message(edgeSdk.getLocalStorageManager().getStringValue(Constants.AUTH_KEY));
                             Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+platformKeyType_message.toJson());
                             ws.sendText(platformKeyType_message.toJson());
-                            Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
-                            ws.sendText(tcdhm.toJson());
-                            Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+tcdhm.toJson());
+
+                            //Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
+                            //ws.sendText(tcdhm.toJson());
+                            //Log.i(LogConstants.Watch_2_Earn,"New- Sending message on socket open  :"+tcdhm.toJson());
 
                             Type_Rate trdhm = new Type_Rate(getBaseRate());
                             ws.sendText(trdhm.toJson());
@@ -274,7 +277,7 @@ public class W2EarnManager implements Runnable{
 
                 @Override
                 public void onError(WebSocket websocket, WebSocketException cause) throws Exception {
-
+                    Log.e(LogConstants.Watch_2_Earn,cause.toString());
                 }
 
                 @Override
@@ -284,7 +287,7 @@ public class W2EarnManager implements Runnable{
 
                 @Override
                 public void onMessageError(WebSocket websocket, WebSocketException cause, List<WebSocketFrame> frames) throws Exception {
-
+                    Log.e(LogConstants.Watch_2_Earn,cause.toString());
                 }
 
                 @Override
@@ -304,7 +307,7 @@ public class W2EarnManager implements Runnable{
 
                 @Override
                 public void onUnexpectedError(WebSocket websocket, WebSocketException cause) throws Exception {
-
+                    Log.e(LogConstants.Watch_2_Earn,cause.toString());
                 }
 
                 @Override
@@ -321,7 +324,7 @@ public class W2EarnManager implements Runnable{
             e.printStackTrace();
             //TODO:Cancel the w2e thread..which should cause restart
         }
-        this.ws.setPingInterval(3000);
+
     }
 
     public Future getThreadHandler() {
@@ -351,7 +354,9 @@ public class W2EarnManager implements Runnable{
     public  WebSocket getWs() {
         return ws;
     }
-
+    public void disconnectWs(){
+        this.getWs().disconnect();
+    }
     public Boolean getSelfDisconnected() {
         return isSelfDisconnected;
     }
@@ -363,7 +368,8 @@ public class W2EarnManager implements Runnable{
     public boolean updateChannelWalletAddressOnServer(String viewerWalletAddress){
         try {
             this.edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.CURRENT_IN_USE_CHANNEL_WALLET_ADDRESS);
-            Type_Channel tcdhm = new Type_Channel(channelWalletAddress);
+            this.edgeSdk.getLocalStorageManager().storeStringValue(viewerWalletAddress, Constants.DEFAULT_FREEBIE_WALLET_ADDRESS);
+            Type_Channel tcdhm = new Type_Channel(viewerWalletAddress);
             Log.i(LogConstants.Watch_2_Earn,"updating channel wallet address : "+tcdhm.toJson());
             ws.sendText(tcdhm.toJson());
             return true;
@@ -399,12 +405,14 @@ public class W2EarnManager implements Runnable{
                 if(baseRate!=oldBaseRate) {
                     oldBaseRate=baseRate;
                     setBaseRate(baseRate);
-                    Type_Rate twdhm = new Type_Rate(getBaseRate());
+                    Type_Rate twdhm = new Type_Rate(baseRate);
                     Log.i(LogConstants.Watch_2_Earn,"Updating base to : "+getBaseRate());
                     this.ws.sendText(twdhm.toJson());
                 }
 
                 return true;
+            }else {
+                return false;
             }
         }
         return false;

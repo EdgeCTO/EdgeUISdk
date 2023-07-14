@@ -1,6 +1,5 @@
 package com.edgesdk;
 
-import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -8,14 +7,12 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
@@ -24,21 +21,16 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.core.content.ContextCompat;
@@ -46,12 +38,12 @@ import androidx.core.content.ContextCompat;
 import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
 import com.edgesdk.Utils.Messages;
+import com.edgesdk.Utils.Utils;
 import com.edgesdk.dialogues.WagerPointsDialogue;
 import com.edgesdk.models.Poll_Answer;
 import com.edgesdk.models.Poll_Question;
 import com.edgesdk.models.Poll_to_be_resolved;
 import com.edgesdk.models.TickerNotifications;
-import com.github.jinatonic.confetti.ConfettiManager;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -77,7 +69,7 @@ import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class Ticker extends LinearLayout {
     private TextView txt_total_eats,txt_eat_market_price,txt_eat_market_inc_dec,txt_balance,txt_staked,txt_est_apy,txt_earned,txt_per_day,txt_total_points;
-    private TextView txt_today,txt_watch_to_earn_heading,txt_title_total_eats,txt_title_eat_market_price,txt_title_eat_market_inc_dec,txt_title_balance,txt_title_staked,txt_title_est_apy,txt_title_earned,txt_title_per_day,txt_title_total_points;
+    private TextView txt_today,txt_watch_to_earn_heading,txt_title_total_eats,txt_title_eat_market_price,txt_title_eat_market_inc_dec,txt_title_balance,txt_title_staked,txt_title_est_apy,txt_title_earned,txt_title_per_day,txt_title_total_points,txt_watch_to_earn_heading_gamification;
     EdgeSdk edgeSdk;
     public int number_of_won_games,number_of_loosed_games;
     private LinearLayout ticker_layout;
@@ -132,6 +124,7 @@ public class Ticker extends LinearLayout {
         txt_staked = view.findViewById(R.id.txt_staked);
         txt_est_apy = view.findViewById(R.id.txt_est_apy);
         txt_earned = view.findViewById(R.id.txt_earned);
+        txt_watch_to_earn_heading_gamification = view.findViewById(R.id.txt_watch_to_earn_heading_gamification);
         //txt_per_day = view.findViewById(R.id.txt_per_day);
         txt_total_points = view.findViewById(R.id.txt_total_points);
         txt_title_total_points = view.findViewById(R.id.txt_title_total_points);
@@ -196,6 +189,7 @@ public class Ticker extends LinearLayout {
         isPrintingThreadsRunning=false;
         isFocusOnLeftSide=true;
         //setting-up fonts
+        txt_watch_to_earn_heading_gamification.setTypeface(custom_font);
         txt_total_eats.setTypeface(custom_font);
         txt_title_total_eats.setTypeface(custom_font);
         txt_eat_market_price.setTypeface(custom_font);
@@ -335,6 +329,12 @@ public class Ticker extends LinearLayout {
                 gamification_poll_layout.setVisibility(VISIBLE);
                 gamification_ticker_layout.setVisibility(VISIBLE);
                 refreshLogo();
+                txt_watch_to_earn_heading_gamification.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        txt_watch_to_earn_heading_gamification.setText("Gaimified TV");
+                    }
+                });
             }
         });
 
@@ -349,17 +349,21 @@ public class Ticker extends LinearLayout {
                 gamification_poll_layout.setVisibility(GONE);
                 gamification_ticker_layout.setVisibility(GONE);
                 refreshLogo();
+
             }
         });
     }
+
     public void switchUIForDefault(){
         ticker_layout.post(new Runnable() {
             @Override
             public void run() {
                 current_ui_mode="w2e";
-                ticker_layout.setVisibility(VISIBLE);
+                ticker_layout.setVisibility(GONE);
                 gamification_poll_layout.setVisibility(GONE);
                 gamification_ticker_layout.setVisibility(GONE);
+                //because its neither w2e nor gamified..
+                edgeSdk.getW2EarnManager().updateBaseRateOnServer(0);
                 refreshLogo();
             }
         });
@@ -561,7 +565,7 @@ public class Ticker extends LinearLayout {
                 answer_d.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
                 Log.i(LogConstants.Live_Gamification,"(int) poll.getId()"+(int) poll.getId());
                 poll_view.setId((int) poll.getId());
-
+                polls_holder.removeAllViews();
                 polls_holder.addView(poll_view, 0);
 
                 if(isFocusOnLeftSide) {
@@ -580,8 +584,12 @@ public class Ticker extends LinearLayout {
 
                 space.setLayoutParams(spaceLayoutParams);
                 polls_holder.addView(space, 0);
-                mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.new_game_started_sound);
-                mediaPlayer.start();
+
+                // if the polls_holder isn't being displayed then don't play the sound indicating a new poll
+                if(polls_holder.getVisibility() == View.VISIBLE) {
+                    mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.new_game_started_sound);
+                    mediaPlayer.start();
+                }
 
                 answer_a.setOnKeyListener(new OnKeyListener() {
                     @Override
@@ -641,14 +649,14 @@ public class Ticker extends LinearLayout {
                     }
                 });
 
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //polls_holder.removeView(poll_view);
-                        removePollFromPollList(poll_view.getId());
-                    }
-                }, 20000); // 20 seconds delay (in milliseconds)
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //polls_holder.removeView(poll_view);
+//                        removePollFromPollList(poll_view.getId());
+//                    }
+//                }, 20000); // 20 seconds delay (in milliseconds)
             }
         });
     }
@@ -830,12 +838,13 @@ public class Ticker extends LinearLayout {
         });
     }
 
-    public void addCorrectOrWrongMsgToResolveInList(String poll_question, String selectedAnswer,String coins,Poll_Question poll,String type) {
+    public void addCorrectOrWrongMsgToResolveInList(Poll_Answer actual_answer, String poll_question, String selectedAnswer, String coins, Poll_Question poll, String type) {
 
         View poll_view = callingActivity.getLayoutInflater().inflate( type=="correct" ? R.layout.poll_correct_msg_card : R.layout.poll_wrong_msg_card, null);
         TextView question = poll_view.findViewById(R.id.poll_to_resolve_question);
         TextView answer = poll_view.findViewById(R.id.poll_to_resolve_selected_answer);
         TextView wagered_coins = poll_view.findViewById(R.id.poll_to_resolve_wagered_coins);
+        TextView mcq_correct_msg = poll_view.findViewById(R.id.mcq_correct_msg);
         TextView correct_wrong_message = poll_view.findViewById(type=="correct" ? R.id.correct_msg : R.id.wrong_msg );
         Animation slideInFromRight = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
@@ -848,6 +857,8 @@ public class Ticker extends LinearLayout {
                 question.setText(poll_question);
                 answer.setText((selectedAnswer));
                 wagered_coins.setText(coins + " coins wagered");
+                Log.i(LogConstants.Live_Gamification,"Correct answer is : "+poll.getChoices()[actual_answer.getCorrectArray()[0]]);
+                mcq_correct_msg.setText(poll.getChoices()[actual_answer.getCorrectArray()[0]]);
                 //correct_wrong_message.setText(type=="correct" ? "Correct" : poll.getChoices()[poll.getCorrect()[0]-2]);
                 // Get the width of the TextView container
                 int containerWidth = question.getWidth();
@@ -1189,6 +1200,14 @@ public class Ticker extends LinearLayout {
                                 //Log.i(LogConstants.Live_Gamification,"selectedAnswerIndex : "+selectedAnswerIndex);
                                 //edgeSdk.getLiveGamificationManager().sendAnswerToSocketServer((int) poll_to_be_resolved.getValue().getId(),selectedAnswerIndex,poll_to_be_resolved.getValue().getWagered_coins());
                                 //won
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        String off_chain_balance = Utils.getOffChainBalance(edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
+                                        Log.i("off_chain_balance","Fetched: "+off_chain_balance) ;
+                                        edgeSdk.getW2EarnManager().getResults().setOffChainBalance(Float.parseFloat(off_chain_balance));
+                                    }
+                                }).start();
                                 if (isCorrect) {
                                     //send message to
                                     txt_won_games.post(new Runnable() {
@@ -1204,12 +1223,14 @@ public class Ticker extends LinearLayout {
                                     removePollFromPollList((int) poll_to_be_resolved.getValue().getId());
                                     removePollFromListOfPendingPolls((int) poll_to_be_resolved.getValue().getId());
                                     //check what is mode of question
+                                    //Make request to get updated balance ..
                                     if( poll_to_be_resolved.getValue().getMode()==1) {
                                         addWINOrLooseMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(), poll_to_be_resolved.getValue().getSelectedAnswer(), String.valueOf(poll_to_be_resolved.getValue().getWagered_coins()), poll_to_be_resolved.getValue().getPoll_question(), null, "win");
-                                        updatePointsNumber(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+""));
+                                        //updatePointsNumber(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+""));
                                     }else{
-                                        addCorrectOrWrongMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(),answer.getValue().getAmount()+"",poll_to_be_resolved.getValue().getPoll_question(),"correct");
-                                        updatePointsNumber(Float.parseFloat(answer.getValue().getAmount()+""));
+                                        addCorrectOrWrongMsgToResolveInList(answer.getValue(),poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(),answer.getValue().getAmount()+"",poll_to_be_resolved.getValue().getPoll_question(),"correct");
+                                        Log.i(LogConstants.Live_Gamification,"amount :"+Float.parseFloat(answer.getValue().getAmount()+""));
+                                        //updatePointsNumber(Flanswer.getValue().get
                                     }
                                 }
                                 //loosed
@@ -1228,9 +1249,11 @@ public class Ticker extends LinearLayout {
                                     //check what is mode of question
                                     if( poll_to_be_resolved.getValue().getMode()==1) {
                                         addWINOrLooseMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(), poll_to_be_resolved.getValue().getSelectedAnswer(), String.valueOf(poll_to_be_resolved.getValue().getWagered_coins()), poll_to_be_resolved.getValue().getPoll_question(), null, "loose");
-                                        updatePointsNumber(-(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+"")));
+                                        //updatePointsNumber(-(Float.parseFloat(poll_to_be_resolved.getValue().getWagered_coins()+"")));
                                     }else{
-                                        addCorrectOrWrongMsgToResolveInList(poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(),answer.getValue().getAmount()+"",poll_to_be_resolved.getValue().getPoll_question(),"wrong");
+                                        addCorrectOrWrongMsgToResolveInList(answer.getValue(),poll_to_be_resolved.getValue().getPoll_question().getPoll(),poll_to_be_resolved.getValue().getSelectedAnswer(),answer.getValue().getAmount()+"",poll_to_be_resolved.getValue().getPoll_question(),"wrong");
+                                        Log.i(LogConstants.Live_Gamification,"amount :"+Float.parseFloat(answer.getValue().getAmount()+""));
+                                        //updatePointsNumber(Float.parseFloat(answer.getValue().getAmount()+""));
                                     }
                                 }
 
@@ -1368,166 +1391,179 @@ public class Ticker extends LinearLayout {
                 }
             });
 
-            //setting up default value.
-            if(!isBackpressed()) {
-                if(isPlaying()){
-                    try {
-                        //case 1 Wallet not forwarded.
-                        if(!edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_VIEWER_WALLET_ADDRESS_FORWARDED))
-                        {
-                            //wallet not forwarded and connected to w2e server and staking is working and staking is 0 and hrs remaking is null:
-                            if(
-                                    !tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
-                                            && edgeSdk.isW2ESocketOpen()
-                                            && edgeSdk.isStakingServerRunning()
-                                            && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn()==null
-                                            && roundTwoDecimals(edgeSdk.getStakingValueFetchingManager().getStkResults().getStakingPercentage()).equals("0.00")
-                                            && (
-                                            currentNotificationMsgNumber==0
-                                                    || currentNotificationMsgNumber==1
-                                                    || currentNotificationMsgNumber==2
-                                    )
-                            )
-                            {
-                                //w2e : active
-                                txt_watch_to_earn_heading.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if(currentNotificationMsgNumber==1 && edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_BOOST_ENABLED)){
-                                            txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage()+" & Boosted");
-                                        }else{
-                                            txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
-                                        }
-                                    }
-                                });
-
-                                isTickerVisibilityThreadRunning=false; //setting it up to false will allow to control visibility with remote
-                                try {Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());} catch (Exception e) {}
-                                currentNotificationMsgNumber++;
-
-                            }
-                            else if(
-                                    !tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
-                                            && edgeSdk.isW2ESocketOpen()
-                                            && !edgeSdk.isStakingServerRunning()
-                                            && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn()==null
-                                            && roundTwoDecimals(edgeSdk.getStakingValueFetchingManager().getStkResults().getStakingPercentage()).equals("0.00")
-                                            && (
-                                            currentNotificationMsgNumber==0
-                                                    || currentNotificationMsgNumber==1
-                                                    || currentNotificationMsgNumber==3
-                                    )
-                            ){
-
-                                txt_watch_to_earn_heading.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
-                                    }
-                                });
-
-                                isTickerVisibilityThreadRunning=false; //setting it up to false will allow to control visibility with remote
-                                try {Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());} catch (Exception e) {}
-                                currentNotificationMsgNumber++;
-
-                            }else{
-                                if(currentNotificationMsgNumber>0)currentNotificationMsgNumber++;
-                            }
-
-                        }else{
-                            //wallet forwarded
-                            if(edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_VIEWER_WALLET_ADDRESS_FORWARDED))
-                            {
-                                if(
-                                        tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
+            if(current_ui_mode=="w2e") {
+                //setting up default value.
+                if (!isBackpressed()) {
+                    if (isPlaying()) {
+                        try {
+                            //case 1 Wallet not forwarded.
+                            if (!edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_VIEWER_WALLET_ADDRESS_FORWARDED)) {
+                                //wallet not forwarded and connected to w2e server and staking is working and staking is 0 and hrs remaking is null:
+                                if (
+                                        !tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
                                                 && edgeSdk.isW2ESocketOpen()
                                                 && edgeSdk.isStakingServerRunning()
-                                                && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn()==null
+                                                && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn() == null
+                                                && roundTwoDecimals(edgeSdk.getStakingValueFetchingManager().getStkResults().getStakingPercentage()).equals("0.00")
                                                 && (
-                                                currentNotificationMsgNumber==3
-                                                        || currentNotificationMsgNumber==4
+                                                currentNotificationMsgNumber == 0
+                                                        || currentNotificationMsgNumber == 1
+                                                        || currentNotificationMsgNumber == 2
                                         )
-                                )
-                                {
+                                ) {
+                                    //w2e : active
                                     txt_watch_to_earn_heading.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if(currentNotificationMsgNumber==3 && edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_BOOST_ENABLED)){
-                                                txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage()+" & Boosted");
-                                            }else{
+                                            if (currentNotificationMsgNumber == 1 && edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_BOOST_ENABLED)) {
+                                                txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage() + " & Boosted");
+                                            } else {
                                                 txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
                                             }
                                         }
                                     });
 
-                                    isTickerVisibilityThreadRunning=false; //setting it up to false will allow to control visibility with remote
-                                    try {Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());} catch (Exception e) {}
-                                    currentNotificationMsgNumber++;
-                                }
-                                else if(
-                                        tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
-                                                && edgeSdk.isW2ESocketOpen()
-                                                && edgeSdk.isStakingServerRunning()
-                                                && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn()!=null
-                                                && (
-                                                currentNotificationMsgNumber==3
-                                                        || currentNotificationMsgNumber==5
-                                        )
-                                )
-                                {
-                                    Log.i("debug_ticker_visibility","case 3 detected");
-                                    if(currentNotificationMsgNumber!=5) {
-                                        txt_watch_to_earn_heading.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
-                                            }
-                                        });
-
-                                    }else if(currentNotificationMsgNumber==5){
-                                        // xx days.
-                                        txt_watch_to_earn_heading.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                String remTime = edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn();
-                                                txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage().replace("xx",remTime));
-                                            }
-                                        });
+                                    isTickerVisibilityThreadRunning = false; //setting it up to false will allow to control visibility with remote
+                                    try {
+                                        Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());
+                                    } catch (Exception e) {
                                     }
-
-                                    Log.i("debug_ticker_visibility","wait for : "+tickerNotifications[currentNotificationMsgNumber].getTimeForTickerToAppear());
-                                    isTickerVisibilityThreadRunning=false; //setting it up to false will allow to control visibility with remote
-                                    try {Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());} catch (Exception e) {}
-                                    Log.i("debug_ticker_visibility","waited for: "+tickerNotifications[currentNotificationMsgNumber].getTimeForTickerToAppear());
                                     currentNotificationMsgNumber++;
 
+                                } else if (
+                                        !tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
+                                                && edgeSdk.isW2ESocketOpen()
+                                                && !edgeSdk.isStakingServerRunning()
+                                                && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn() == null
+                                                && roundTwoDecimals(edgeSdk.getStakingValueFetchingManager().getStkResults().getStakingPercentage()).equals("0.00")
+                                                && (
+                                                currentNotificationMsgNumber == 0
+                                                        || currentNotificationMsgNumber == 1
+                                                        || currentNotificationMsgNumber == 3
+                                        )
+                                ) {
+
+                                    txt_watch_to_earn_heading.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
+                                        }
+                                    });
+
+                                    isTickerVisibilityThreadRunning = false; //setting it up to false will allow to control visibility with remote
+                                    try {
+                                        Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());
+                                    } catch (Exception e) {
+                                    }
+                                    currentNotificationMsgNumber++;
+
+                                } else {
+                                    if (currentNotificationMsgNumber > 0)
+                                        currentNotificationMsgNumber++;
                                 }
-                                else{
-                                    //TODO:Cause problem in notification
-                                    currentNotificationMsgNumber++;
+
+                            } else {
+                                //wallet forwarded
+                                if (edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_VIEWER_WALLET_ADDRESS_FORWARDED)) {
+                                    if (
+                                            tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
+                                                    && edgeSdk.isW2ESocketOpen()
+                                                    && edgeSdk.isStakingServerRunning()
+                                                    && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn() == null
+                                                    && (
+                                                    currentNotificationMsgNumber == 3
+                                                            || currentNotificationMsgNumber == 4
+                                            )
+                                    ) {
+                                        txt_watch_to_earn_heading.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (currentNotificationMsgNumber == 3 && edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_BOOST_ENABLED)) {
+                                                    txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage() + " & Boosted");
+                                                } else {
+                                                    txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
+                                                }
+                                            }
+                                        });
+
+                                        isTickerVisibilityThreadRunning = false; //setting it up to false will allow to control visibility with remote
+                                        try {
+                                            Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());
+                                        } catch (Exception e) {
+                                        }
+                                        currentNotificationMsgNumber++;
+                                    } else if (
+                                            tickerNotifications[currentNotificationMsgNumber].isTempWalletForwarded()
+                                                    && edgeSdk.isW2ESocketOpen()
+                                                    && edgeSdk.isStakingServerRunning()
+                                                    && edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn() != null
+                                                    && (
+                                                    currentNotificationMsgNumber == 3
+                                                            || currentNotificationMsgNumber == 5
+                                            )
+                                    ) {
+                                        Log.i("debug_ticker_visibility", "case 3 detected");
+                                        if (currentNotificationMsgNumber != 5) {
+                                            txt_watch_to_earn_heading.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage());
+                                                }
+                                            });
+
+                                        } else if (currentNotificationMsgNumber == 5) {
+                                            // xx days.
+                                            txt_watch_to_earn_heading.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    String remTime = edgeSdk.getStakingValueFetchingManager().getStkResults().getResumingStakingIn();
+                                                    txt_watch_to_earn_heading.setText(tickerNotifications[currentNotificationMsgNumber].getMessage().replace("xx", remTime));
+                                                }
+                                            });
+                                        }
+
+                                        Log.i("debug_ticker_visibility", "wait for : " + tickerNotifications[currentNotificationMsgNumber].getTimeForTickerToAppear());
+                                        isTickerVisibilityThreadRunning = false; //setting it up to false will allow to control visibility with remote
+                                        try {
+                                            Thread.sleep(tickerNotifications[currentNotificationMsgNumber].getTimeForMessageToStay());
+                                        } catch (Exception e) {
+                                        }
+                                        Log.i("debug_ticker_visibility", "waited for: " + tickerNotifications[currentNotificationMsgNumber].getTimeForTickerToAppear());
+                                        currentNotificationMsgNumber++;
+
+                                    } else {
+                                        //TODO:Cause problem in notification
+                                        currentNotificationMsgNumber++;
+                                    }
                                 }
                             }
+
+                            watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
+
+                        } catch (IllegalStateException e) {
+                            watch_to_earn_title_updater_timer = new Timer();
+                            watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
+                            currentNotificationMsgNumber = 0;
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            Log.i("debug_ticker_visibility", "printed all messages");
+                            isTickerVisibilityThreadRunning = false;
+                            currentNotificationMsgNumber = 0;
+                            watch_to_earn_title_updater_timer = new Timer();
+                            watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
                         }
-
-                        watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
-
-                    }   catch (IllegalStateException e) {
-                        watch_to_earn_title_updater_timer = new Timer();
-                        watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
-                        currentNotificationMsgNumber=0;
-                    } catch (ArrayIndexOutOfBoundsException e){
-                        Log.i("debug_ticker_visibility","printed all messages");
-                        isTickerVisibilityThreadRunning=false;
-                        currentNotificationMsgNumber=0;
-                        watch_to_earn_title_updater_timer = new Timer();
-                        watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 10);
                     }
+                } else {
+                    Log.i("debug_ticker_visibility", "waiting for video to play.");
+                    watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 100);
                 }
             }else{
-                Log.i("debug_ticker_visibility","waiting for video to play.");
-                watch_to_earn_title_updater_timer.schedule(new WatchToEarnTitleStatusPrinter(), 100);
+                txt_watch_to_earn_heading_gamification.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        txt_watch_to_earn_heading_gamification.setText("Gaimified TV");
+                    }
+                });
             }
-
         }
     }
 
@@ -1667,8 +1703,10 @@ public class Ticker extends LinearLayout {
                 @Override
                 public void run() {
                     try {
-                        txt_total_eats.setText(roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getBalance()) + "");
-                        txt_gaim.setText(roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getBalance()) + "");
+                        //2EAT= 1 $GAIM
+                        txt_total_eats.setText(roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getBalance()*2) + "");
+                        //2EAT= 1 $GAIM
+                        txt_gaim.setText(roundTwoDecimals(edgeSdk.getW2EarnManager().getResults().getBalance()*2) + "");
                     }catch (Exception e){
                         Log.e("error","error while printing total eats"+e.getMessage());
                         txt_total_eats.post(new Runnable() {
@@ -1725,10 +1763,11 @@ public class Ticker extends LinearLayout {
             txt_earned.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("txt_earned",edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()+"");
-                    if(edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()!=0.0)
-                        txt_earned.setText(roundThreeDecimals( edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()));
-                    else txt_earned.setText(Constants.DEFAULT_VALUE_EAT_HR);
+                    Log.i("staking estimate", edgeSdk.getStakingValueFetchingManager().getStkResults().getEstimatedEarningPerDayByStaking()+"");
+                    Log.i("w2e_earnings",edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()+"");
+                    txt_earned.setText(roundThreeDecimals( edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()+edgeSdk.getStakingValueFetchingManager().getStkResults().getEstimatedEarningPerDayByStaking()));
+//                    if(edgeSdk.getW2EarnManager().getResults().getEstimateEatsPerHour()!=0.0)
+//                    else txt_earned.setText(Constants.DEFAULT_VALUE_EAT_HR);
                 }
             });
 
@@ -1820,7 +1859,6 @@ public class Ticker extends LinearLayout {
                         float counterValue = (float) animation.getAnimatedValue();
                         String formattedValue = decimalFormat.format(counterValue);
                         txt_total_points.setText(formattedValue);
-
                         // Apply animation to the TextView
 
                     }
@@ -1962,6 +2000,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void StopValuesPrintingThreads(){
+        Log.i(LogConstants.Live_Gamification,"StopValuesPrintingThreads");
+        Log.i(LogConstants.Watch_2_Earn,"StopValuesPrintingThreads");
+
         isPrintingThreadsRunning=false;
         if(staked_values_timer!=null)
             staked_values_timer.cancel();
@@ -1984,6 +2025,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void PauseValuesPrintingThreads(){
+        Log.i(LogConstants.Live_Gamification,"PauseValuesPrintingThreads");
+        Log.i(LogConstants.Watch_2_Earn,"PauseValuesPrintingThreads");
+
         isPrintingThreadsRunning=false;
         if(staked_values_timer!=null)
             staked_values_timer.cancel();
@@ -2005,6 +2049,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void ResumeValuesPrintingThreads(){
+        Log.i(LogConstants.Live_Gamification,"ResumeValuesPrintingThreads");
+        Log.i(LogConstants.Watch_2_Earn,"ResumeValuesPrintingThreads");
+
         isPrintingThreadsRunning=true;
         staked_values_timer = new Timer();
         staked_values_timer.schedule(new StakedValuesPrinter(),1000);
@@ -2036,6 +2083,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void onPause(){
+        Log.i(LogConstants.Live_Gamification,"onPause");
+        Log.i(LogConstants.Watch_2_Earn,"onPause");
+
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             StopValuesPrintingThreads();
@@ -2047,6 +2097,9 @@ public class Ticker extends LinearLayout {
         }
     }
     public void onResume(){
+        Log.i(LogConstants.Live_Gamification,"onResume");
+        Log.i(LogConstants.Watch_2_Earn,"onResume");
+
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             //HomeActivity.edgeSdkExecutor.startStaking();
@@ -2058,6 +2111,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void onStop(){
+        Log.i(LogConstants.Live_Gamification,"onStop");
+        Log.i(LogConstants.Watch_2_Earn,"onStop");
+
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             StopValuesPrintingThreads();
@@ -2072,6 +2128,9 @@ public class Ticker extends LinearLayout {
     }
 
     public void onBackPressed(){
+        Log.i(LogConstants.Live_Gamification,"onBack");
+        Log.i(LogConstants.Watch_2_Earn,"onBack");
+
         boolean isOptOutEnabled = this.edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_OPT_OUT_W2E_ENABLED);
         if(!isOptOutEnabled) {
             StopValuesPrintingThreads();

@@ -3,6 +3,7 @@ package com.edgesdk;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.edgesdk.Utils.Constants;
 import com.edgesdk.Utils.LogConstants;
@@ -75,6 +76,7 @@ public class EdgeSdk {
     }
 
     public void start(){
+        startFetchingTemporaryWalletAddressThread();
         Thread authThread = new Thread(authenticationManager);
         authThread.start();
         try {
@@ -82,14 +84,13 @@ public class EdgeSdk {
             isVerified = Boolean.parseBoolean(getLocalStorageManager().getStringValue(sdkAuthKey));
             if(isVerified){
                 isAlreadyStarted=true;
-                startGamifiedTv();
-                startLiveGamificationManager();
-                startFetchingTemporaryWalletAddressThread();
-                startFetchingMarketPrice();
-                startW2E();
-                startSocketMonitor();
                 startStaticDataManager();
+                startFetchingMarketPrice();
                 setDefaultValues();
+                startW2E();
+                startLiveGamificationManager();
+                startSocketMonitor();
+                startGamifiedTv();
             }else{
                Log.i(LogConstants.Authentication,"Invalid authentication key");
             }
@@ -172,7 +173,7 @@ public class EdgeSdk {
     }
 
     public void stopW2E(){
-        if(w2EarnManager.getThreadHandler()!=null){
+        if(!w2EarnManager.getThreadHandler().isCancelled() && !w2EarnManager.getThreadHandler().isDone()){
             w2EarnManager.setSelfDisconnected(true);
             w2EarnManager.getWs().disconnect();
             //w2EarnManager.getWs().sendClose();
@@ -331,6 +332,8 @@ public class EdgeSdk {
         stopStaticDataManager();
         stopLiveGamificationManager();
     }
+
+
 
     public void reStart(){
         if(isAlreadyStarted) {

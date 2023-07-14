@@ -293,6 +293,20 @@ public class Utils {
         }
     }
 
+    @SuppressLint("LongLogTag")
+    public static String getOffChainBalance(String walletAddress){
+        try {
+            Log.i("walletAddress_getOffChainBalance", walletAddress);
+            JsonNode response = makeGetRequest(Urls.GET_OFFCHAIN_BALANCE + walletAddress);
+            Log.i("response_getOffChainBalance", response + "");
+            if (response != null)
+                return  String.valueOf(response.get("result").get("offchain_balance"));
+            else return null;
+        }catch (Exception e){
+            Log.i("response_getOffChainBalance",e.getMessage());
+            return null;
+        }
+    }
     public static String getBaseUrl_For_WalletForwarding() {
         return BaseUrl_For_WalletForwarding;
     }

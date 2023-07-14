@@ -13,6 +13,7 @@ public class Urls {
     public static String GET_APP_WALLET_ADDRESSES="https://livesearch.edgevideo.com/ticker-server/freebie-wallets.json";
     public static String GET_EAT_MARKET_VALUE="https://eat.edgevideo.com/get_price";
     public static String GET_EAT_BALANCE="https://eat.edgevideo.com/eat_balance/";
+    public static String GET_OFFCHAIN_BALANCE="https://referrals.edgevideo.com/get_offchain/";
     public static String VERIFY_SDK_AUTH_KEY="https://studio-api.edgevideo.com/verifySDKAuthKey";
     public static String LOAD_SDK_LOGO="https://studio-api.edgevideo.com/loadSdkLogo";
     public static String LOAD_CHANNEL_DATA="https://studio-api.edgevideo.com/channel/GetChannelDetailsByApiKey";
