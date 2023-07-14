@@ -584,8 +584,12 @@ public class Ticker extends LinearLayout {
 
                 space.setLayoutParams(spaceLayoutParams);
                 polls_holder.addView(space, 0);
-                mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.new_game_started_sound);
-                mediaPlayer.start();
+
+                // if the polls_holder isn't being displayed then don't play the sound indicating a new poll
+                if(polls_holder.getVisibility() == View.VISIBLE) {
+                    mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.new_game_started_sound);
+                    mediaPlayer.start();
+                }
 
                 answer_a.setOnKeyListener(new OnKeyListener() {
                     @Override
