@@ -586,7 +586,7 @@ public class Ticker extends LinearLayout {
                 polls_holder.addView(space, 0);
 
                 // if the polls_holder isn't being displayed then don't play the sound indicating a new poll
-                if(polls_holder.getVisibility() == View.VISIBLE) {
+                if(gamification_ticker_layout.getVisibility() == View.VISIBLE) {
                     mediaPlayer = MediaPlayer.create(callingActivity.getApplicationContext(), R.raw.new_game_started_sound);
                     mediaPlayer.start();
                 }
