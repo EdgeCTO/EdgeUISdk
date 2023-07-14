@@ -121,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout layout = findViewById(R.id.main_layout);
 
-        layout.addView(ticker);
+        layout.addView(w2ESettings);
+
         ticker.onResume();
         ticker.switchUIForGamification();
         new Thread(new Runnable() {

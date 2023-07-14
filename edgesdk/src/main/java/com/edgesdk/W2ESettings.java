@@ -31,6 +31,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -117,12 +118,46 @@ public class W2ESettings extends LinearLayout {
         txt_description.animateText("Gaimified TV is a revolutionary television experience that brings interactive elements and real-time rewards to enhance viewer engagement. As you watch your favorite shows, you have the opportunity to earn \u0024EAT tokens, which will soon be replaced by \u0024GAIM. For every 1 \u0024EAT earned, you will receive 2 \u0024GAIM. The \u0024GAIM token is set to be listed on various crypto exchanges in September 2023. To learn more about \u0024GAIM and its exciting possibilities, visit gaimtoken.edgevideo.com");
 
         setUpFocusListeners();
-
+        setUpClickListeners();
         txtWalletAddress.setFocusable(true);
         txtWalletAddress.requestFocus();
 
     }
 
+    private void setUpClickListeners(){
+        ckbx_should_ticker_hide.setChecked(edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_TICKER_ALLOWED_TO_HIDE));
+        ckbx_should_ticker_hide.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // CheckBox is checked
+                    // Apply desired changes when the CheckBox is checked
+                    edgeSdk.getLocalStorageManager().storeBooleanValue(true,Constants.IS_TICKER_ALLOWED_TO_HIDE);
+                } else {
+                    // CheckBox is not checked
+                    // Apply desired changes when the CheckBox is not checked
+                    edgeSdk.getLocalStorageManager().storeBooleanValue(true,Constants.IS_TICKER_ALLOWED_TO_HIDE);
+                }
+            }
+        });
+
+        ckbx_should_gaimified_ticker_hide.setChecked(edgeSdk.getLocalStorageManager().getBooleanValue(Constants.IS_GAMIFICATION_TICKER_ALLOWED_TO_HIDE));
+        ckbx_should_gaimified_ticker_hide.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // CheckBox is checked
+                    // Apply desired changes when the CheckBox is checked
+                    edgeSdk.getLocalStorageManager().storeBooleanValue(true,Constants.IS_GAMIFICATION_TICKER_ALLOWED_TO_HIDE);
+                } else {
+                    // CheckBox is not checked
+                    // Apply desired changes when the CheckBox is not checked
+                    edgeSdk.getLocalStorageManager().storeBooleanValue(true,Constants.IS_GAMIFICATION_TICKER_ALLOWED_TO_HIDE);
+                }
+            }
+        });
+
+    }
     private void setUpFocusListeners(){
         final float ckbx_should_ticker_hide_defaultTextSize = ckbx_should_ticker_hide.getTextSize();
         final float ckbx_should_ticker_hide_focusedTextSize = ckbx_should_ticker_hide_defaultTextSize + 8; // Increase text size by 4dp when focused

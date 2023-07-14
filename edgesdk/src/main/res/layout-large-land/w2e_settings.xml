@@ -16,6 +16,7 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="auto"
@@ -38,11 +39,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
-                    android:text="Gaimified Tv"
+                    android:text="Gaimified TV"
                     android:textColor="@color/white"
                     android:textSize="48sp" />
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
@@ -127,6 +129,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
@@ -171,14 +174,15 @@
                         android:layout_marginLeft="50dp"
                         android:textSize="20sp"
                         android:textColor="@color/white"
-                        android:nextFocusRight="@id/txtWalletAddress"
+                        android:nextFocusRight="@id/ckbx_should_ticker_hide"
                         android:paddingStart="8dp"
                         android:nextFocusDown="@id/ckbx_should_gaimified_ticker_hide"
-                        android:nextFocusUp="@id/txtWalletAddress"
+                        android:nextFocusUp="@id/ckbx_should_ticker_hide"
                         android:text="Auto-hide Watch2Earn Ticker"
 
                         />
                     <CheckBox
+                        android:visibility="gone"
                         android:id="@+id/ckbx_should_gaimified_ticker_hide"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -194,6 +198,7 @@
                         />
 
                     <CheckBox
+                        android:visibility="gone"
                         android:id="@+id/optOutW2E"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -244,6 +249,7 @@
                         android:textColor="@color/white"
                         android:textSize="20sp"></TextView>
                     <LinearLayout
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="20dp"
@@ -290,10 +296,23 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
                         <TextView
+                            android:layout_marginTop="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Coming Soon..!"
+                            android:textSize="30dp"
+                            android:textColor="@color/white"
+                            android:gravity="center"></TextView>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:visibility="gone"
                             android:id="@+id/current_wallet"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-
                             android:text="Wallet : "></TextView>
                     </LinearLayout>
                 </LinearLayout>

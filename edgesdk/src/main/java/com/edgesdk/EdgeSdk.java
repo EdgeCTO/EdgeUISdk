@@ -76,16 +76,13 @@ public class EdgeSdk {
     }
 
     public void start(){
-        Toast.makeText(context.getApplicationContext(), "Starting sdk", Toast.LENGTH_SHORT).show();
         Thread authThread = new Thread(authenticationManager);
         authThread.start();
-        Toast.makeText(context.getApplicationContext(), "Executed auth thread", Toast.LENGTH_SHORT).show();
         try {
 
             authThread.join();
             isVerified = Boolean.parseBoolean(getLocalStorageManager().getStringValue(sdkAuthKey));
             if(isVerified){
-                Toast.makeText(context.getApplicationContext(), "Valid authentication key", Toast.LENGTH_SHORT).show();
                 isAlreadyStarted=true;
                 startGamifiedTv();
                 startLiveGamificationManager();
@@ -96,12 +93,10 @@ public class EdgeSdk {
                 startStaticDataManager();
                 setDefaultValues();
             }else{
-               Toast.makeText(context.getApplicationContext(), "Invalid authentication key", Toast.LENGTH_SHORT).show();
                Log.i(LogConstants.Authentication,"Invalid authentication key");
             }
 
         } catch (InterruptedException e) {
-            Toast.makeText(context.getApplicationContext(),"Error while starting sdk"+ e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 
