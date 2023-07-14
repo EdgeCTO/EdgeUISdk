@@ -76,8 +76,10 @@ public class EdgeSdk {
     }
 
     public void start(){
+        Toast.makeText(context.getApplicationContext(), "Starting sdk", Toast.LENGTH_SHORT).show();
         Thread authThread = new Thread(authenticationManager);
         authThread.start();
+        Toast.makeText(context.getApplicationContext(), "Executed auth thread", Toast.LENGTH_SHORT).show();
         try {
 
             authThread.join();
@@ -99,6 +101,7 @@ public class EdgeSdk {
             }
 
         } catch (InterruptedException e) {
+            Toast.makeText(context.getApplicationContext(),"Error while starting sdk"+ e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
 
