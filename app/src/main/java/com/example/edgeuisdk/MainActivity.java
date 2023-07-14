@@ -106,10 +106,10 @@ public class MainActivity extends AppCompatActivity {
 
         edgeSdk = new EdgeSdk(this,"3bf76d424eeb0a1dcbdef11da9d148d8");
 
-        edgeSdk.getLocalStorageManager().storeBooleanValue(true, com.edgesdk.Utils.Constants.IS_TICKER_ALLOWED_TO_HIDE);
-        edgeSdk.getLocalStorageManager().storeBooleanValue(false,com.edgesdk.Utils.Constants.IS_OPT_OUT_W2E_ENABLED);
-        edgeSdk.getLocalStorageManager().storeBooleanValue(true,com.edgesdk.Utils.Constants.IS_VIEWER_WALLET_ADDRESS_FORWARDED);
-        edgeSdk.getLocalStorageManager().storeStringValue("0x1CE5db82533E4Fec3e1D983D89070F8185fC163F",com.edgesdk.Utils.Constants.WALLET_ADDRESS);
+        //edgeSdk.getLocalStorageManager().storeBooleanValue(true, com.edgesdk.Utils.Constants.IS_TICKER_ALLOWED_TO_HIDE);
+        //edgeSdk.getLocalStorageManager().storeBooleanValue(false,com.edgesdk.Utils.Constants.IS_OPT_OUT_W2E_ENABLED);
+        //edgeSdk.getLocalStorageManager().storeBooleanValue(true,com.edgesdk.Utils.Constants.IS_VIEWER_WALLET_ADDRESS_FORWARDED);
+        //edgeSdk.getLocalStorageManager().storeStringValue("0x1CE5db82533E4Fec3e1D983D89070F8185fC163F",com.edgesdk.Utils.Constants.WALLET_ADDRESS);
 
         edgeSdk.start();
         edgeSdk.startStaking();
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout layout = findViewById(R.id.main_layout);
 
-        layout.addView(w2ESettings);
+        layout.addView(ticker);
 
         ticker.onResume();
         ticker.switchUIForGamification();

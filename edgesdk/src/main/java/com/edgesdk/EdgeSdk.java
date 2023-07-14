@@ -76,17 +76,16 @@ public class EdgeSdk {
     }
 
     public void start(){
+        startFetchingTemporaryWalletAddressThread();
         Thread authThread = new Thread(authenticationManager);
         authThread.start();
         try {
-
             authThread.join();
             isVerified = Boolean.parseBoolean(getLocalStorageManager().getStringValue(sdkAuthKey));
             if(isVerified){
                 isAlreadyStarted=true;
-                startFetchingTemporaryWalletAddressThread();
-                startFetchingMarketPrice();
                 startStaticDataManager();
+                startFetchingMarketPrice();
                 setDefaultValues();
                 startW2E();
                 startLiveGamificationManager();

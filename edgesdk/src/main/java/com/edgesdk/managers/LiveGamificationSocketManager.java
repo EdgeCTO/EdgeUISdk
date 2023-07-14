@@ -111,7 +111,10 @@ public class LiveGamificationSocketManager implements Runnable{
                 @Override
                 public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception {
                     Log.i(LogConstants.Live_Gamification,"Live gamification socket opened");
-                    if(edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS)==null || currentChannelUUID==null) {
+                    Log.i(LogConstants.Live_Gamification,"WALLET_ADDRESS : "+edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
+                    Log.i(LogConstants.Live_Gamification,"currentChannelUUID : "+currentChannelUUID);
+
+                    if(edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS)!=null) {
                         JSONObject openingMessage = new JSONObject();
                         openingMessage.put("type", "wallet");
                         openingMessage.put("address", edgeSdk.getLocalStorageManager().getStringValue(Constants.WALLET_ADDRESS));
@@ -121,7 +124,7 @@ public class LiveGamificationSocketManager implements Runnable{
                         }
                         ws.sendText(openingMessage.toString());
                     }else{
-                        Log.i(LogConstants.Live_Gamification,"");
+                        Log.i(LogConstants.Live_Gamification,"disconnecting bcz of null");
                         getWs().disconnect();
                     }
                 }
